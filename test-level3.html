@@ -481,7 +481,8 @@ el("sendBtn").onclick = function () {
     from_name: STUDENT + " (Lesson Challenge)",
     student: STUDENT,
     lesson: LESSON_LABEL,
-    message: text
+    message: text,
+    redirect: "https://encinitaspiano.github.io/Lessons/thanks.html"
   };
   for (var k in fields) {
     var inp = document.createElement("input");
@@ -490,8 +491,8 @@ el("sendBtn").onclick = function () {
   }
   document.body.appendChild(form);
   form.submit();
-  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">One last check</div><p>A new page should open saying your answers were <b>submitted</b>. If it did, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>' +
-    '<p class="hint"><b>No "submitted" page?</b> Copy and paste your answers below into a text and send it to Mr. Rod, so we can go over them together at your next lesson.</p>' +
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">One last check</div><p>A new page should open with a thank-you note from Mr. Rod. If it did, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>' +
+    '<p class="hint"><b>No thank-you page?</b> Copy and paste your answers below into a text and send it to Mr. Rod, so we can go over them together at your next lesson.</p>' +
     '<div class="preview">' + esc(text) + '</div>';
 };
 
