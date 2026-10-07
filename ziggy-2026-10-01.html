@@ -83,6 +83,7 @@ textarea:focus { outline: 3px solid var(--accent); }
 .cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
 .cs b { color: #111; }
 .signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
 footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
 </style>
 </head>
@@ -97,6 +98,8 @@ footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid
   <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
   <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
 </div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
 
 <!-- LEVEL 1: SUMMARY -->
 <section class="card" id="level1">
@@ -228,6 +231,7 @@ footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid
     <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
     <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
     <div class="note"><b>Music words you can use:</b> sharp, flat, tie, slur, legato, staccato, dotted half note, metronome, counts.<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
     <div id="wqs"></div>
     <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
     <button class="btn" id="sendBtn">Click here to send my answers</button>
@@ -235,6 +239,7 @@ footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid
   </div>
 </section>
 
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
 <footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
 </div>
 
@@ -317,27 +322,53 @@ function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [];
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
 
-el("startL2").onclick = function () {
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
   el("level2").classList.remove("hidden");
   el("lv1").className = "lv done";
   el("lv2").className = "lv on";
-  this.style.display = "none";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
   startRound(QUESTIONS.map(function (_, i) { return i; }));
   el("level2").scrollIntoView({behavior: "smooth"});
 };
 
-function startRound(list) {
-  round++; answered = 0; correct = 0; missed = []; missedIdx = [];
-  order = shuffle(list);
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
   var html = "";
   order.forEach(function (qi, n) {
     var Q = QUESTIONS[qi];
-    var opts = shuffle(Q.o.map(function (t, i) { return {t: t, ok: i === Q.a}; }));
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
     html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
-    opts.forEach(function (op, k) {
-      html += '<div class="opt" data-ok="' + (op.ok ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(op.t) + '</span></div>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
     });
     html += '<div class="fbwrap"></div></div>';
   });
@@ -346,29 +377,14 @@ function startRound(list) {
   updateProgress();
   var btns = document.querySelectorAll("#qs .letter");
   for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
-}
-
-function choose() {
-  var n = this.getAttribute("data-n");
-  var box = el("q" + n);
-  var all = box.querySelectorAll(".opt");
-  for (var i = 0; i < all.length; i++) all[i].classList.remove("sel");
-  this.classList.add("sel");
-  box.querySelector(".check").classList.add("show");
-}
-
-function check() {
-  var box = el("q" + this.getAttribute("data-n"));
-  var sel = box.querySelector(".opt.sel");
-  if (!sel) return;
-  this.style.display = "none";
-  pick.call(sel);
+  save();
 }
 
 function pick(n) {
   var box = el("q" + n);
   var Q = QUESTIONS[order[n]];
   var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
   var all = box.querySelectorAll(".opt");
   for (var i = 0; i < all.length; i++) {
     all[i].querySelector(".letter").disabled = true;
@@ -391,6 +407,7 @@ function pick(n) {
   box.querySelector(".fbwrap").innerHTML =
     '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
   updateProgress();
+  save();
   if (answered === order.length) finishRound();
 }
 
@@ -413,7 +430,9 @@ function finishRound() {
     unlock();
     return;
   }
-  var nx = nextList();
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
   el("result").innerHTML =
     '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
     '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
@@ -423,9 +442,15 @@ function finishRound() {
 }
 
 function unlock() {
-  var now = new Date();
-  var stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
-              now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
   el("result").innerHTML =
     '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
     '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
@@ -435,20 +460,72 @@ function unlock() {
   el("lv2").className = "lv done";
   el("lv3").className = "lv on";
   el("goL3").onclick = openL3;
-  el("result").scrollIntoView({behavior: "smooth"});
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
 }
 
 function openL3() {
   el("lockedBox").style.display = "none";
   el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
   var html = "";
   WRITTEN.forEach(function (q, i) {
     html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
-            '<textarea id="w' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
   });
   el("wqs").innerHTML = html;
-  el("level3").scrollIntoView({behavior: "smooth"});
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
 }
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
 
 el("sendBtn").onclick = function () {
   var answers = WRITTEN.map(function (q, i) { return el("w" + i).value.trim(); });
