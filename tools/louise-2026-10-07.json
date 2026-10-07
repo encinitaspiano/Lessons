@@ -1,0 +1,110 @@
+{
+  "student": "Louise",
+  "slug": "louise",
+  "date": "2026-10-07",
+  "date_label": "Wednesday, October 7, 2026",
+  "terms": [
+    {"name": "Inversion", "lang": "English", "meaning": "A chord with a note other than the root on the bottom. Same three notes, rearranged. A-D-F is still a D minor chord, just turned over."},
+    {"name": "Second inversion", "lang": "English", "meaning": "The fifth of the chord is on the bottom. A-D-F is D minor in second inversion; C-F-A is F major in second inversion. Same hand shape for both."},
+    {"name": "Voicing", "lang": "English", "meaning": "How the notes of a chord are spread out and stacked: which note is on top, which is on the bottom, how close together they are."},
+    {"name": "Common tone", "lang": "English", "meaning": "A note shared by two chords in a row. Finding it is how you connect one chord to the next instead of treating them as separate shapes."},
+    {"name": "Half step", "lang": "English", "meaning": "The smallest distance on the piano: one key to the very next key, black or white. C to B, and B to B-flat, are each a half step down."},
+    {"name": "Tempo", "lang": "Italian", "meaning": "Means \"time\". The speed of the music, measured in beats per minute (BPM) on the metronome."},
+    {"name": "Metronome", "lang": "English", "meaning": "The click that keeps a steady beat. It measures the speed at which you can play something accurately right now."},
+    {"name": "6/8 time", "lang": "English", "meaning": "Six eighth notes per measure, felt in two big pulses: on 1 and on 4."},
+    {"name": "Dotted eighth + sixteenth", "lang": "English", "meaning": "A long-short rhythm. The dot adds half the note's value, so the sixteenth that follows lands late, on the \"and\"."},
+    {"name": "Pickup (anacrusis)", "lang": "English", "meaning": "Notes that come before the downbeat and lead into it, like counting \"4, 5, 6, and\" into beat 1."},
+    {"name": "Dissonance", "lang": "English", "meaning": "Notes that rub against each other and sound tense, like the B-natural sets in this passage. Tension that wants to resolve."}
+  ],
+  "sections": [
+    {"heading": "The pattern behind the notes (measures 41-44)",
+     "paragraphs": [
+       "We stepped away from the page and played the left-hand chords of measures 41-44 as clusters, all three notes at once, in both hands, one octave apart. We were not playing the song. We were feeding the brain the bigger pattern so the song feels freer later. That is the hidden architecture of music.",
+       "Here is the chain of four sets. Notice how little actually moves each time:"
+     ],
+     "bullets": [
+       "Set 1: A - D - F. D minor, second inversion (Dm/A).",
+       "Set 2: C - F - A. F major, second inversion (F/C). Same exact hand shape, just moved up two white keys. The F that was on top (pinky in the right hand) now sits in the middle (3rd finger).",
+       "Set 3: B - F - A. Only the bottom note moves, down a half step from C to B-natural. The other two stay put.",
+       "Set 4: B-flat - F - A. Again only the bottom moves, down another half step to B-flat (B-flat major 7 sound).",
+       "Back to Set 1: B-flat drops a half step to A, and the F becomes the top of the D minor chord. This is the transition most people overlook."
+     ],
+     "note": "Describe it out loud. When you first looked at set 2 to set 3 you said the note moved up, but it actually moves down. Saying it out loud is how you catch your mind narrating the opposite of what is really happening."},
+    {"heading": "Fingering: the hands are mirror images",
+     "paragraphs": [
+       "For A-D-F, the right hand plays 1-3-5 and the left hand plays 5-2-1. Using 2 in the left hand keeps the hand open and relaxed instead of stretching with 3. The two hands are mirror images, so the fingering changes from one to the other."
+     ],
+     "bullets": [
+       "Left hand: root position 5-3-1, first inversion 5-3-1, second inversion 5-2-1.",
+       "Right hand: root position 1-3-5, first inversion 1-2-5, second inversion 1-3-5."
+     ]},
+    {"heading": "Eyes closed: learning to feel the keys",
+     "paragraphs": [
+       "We played the four sets with eyes closed, first one hand, then both. It is like walking through your house when the power goes out: you feel your way along the couch. You have to feel and listen more.",
+       "When you miss, the first instinct is to open your eyes and grab the answer. Instead, listen: was that too high or too low? Find it by ear and by feel. As musicians we are not training our eyes, we are training our ears and our hands. And there is no such thing as wrong here. It is just learning."
+     ]},
+    {"heading": "Right hand, measures 41-44: a step-by-step system",
+     "paragraphs": [
+       "We built a system that works for you. Each small section goes through these steps:"
+     ],
+     "bullets": [
+       "1. No metronome: count out loud (\"1 and 2 and 3 and 4 and 5 and 6 and\"). In 6/8 the eighth note gets the number, so the sixteenths fall on the \"and\".",
+       "2. Add the metronome and stop counting out loud. Let the click keep the count for you.",
+       "3. Eyes closed.",
+       "4. Final goal: eyes closed with the metronome."
+     ],
+     "note": "Stop where it gets bumpy. Measure 42 got a little bumpy, so we stopped there instead of pushing on. Transcendence is cumulative: too many bumps in the road and you never get through the whole thing."},
+    {"heading": "The jumps in measures 43-44",
+     "paragraphs": [
+       "Measure 43 has a jump to fingers 1 and 3 on E and G. Measure 44 has a jump to fingers 2 and 4 on C and E.",
+       "For the measure 44 jump, try the flip: keep the thumb relaxed near D (not gripping) and flip the hand over for 2 and 4, instead of reaching deep into the black keys. You noticed right away that the flip made it easier.",
+       "Isolate the micro-transition and say the finger numbers out loud as you play: \"1 and 2, 2 and 4, 1 and 3.\" It will feel strange out of context, because your brain is used to the whole sequence. That extra effort is exactly what builds the connection."
+     ]},
+    {"heading": "Tempo ladder and tapping the pulse",
+     "paragraphs": [
+       "The metronome measures the speed at which you can play something accurately today. Measures 41-42 held together at 105. Measures 43-44 needed to come down to 85 (about 20 percent slower).",
+       "Slow can feel harder, because it exposes the gaps and you hold the notes longer instead of fudging through. The secret is to accept the slower tempo fully, relaxed and present, not comparing it to how the song should sound.",
+       "At 90 you were slowing down at the top of measure 44, so we tapped the pulse with the left hand while the right hand played. That turned the sound into something your body feels, and it made a big difference. From there we climbed to 95."
+     ],
+     "note": "Rhythm is the most basic element of life. Your heart keeps a rhythm to keep you alive. Tapping the pulse brings that rhythm into the body."},
+    {"heading": "Make It Stick: why harder practice works",
+     "paragraphs": [
+       "A professor tried weekly quizzes instead of only a midterm and final. Students who had to write in their answers did worse at first than those doing multiple choice, but they remembered far more by the midterm and final.",
+       "The part of us that wants to be a good student wants results right away. But the brain learns more deeply when the work is a little harder and we do not get every answer right. Isolating the tricky spots will feel less smooth today, and in a week or two you will know it far better than if you had just played it over and over."
+     ]}
+  ],
+  "practice": [
+    "Measures 41-44, small sections at a time, using the system: count out loud, then metronome, then eyes closed, then eyes closed with metronome.",
+    "Measures 41-42 at 105. Measures 43-44 starting at 85-95, tapping the pulse with your left hand if it starts to drift.",
+    "Isolate the measure 44 flip: \"1 and 2, 2 and 4, 1 and 3,\" saying the fingers out loud.",
+    "Play the four left-hand sets as clusters in both hands, describing out loud what moves each time.",
+    "Go back to the earlier parts of Cristofori's Dream. Now that you know this voicing, you will hear how the earlier parts are simpler versions of the same pattern.",
+    "Before your trip: record a video or two for yourself, just to remember where you are today. Watch it with compassion, not judgment.",
+    "Next lesson: Wednesday, November 4."
+  ],
+  "questions": [
+    {"q": "What chord is A - D - F (with A on the bottom)?", "o": ["D minor, second inversion", "A minor, root position", "F major, first inversion", "D major, second inversion"], "a": 0, "e": "D-F-A is D minor. With A (the fifth) on the bottom, it is in second inversion."},
+    {"q": "Going from A-D-F to C-F-A, what happens to your hand shape?", "o": ["It stays the same; you move it up two white keys", "It changes from open to closed", "You switch which hand plays", "It moves down a half step"], "a": 0, "e": "Both are second inversion chords, so the shape is identical. It just shifts up two white keys."},
+    {"q": "In the right hand (fingers 1-3-5), the F on your pinky in set 1 becomes which finger in set 2?", "o": ["The 3rd finger", "The thumb", "The 2nd finger", "It is not in set 2"], "a": 0, "e": "F is the top of A-D-F and the middle of C-F-A, so it moves from 5 to 3. That shared note connects the two sets."},
+    {"q": "From set 2 (C-F-A) to set 3, what changes?", "o": ["Only the bottom note moves down a half step, C to B-natural", "Only the top note moves up a whole step", "All three notes move down", "The bottom note moves up to D"], "a": 0, "e": "Only the C moves, down a half step to B-natural. F and A stay where they are."},
+    {"q": "A note shared by two chords in a row is called a...", "o": ["Common tone", "Pickup", "Dissonance", "Inversion"], "a": 0, "e": "A common tone is a note two chords share. It is the key to connecting one chord to the next."},
+    {"q": "What is the left-hand fingering for a second inversion triad like A-D-F?", "o": ["5-2-1", "5-3-1", "1-3-5", "4-2-1"], "a": 0, "e": "Left hand second inversion is 5-2-1. Root position and first inversion are both 5-3-1."},
+    {"q": "Why does the fingering change between the right hand and the left hand?", "o": ["The hands are mirror images of each other", "The left hand is always weaker", "The left hand plays lower, which needs more fingers", "It doesn't; both hands always use 1-3-5"], "a": 0, "e": "Your hands are mirror images, so the comfortable shape for the same chord is different in each hand."},
+    {"q": "In 6/8, where do the two big pulses fall?", "o": ["On 1 and 4", "On 1 and 3", "On 2 and 5", "On every beat equally"], "a": 0, "e": "6/8 is felt in two big groups of three, so the pulses are on 1 and 4."},
+    {"q": "When counting sixteenth notes in 6/8, where do the sixteenths land?", "o": ["On the \"and\" between the numbers", "Right on the numbers", "Only on beats 1 and 4", "Between 6 and 1 only"], "a": 0, "e": "The eighth note gets the number (1, 2, 3...), so the sixteenths fall on the \"and\"."},
+    {"q": "What is the order of the practice system we built?", "o": ["Count out loud, then metronome, then eyes closed, then eyes closed with metronome", "Metronome first, then counting, then hands together", "Eyes closed first, then count, then metronome", "Play fast, then slow it down"], "a": 0, "e": "Each step adds one more variable, ending with eyes closed and the metronome."},
+    {"q": "What do you do when a section starts to get bumpy?", "o": ["Stop there and repeat the smaller section", "Push through to the end of the passage", "Speed up to get through it", "Skip it and come back next week"], "a": 0, "e": "Stop where it gets bumpy. Smoothness builds up section by section."},
+    {"q": "Measures 43-44 were slipping at 90. What helped you keep steady?", "o": ["Tapping the pulse with your left hand while the right hand played", "Turning the metronome off", "Playing louder", "Looking at the keys"], "a": 0, "e": "Tapping the pulse turned the click into something your body feels."},
+    {"q": "Why can playing slowly feel harder at first?", "o": ["It exposes the gaps, and you have to hold notes longer instead of fudging through", "Slow tempos are always out of rhythm", "The metronome is less accurate when slow", "Your fingers get tired faster"], "a": 0, "e": "Slow practice shows exactly where the gaps are. Accepting it with relaxation is the secret."},
+    {"q": "In the Make It Stick study, what did writing in answers do compared with multiple choice?", "o": ["Lower scores at first, but much better long-term memory", "Higher scores right away and better memory", "No difference at all", "Students gave up and stopped coming"], "a": 0, "e": "Harder retrieval feels worse short term but builds deeper, longer-lasting learning."}
+  ],
+  "written": [
+    "Walk through the four left-hand sets (A-D-F, C-F-A, B-F-A, B-flat-F-A) in your own words. What moves and what stays the same each time?",
+    "Describe the transition from the B-flat set back to the D minor chord. Which notes guide your hand there?",
+    "Explain your four-step practice system for a small section. Why does each step add just one new thing?",
+    "Why did we play with our eyes closed? What do you notice, and what do you do when you miss a note?",
+    "Describe the hand flip for the 2 and 4 jump in measure 44. What makes it easier than reaching?",
+    "In your own words, why might a slower tempo or a harder kind of practice help you learn more in the long run?"
+  ],
+  "wordbank": "inversion, second inversion, common tone, half step, voicing, cluster, tempo, metronome, pulse, 6/8, dotted eighth, sixteenth, pickup, dissonance"
+}
