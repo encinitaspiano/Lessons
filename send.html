@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="robots" content="noindex">
+<title>Sending to Mr. Rod</title>
+<style>
+:root { color-scheme: light only; --ink:#111; --head:#234011; --accent:#4E6B2A; --border:#8AA95E; --panel:#EFF4E4; --bad:#8a1c1c; }
+* { box-sizing: border-box; }
+html, body { background:#fff; color:var(--ink); margin:0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size:17px; line-height:1.55; }
+.wrap { max-width:640px; margin:0 auto; padding:28px 16px 40px; }
+h1 { font-size:25px; color:var(--head); margin:0 0 6px; }
+.box { text-align:center; border:4px solid var(--accent); background:var(--panel); border-radius:12px; padding:22px 16px; margin:18px 0; }
+.box .big { font-size:30px; font-weight:bold; color:var(--head); line-height:1.2; }
+.box.bad { border:3px dashed var(--bad); background:#fff; }
+.box.bad .big { color:var(--bad); }
+.btn { display:block; width:100%; font:inherit; font-size:18px; font-weight:bold; padding:14px; border-radius:10px; border:2px solid var(--accent); background:var(--accent); color:#fff; cursor:pointer; margin-top:12px; }
+.btn.alt { background:#fff; color:var(--head); }
+.preview { -webkit-user-select:text; user-select:text; white-space:pre-wrap; font-family:Menlo,Consolas,monospace; font-size:14px; background:#fafafa; border:1px solid #999; border-radius:8px; padding:10px; margin-top:10px; }
+.hint { font-size:15px; color:#333; }
+footer { text-align:center; font-size:14px; color:#333; border-top:2px solid var(--border); padding-top:10px; margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Your Level 3 answers</h1>
+  <div id="status" class="box"><div class="big">Sending...</div><p>One moment while your answers go to Mr. Rod.</p></div>
+  <div id="extra"></div>
+  <footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+<script>
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+function el(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function decode(h) {
+  h = h.replace(/-/g, "+").replace(/_/g, "/");
+  while (h.length % 4) h += "=";
+  return JSON.parse(decodeURIComponent(escape(atob(h))));
+}
+function showAnswers(text, intro) {
+  el("extra").innerHTML = '<p class="hint">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="pv">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("pv"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try { navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt); }
+    catch (err) { selectIt(); }
+  };
+}
+
+var raw = location.hash.slice(1), P = null;
+try { if (raw) P = decode(raw); } catch (err) { P = null; }
+
+if (!P || !P.s || !P.m) {
+  el("status").className = "box bad";
+  el("status").innerHTML = '<div class="big">Nothing to send</div><p>Please go back to your Lesson Challenge and tap the send button at the bottom of Level 3.</p>';
+} else {
+  var sentKey = "rcps-sent:" + P.s + ":" + P.d + ":" + raw.length + ":" + raw.slice(-24);
+  var already = false;
+  try { already = !!localStorage.getItem(sentKey); } catch (err) {}
+  if (already) {
+    el("status").innerHTML = '<div class="big">Already sent!</div><p>Mr. Rod already has these answers, ' + esc(P.s) + '. You are all done.</p>';
+    el("extra").innerHTML = '<button class="btn alt" id="again" type="button">Send them again anyway</button>';
+    el("again").onclick = function () { el("extra").innerHTML = ""; send(); };
+  } else {
+    send();
+  }
+}
+
+function send() {
+  el("status").className = "box";
+  el("status").innerHTML = '<div class="big">Sending...</div><p>One moment while your answers go to Mr. Rod.</p>';
+  fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: {"Content-Type": "application/json", "Accept": "application/json"},
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: "Level 3 answers - " + P.s + " - " + P.d,
+      from_name: P.s + " (Lesson Challenge)",
+      student: P.s, lesson: P.l, message: P.m
+    })
+  }).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+    try { localStorage.setItem(sentKey, new Date().toISOString()); } catch (err) {}
+    el("status").innerHTML = '<div class="big">Sent!</div><p>Thank you, ' + esc(P.s) + '! Mr. Rod has your answers, and we will go over them together at your next lesson. ' +
+      'Keep an open mind and an open heart, and always create with much love.</p>';
+    el("extra").innerHTML = '<p class="hint" style="text-align:center">You can close this page now.</p>';
+  }).catch(function () {
+    el("status").className = "box bad";
+    el("status").innerHTML = '<div class="big">Not sent yet</div><p>That did not go through. Check your internet and tap Try again.</p>' +
+      '<button class="btn" id="retry" type="button">Try again</button>';
+    el("retry").onclick = send;
+    showAnswers(P.m, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+  });
+}
+</script>
+</body>
+</html>
