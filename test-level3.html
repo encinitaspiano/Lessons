@@ -89,7 +89,7 @@ footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid
 <body>
 <div class="wrap">
 
-<h1>Ziggy's Lesson Challenge</h1>
+<h1>Level 3 Send Test</h1><p class="note">Test page for Mr. Rod: type anything below and tap send. It should say <b>Sent!</b> and arrive in the studio Gmail.</p>
 <p class="sub">Lesson of Thursday, October 1, 2026</p>
 
 <div class="levels">
@@ -240,7 +240,7 @@ footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid
 
 <script>
 // ---------------- CONFIG ----------------
-var STUDENT = "Ziggy";
+var STUDENT = "TEST - Rod";
 var LESSON_DATE = "2026-10-01";
 var LESSON_LABEL = "Thursday, October 1, 2026";
 // Web3Forms access key (public alias for Rod's email; safe in client code).
@@ -450,6 +450,7 @@ function openL3() {
   el("level3").scrollIntoView({behavior: "smooth"});
 }
 
+S.stage = 3; openL3();
 // ---------- SEND LEVEL 3 ANSWERS (v2) ----------
 // On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
 // Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
