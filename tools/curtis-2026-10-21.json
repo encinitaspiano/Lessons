@@ -1,0 +1,113 @@
+{
+  "student": "Curtis",
+  "slug": "curtis",
+  "date": "2026-10-21",
+  "date_label": "Wednesday, October 21, 2026",
+  "terms": [
+    {"name": "Corrente", "lang": "Italian", "meaning": "The name of the movement we are working on in the Bach Partita in E minor. It comes from the same root as the Spanish \"correr\" (to run) and \"corriente\" (a current). Most recordings take it fast, but the dance name does not obligate you to rush. We are choosing to let it breathe."},
+    {"name": "Tempo", "lang": "Italian", "meaning": "Means \"time\". The speed of the music in beats per minute (BPM). Our working tempo for the whole lesson was 65 for the quarter note. Earlier you had been practicing at 100 and thought that was slow. 65 is about 35 percent slower than that."},
+    {"name": "Metronome", "lang": "English", "meaning": "The click that measures time to the millisecond. In this lesson it was our one constant variable, the glue we applied to every section so we could see what each section revealed."},
+    {"name": "Downbeat", "lang": "English", "meaning": "Beat 1 of a measure, the strongest pulse. We started and ended every section on a downbeat (or, in the trickier spot, on beat 2 to avoid the tie)."},
+    {"name": "Tie", "lang": "English", "meaning": "A curved line joining two notes of the same pitch so the second one is held, not restruck. When a section begins in the middle of a tie, start on the next clean beat instead, which is why we started measure 32 on beat 2."},
+    {"name": "Audiation", "lang": "English", "meaning": "Hearing music in your inner ear. Singing the finger numbers (and the pitches) while you play connects your voice, your ear, and your fingers into one loop. Playing with eyes closed forces the same thing: hear and feel instead of look and play."},
+    {"name": "Contrary motion", "lang": "English", "meaning": "Two voices moving in opposite directions. In measures 47-48 one line steps up to a D while the other line steps down to the same D. They converge on the downbeat of 48."},
+    {"name": "Tenth", "lang": "English", "meaning": "A third plus an octave (3 + 7 = 10). C up to the E above the next C is a tenth. This is the interval Bach is obsessed with. On the downbeat of measure 47 you play F-sharp and A-sharp, a tenth apart."},
+    {"name": "Sixth (inverted tenth)", "lang": "English", "meaning": "When you flip a tenth, or a third, so the top note goes to the bottom, you get a sixth. The F-sharp and D on the downbeat of measure 48 are a sixth, which is really the tenth turned upside down. Same relationship, different direction."},
+    {"name": "Diminished chord", "lang": "English", "meaning": "A chord built by stacking minor thirds. In measure 52 Bach plays an F-sharp 7 in the left hand and then stacks minor thirds on top of it to add tension, then does it again a half step up. That is jazz, written 300 years ago."},
+    {"name": "Straight eighths", "lang": "English", "meaning": "Eighth notes that are exactly equal: 1-and-2-and-3-and-4-and, two even notes per beat. Like making tortillas, every one the same."},
+    {"name": "Swung eighths", "lang": "English", "meaning": "A triplet feel with the middle note of each triplet left out: long-short, long-short. Say \"trip-let, trip-let\" and drop the middle syllable. \"It Had To Be You\" says \"moderate swing\" at the top."},
+    {"name": "Triplet", "lang": "English", "meaning": "Three equal notes in the space of one beat: 1-and-a, 2-and-a. On your Korg metronome, pushing the up arrow past the eighth-note subdivision gives you the triplet, and one more push gives you the triplet with the middle note missing, which is the swing feel."},
+    {"name": "Clusters (note collections)", "lang": "English", "meaning": "A bird's-eye view of how few notes a busy passage actually uses. In measure 47 the upper voice covers only five scale steps and the lower voice only four. Seeing the pool of notes instead of each individual note helps the mind block them into one shape connected to the harmony."}
+  ],
+  "sections": [
+    {"heading": "Your recordings, and what they showed",
+     "paragraphs": [
+       "Thank you for sending the recordings. They sound great. The main thing I heard, in both the Partita and \"It Had To Be You\", was rhythm, so that became the whole lesson.",
+       "You said recording feels more hypervigilant, that mistakes stand out more, and that once you make one you get nervous. That is normal and it is worth noticing. The perfectionism voice, the one I call Huffy Puffy Perfect, is a form of fear. It can be paralyzing. The best thing we can do with it is observe it, face it, and keep playing. I deal with her a lot too. Nobody is beyond it."
+     ]},
+    {"heading": "Why hyper-slow works: Denise and the Sleeping Lotus story",
+     "paragraphs": [
+       "I shared what happened with another student. She learned the middle section of a piece at 72, played it at that tempo three or four times a day for a whole week, never faster. The next week she could play it at double the tempo, clean, on the first try. She was in shock.",
+       "What happened in her brain? The neural pathways got crystal clear, and she never sabotaged them. Think of new pathways as incredibly delicate threads. Any jagged, rushed movement shakes them and breaks them. Slow practice lays the thread down cleanly, and then speed is simply there when you ask for it.",
+       "The hard part is not the fingers, it is the Speed Monkey: the little tantrum kid who wants it faster and wants it now. Can you actually hear the beauty in the slowness? Can you be expressive at 65? That is the real question of this lesson."
+     ],
+     "note": "Increased tempo is increased tension. When you rush a section you are building a habit of tension into it. Playing it uber slow squeezes that tension out so you can see it."},
+    {"heading": "The experiment: one tempo, 65, applied to every section of the Partita",
+     "paragraphs": [
+       "We set the metronome to 65 and kept it there for the whole Corrente. We worked in three-to-four-bar chunks, always from a downbeat to a downbeat, and watched what each section revealed. Before each one I asked you to observe your body and your hands: is there tension, or can you stay malleable and relaxed, and how much does mental tension turn into muscular tension?"
+     ],
+     "bullets": [
+       "Measures 1-4, ending on the D-sharp just past the downbeat of 4. You said it felt like less pressure. There is so much gap between beats at 65 that the restlessness shows up. The question is how present you can stay in that space.",
+       "Measures 29-33 (downbeat to downbeat). More to think about here: right-hand notes plus the tied notes in the left hand. You were able to relax more into it.",
+       "Beat 2 of measure 32 to the downbeat of 37. Because there is a tie in the left hand on the downbeat of 32, we started on beat 2, where both hands activate cleanly. That is the more advanced way to handle a tie at the start of a section (the other option is to just hold the thumb D and start the click). I counted \"2-e-and-a, 3-e-and-a, 1...\" out loud; we left counting out of your version for now so we were not adding a variable to the hardest section.",
+       "Measures 47 to the downbeat of 49. The genuinely tricky two measures. Everything after 49 gets easier again."
+     ],
+     "note": "Here is the irony. Of the three sections, which one did you rush the most? The trickiest one, 32-37. You have practiced it the most, so your mind is used to playing it faster, and faster means tenser. That is exactly the section that needs the slowest, most relaxed work."},
+    {"heading": "Measures 47-48: two voices in one hand",
+     "paragraphs": [
+       "On the page measure 47 looks like a run of eighth notes, but Bach wrote two voices into the right hand. One line steps up: A-sharp, B, C-sharp, D. The other line steps down: F-sharp, E, D. Both arrive on the same D on the downbeat of 48. Contrary motion, converging. When you play the two lines separately and then together you can hear it. Then you have to make it come alive instead of just pushing the buttons.",
+       "The phrasing: I hear it as ba-da-da, ba-da-da, ba-da-da-da, with the weight on the second note of each group, not on the thumb note that falls on the beat. Your thumb naturally wants to accent the downbeat because it is playing the lower note, so this takes real body awareness. You changed the syllable to tu-tu-tu to be more expressive, which was a nice instinct, and you pulled the tempo a little at the end, even slower than 65. That means you are not chained to the click. Structure first, then freedom inside the structure.",
+       "Measure 48 fingering (my copy): 3-1-3-2-1-3-4-5-1-2-4-3-4-1. Say the finger numbers out loud as you play the right hand alone, slowly, no metronome. You did this well, and you also sang the pitches without realizing it, which is audiation happening on its own.",
+       "The lower voice in 48 is 1-3-2-3-4-5-2-3-4-1, with a rest where the upper voice has the D on finger 3. Playing that lower voice by itself is tricky and worth a few rounds.",
+       "When we doubled the metronome to 130 (sixteenth-note subdivision) you said it felt robotic, chopping at the notes. Right. 65 gives you fewer clicks, which means you have to feel the gap between beats, and that is where expression lives. We are staying at 65."
+     ],
+     "note": "Eyes closed. You tried measure 47 blind and it was vulnerable, you were handicapping yourself on purpose. That is the point. It forces the body to feel and hear instead of look and play. We are so visually dominant that this is one of the fastest ways to develop intuition at the keyboard."},
+    {"heading": "Bach's obsession: the tenth",
+     "paragraphs": [
+       "What interval is Bach always playing with? The third, displaced by an octave: a tenth (3 + 7 = 10). Look at the downbeat of 47: F-sharp in the left hand, A-sharp in the right. A tenth. Every chord in that measure is a tenth stepping up. Then the downbeat of 48 looks like it breaks the pattern, F-sharp and D, but invert it and it is the same third, now sitting as a sixth. Sixths are tenths turned over. He uses a fifth (B to F-sharp) once, then goes right back to thirds and tenths, and on the downbeat of 51 he lands a tenth again.",
+       "The ending, measure 52 onward: F-sharp 7 arpeggiated in the left hand, then a stack of minor thirds (a diminished chord) on top for tension, back to F-sharp, then another diminished chord a half step higher, and finally the major ending. Jazz, squared, in Bach. One measure of Bach analyzed properly transforms your sense of what this music is."
+     ]},
+    {"heading": "Structure and grace: the two halves of music",
+     "paragraphs": [
+       "The metronome is pure structure. Father Time, measured to the millisecond, unforgiving. The grace comes through the other side: feeling, expression, dynamics. Music is mystical because it holds both at once. When I played 47 with the click I was still able to shape the dynamics down into the downbeat. The machine kept time; the music still breathed. Find that blend. It might not come the first time, and in the end that is not up to us.",
+       "Singing the finger numbers, singing the pitch, playing with eyes closed: all of these use the voice as the bridge between the inner ear and the fingers. The word creates the action. Trust your body to do what it already knows. The moment you start thinking about every letter inside a word, you freeze; does yellow have a P in it? Same with notes.",
+       "When is this piece finished? It is not. You can technically have it down and still go deeper every week. The song can last forever. That is what makes it a practice."
+     ]},
+    {"heading": "\"It Had To Be You\": straight eighths versus swing",
+     "paragraphs": [
+       "Written in 1924 by Isham Jones, words by Gus Kahn, so 102 years old. It says \"moderate swing\" at the top. At 62 for the quarter note the tune is actually quite slow; the challenge is the feel, not the speed.",
+       "Straight eighths are two equal notes per beat: 1-and-2-and-3-and-4-and. Every tortilla the same. Swung eighths are a triplet feel with the middle note of each triplet missing: long-short, long-short. Say trip-let, trip-let, trip-let and drop the middle syllable. When you clapped eighths at 65 you were already swinging them without knowing it; I asked for straight ones so you could feel the difference.",
+       "The first four measures: 1-and-a, 2-and-a, 3-and-a, 4-and-a, 1. Same swing underneath, it just feels different from the rest of the tune because of the rhythm of the melody.",
+       "On your Korg metronome, use the up and down arrows next to the dial. Past the beats-per-measure setting it steps through subdivisions: first the eighth note, then the triplet (1-and-a), then the triplet with the middle note missing, which IS swing. Check your Yamaha manual too; the built-in metronome may have a swing setting. I recorded a short video playing the first two pages with the swing click at 65 so you can hear it in sections.",
+       "Your new hand drums are perfect for this. Clap or tap the quarter note first, then straight eighths, then swung eighths, before you ever touch the keys. Integrating a swing feel takes time. It is a different way of walking."
+     ]},
+    {"heading": "Looking ahead",
+     "paragraphs": [
+       "Next: the second section of the Partita. You have already played through it a few times and I have put fingering in. It is variations on the same material, so the first two pages will carry you. I am going to learn it alongside you. If you like the chords in \"Georgia on My Mind\", look up Hoagy Carmichael; he wrote a lot of the great standards and you will enjoy where that leads. The Brett Edstrom cocktail-piano arrangements you found can be our next add when it is time for a new song."
+     ]}
+  ],
+  "practice": [
+    "Partita, Corrente: metronome at 65, every section, three to four bars from downbeat to downbeat. Measures 1-4, 29-33, beat 2 of 32 to downbeat of 37, and 47 to downbeat of 49. Do not go faster this week, even when it feels easy. Especially 32-37.",
+    "Before each section, check in with your body: hands, shoulders, breath. Stay relaxed at the slow tempo. If you feel tension creeping in, that is information, not failure.",
+    "Measure 47-48, right hand alone: play the two voices separately, then together, saying the finger numbers out loud. 48 is 3-1-3-2-1-3-4-5-1-2-4-3-4-1. Then try it with eyes closed.",
+    "Hands together, 47 to the downbeat of 49 at 65. When you miss a note, the show goes on. Keep the beat and keep going.",
+    "It Had To Be You: with the drums or by clapping, quarter notes at 65, then straight eighths, then swung eighths (trip-let with the middle missing). Find the triplet and swing subdivision on your Korg (or Yamaha). Then play the first two pages in sections with the swing click, using my video as a guide.",
+    "Start reading the second section of the Partita with the fingering I marked.",
+    "Next lesson: Wednesday, October 28, at 2:00 PM."
+  ],
+  "questions": [
+    {"q": "A tenth is the same as which smaller interval, plus an octave?", "o": ["A third", "A fifth", "A sixth", "A fourth"], "a": 0, "e": "3 + 7 = 10. A tenth is a third displaced by an octave: C up to the E above the next C. It is the interval Bach keeps coming back to."},
+    {"q": "On the downbeat of measure 47 the left hand plays F-sharp and the right hand plays A-sharp. What interval is that?", "o": ["A tenth", "A sixth", "A fifth", "A seventh"], "a": 0, "e": "F-sharp to A-sharp is a third; with the octave between the hands it becomes a tenth. Every chord in that measure is a tenth stepping up."},
+    {"q": "On the downbeat of measure 48 you play F-sharp and D. If you invert that interval, what do you get?", "o": ["A tenth (or a third): it is the same relationship flipped", "A fifth", "An octave", "A seventh"], "a": 0, "e": "F-sharp up to D is a sixth. Flip it so D is on the bottom and you have D up to F-sharp, a third, or a tenth with an octave added. Sixths are inverted thirds."},
+    {"q": "In measures 47-48, the two voices hidden in the right hand both arrive on which note on the downbeat of 48?", "o": ["D", "F-sharp", "A-sharp", "B"], "a": 0, "e": "One voice steps up A-sharp, B, C-sharp, D while the other steps down F-sharp, E, D. They converge on the D in contrary motion."},
+    {"q": "What does \"contrary motion\" mean?", "o": ["Two voices moving in opposite directions", "Two voices moving in the same direction", "One voice holding while the other moves", "Both hands playing the same notes an octave apart"], "a": 0, "e": "Contrary motion is one line going up while the other goes down, like the two lines in measure 47 that meet on the D."},
+    {"q": "Why did we start the section at beat 2 of measure 32 instead of the downbeat?", "o": ["The left hand has a tied note on the downbeat, so beat 2 is the first clean activation of both hands", "The right hand rests on the downbeat", "Beat 2 is the strongest beat in triple time", "The metronome cannot start on beat 1"], "a": 0, "e": "A tie means the note is held, not restruck. Starting inside a tie is awkward, so we began on beat 2, where both hands play together cleanly."},
+    {"q": "What is a tie?", "o": ["A curved line joining two notes of the same pitch so the second is held, not replayed", "A curved line over notes of different pitches that means play them smoothly", "A symbol that shortens a note", "A dot that adds half the note's value"], "a": 0, "e": "A tie connects two notes of the same pitch into one longer sound. A slur, which looks similar, connects different pitches and means legato."},
+    {"q": "What is the fingering for the right hand in measure 48?", "o": ["3-1-3-2-1-3-4-5-1-2-4-3-4-1", "1-2-3-4-5-4-3-2-1-2-3-4-5-1", "2-1-3-2-1-3-5-4-1-2-4-3-4-1", "3-1-3-2-1-3-4-5-1-2-3-4-5-1"], "a": 0, "e": "3-1-3-2-1-3-4-5-1-2-4-3-4-1, as written in on your copy. Saying it out loud while you play locks it in."},
+    {"q": "When you sing the finger numbers (and the pitches) while playing, what are you building?", "o": ["Audiation: hearing the music in your inner ear and connecting it to your fingers through your voice", "Faster finger speed", "Sight-reading of ledger lines", "A looser wrist"], "a": 0, "e": "Your voice is the bridge between the pitch in your inner ear and the physical action of the fingers. That loop is audiation."},
+    {"q": "What are swung eighth notes?", "o": ["A triplet feel with the middle note of each triplet left out: long-short", "Two perfectly equal notes per beat", "Three equal notes per beat with all three played", "Eighth notes played staccato"], "a": 0, "e": "Say trip-let, trip-let and drop the middle syllable. The first note of each pair is long, the second is short. Straight eighths are the equal ones."},
+    {"q": "On your Korg metronome at 65, which subdivision setting gives you the swing feel?", "o": ["The triplet with the middle note missing", "The plain eighth note (1-and-2-and)", "The quarter note only", "The sixteenth note"], "a": 0, "e": "Step up past the eighth note to the triplet (1-and-a), then one more to the triplet with the middle note removed. That is the swing click."},
+    {"q": "When we doubled the metronome from 65 to 130, what happened to the feel of measure 47?", "o": ["It became robotic; the extra clicks chop the notes and leave less room to be expressive", "It became easier to shape the dynamics", "The tempo of the music changed", "The rhythm became swung"], "a": 0, "e": "130 is the same speed with twice the clicks. All that data turns you into a robot. At 65 you have to feel the gap between beats, and that gap is where expression lives."},
+    {"q": "What does the Italian word \"Corrente\" relate to?", "o": ["Running or a current (like Spanish \"correr\")", "Walking", "Singing", "Sleeping"], "a": 0, "e": "Corrente shares its root with correr (to run) and corriente (a current). Most play it fast, but the name does not require rushing; we are choosing to let it breathe."},
+    {"q": "In measure 52, after the F-sharp 7 arpeggio, Bach stacks minor thirds on top. What kind of chord does stacking minor thirds make?", "o": ["A diminished chord", "A major chord", "An augmented chord", "A suspended chord"], "a": 0, "e": "Minor third on minor third on minor third is a diminished chord. It adds tension before the major ending. Jazz in Bach."}
+  ],
+  "written": [
+    "Describe the two voices hidden in the right hand of measures 47-48. Which notes does each voice play, and where do they meet?",
+    "In your own words, why does playing something hyper-slow for a whole week let you play it fast later? What happens to the neural pathways when you rush?",
+    "Explain the difference between straight eighths and swung eighths. How would you clap each one, and how do you find the swing setting on your metronome?",
+    "The metronome is structure (Father Time) and expression is grace. Describe what it felt like to be expressive at 65 with the click going. Where did you find freedom inside the structure?",
+    "What is a tenth, why is Bach obsessed with it, and how does the sixth on the downbeat of measure 48 fit that pattern?",
+    "What did you notice about tension in your body when you played the trickiest section (32-37) versus the opening? What will you do differently this week?"
+  ],
+  "wordbank": "tenth, third, sixth, inversion, contrary motion, tie, downbeat, tempo, metronome, subdivision, triplet, swing, straight eighths, audiation, diminished, F-sharp 7, Corrente, phrasing, dynamics"
+}
