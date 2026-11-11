@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Oliver - Lesson Challenge - 2026-11-10</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Oliver&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Tuesday, November 10, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">Start here. These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Seed practice</span><span class="lang">Rod&#x27;s Music Garden</span>
+      <div>The gentlest level. Put three marbles on one side. Every clean run moves one marble across. A mistake just means that run does not count; nothing comes back. You are planting three good runs. We did seed practice on measures 13 to 15 of Spinning Song.</div></div>
+    <div class="term"><span class="tname">Sprout practice</span><span class="lang">Rod&#x27;s Music Garden</span>
+      <div>The middle level. Clean runs move marbles across, but a mistake sends one marble back, only one. A little more pressure without losing all your progress. We used sprout on your minuet.</div></div>
+    <div class="term"><span class="tname">Bloom practice</span><span class="lang">Rod&#x27;s Music Garden</span>
+      <div>The hardest level, what we used to call diamond practice. You need three clean runs in a row, and one mistake sends every marble back to the start. When all three cross, the section has fully blossomed.</div></div>
+    <div class="term"><span class="tname">Micro section</span><span class="lang">Rod&#x27;s studio</span>
+      <div>A tiny slice of music, sometimes just a few notes, that you loop three times by itself before expanding back out to the full bracket. In the minuet it was thumb on G, third finger on B, and just that little moment. It is harder to start, but it clears the spot that breaks the flow, like a musical plumber.</div></div>
+    <div class="term"><span class="tname">Red bracket</span><span class="lang">Rod&#x27;s studio</span>
+      <div>The section marked in red on your page that is this week&#x27;s focus. For Spinning Song it is the passage at the top of page three.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>Beat 1 of a measure, the strongest beat. We started the lesson with the downbeat of measure 13 to the downbeat of measure 15.</div></div>
+    <div class="term"><span class="tname">Dynamics</span><span class="lang">English</span>
+      <div>How loud or soft you play. In the red bracket section the left hand is the voice to hear, so the right hand plays as softly as you can while the left hand stays present. That takes real practice, so we split the hands between us first.</div></div>
+    <div class="term"><span class="tname">Deep into the keys</span><span class="lang">Rod&#x27;s studio</span>
+      <div>Pressing all the way to the bottom of the key with a full, committed touch instead of brushing the surface. When you went deeper on the B flat, the note finally spoke, and the whole section started flowing.</div></div>
+    <div class="term"><span class="sym">&#9837;</span><span class="tname">Flat</span><span class="lang">English</span>
+      <div>Lowers a note by a half step to the key just to its left. In color-shape it is a triangle pointing down, drawn above or below the note, never around the note head.</div>
+      <span class="cs"><b>Color-shape:</b> downward triangle in the note&#x27;s color</span></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">Sharp</span><span class="lang">English</span>
+      <div>Raises a note by a half step to the key just to its right. In color-shape it is a triangle pointing up, drawn above the note.</div>
+      <span class="cs"><b>Color-shape:</b> upward triangle in the note&#x27;s color</span></div>
+    <div class="term"><span class="sym">&#9837;</span><span class="tname">E flat</span><span class="lang">Note</span>
+      <div>The bottom note of your 2-and-4 pair in the red bracket. All the bottom notes in that stretch are E flats.</div>
+      <span class="cs"><b>Color-shape:</b> yellow triangle pointing down</span></div>
+    <div class="term"><span class="sym">&#9837;</span><span class="tname">G flat</span><span class="lang">Note</span>
+      <div>The one note that changes in the red bracket: finger 4 slides down from G to G flat while finger 2 stays on E flat.</div>
+      <span class="cs"><b>Color-shape:</b> blue triangle pointing down</span></div>
+    <div class="term"><span class="sym">&#9837;</span><span class="tname">B flat</span><span class="lang">Note</span>
+      <div>The flat in the 1-2-4 group, and the lowest note of the B flat, D, G chord.</div>
+      <span class="cs"><b>Color-shape:</b> pink triangle pointing down</span></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">F sharp</span><span class="lang">Note</span>
+      <div>The top note of the C, D, F sharp group. You first called it a flat, then figured out that sharp means up, so the triangle points up.</div>
+      <span class="cs"><b>Color-shape:</b> green triangle pointing up</span></div>
+    <div class="term"><span class="tname">F and G</span><span class="lang">Notes</span>
+      <div>The two notes where the red bracket begins, played with fingers 2 and 3. Both are white keys, so they get circles.</div>
+      <span class="cs"><b>Color-shape:</b> green circle (F) and blue circle (G)</span></div>
+    <div class="term"><span class="tname">C and D</span><span class="lang">Notes</span>
+      <div>The two lower notes of the C, D, F sharp group. Both white keys, so circles. Circle the lower one a little to the left and the upper one to the right so the marks do not pile up.</div>
+      <span class="cs"><b>Color-shape:</b> red circle (C) and orange circle (D)</span></div>
+    <div class="term"><span class="tname">Pattern</span><span class="lang">English</span>
+      <div>Something that repeats. Our character number 13, Patterns Power Pablo, knows patterns are everything. There is a hidden pattern between the little sets of notes in the left hand of Spinning Song, and finding it is part of your homework.</div></div>
+    <div class="term"><span class="tname">Minuet</span><span class="lang">French</span>
+      <div>A graceful old dance in three beats per measure. You worked on your minuet at home this week, and we used sprout practice and a micro section on it. No metronome on this one yet.</div></div>
+    <div class="term"><span class="tname">Laughter yoga</span><span class="lang">Rod&#x27;s studio</span>
+      <div>When something small goes wrong, laugh at it instead of scratching the itch. Missing a couple of notes is not a big-picture problem, and laughing keeps you relaxed enough to try again. You are a natural at it.</div></div>
+    <div class="term"><span class="tname">Fibonacci sequence and golden ratio</span><span class="lang">Italian / math</span>
+      <div>Named after an Italian mathematician. Each number is the sum of the two before it: 1, 1, 2, 3, 5, 8, 13, 21. Draw squares with those side lengths and a spiral appears, the same spiral hidden in a shell, in your curled hand, and in the painting in the studio. Patterns are everywhere, including in music.</div></div>
+  </div>
+
+  <h3>Measures 13 to 15: three clean runs and a laugh</h3>
+  <p>We opened with the downbeat of measure 13 to the downbeat of measure 15 of Spinning Song, eighth note at 75. Before the first try I taught you laughter yoga: when something goes wrong, you laugh at it. Not at the big stuff, just at missing a couple of little notes, because in the big picture that is not worth getting upset about. You took to it right away, and you got the section three times with no hiccups, making sure to land that low note at the end because we are heading there next.</p>
+
+  <h3>Seed, sprout and bloom</h3>
+  <p>Diamond practice now has three levels, and they live in the Music Garden. Seed is the softest: you are just trying to collect three clean runs. A mistake means that run does not count, but no marbles come back. Sprout is the step up: a mistake sends one marble back, only one. Bloom is the full challenge: three clean runs in a row, and one mistake sends every marble back. What we did on measures 13 to 15 was seed practice. You now have a printout of all three levels to keep by your piano.</p>
+  <div class="note">Pick the level that fits the spot. A brand new tricky section starts at seed. When it feels steady, move up to sprout, and save bloom for when you are ready to prove it.</div>
+
+  <h3>Which hand sings? Right hand soft, left hand present</h3>
+  <p>In the passage we looked at next, which became this week&#x27;s red bracket, the left hand has the voice we want to hear, so the right hand has to play softer. You said that part is not hard, and the notes are not, but making one hand quieter than the other is. So we practiced it the honest way: you played the left hand while I played the right, then you played the right hand as softly as you could while I played the left. That is how you teach your hands to balance.</p>
+
+  <h3>The red bracket: colors and shapes before fingers</h3>
+  <p>This week&#x27;s focus is the red bracket at the top of page three. Before playing it we took the time to write in every color and shape. White keys get a circle around the note head in the note&#x27;s color. Sharps and flats do not get a circle: a sharp gets a triangle pointing up above the note, and a flat gets a triangle pointing down. When two notes are stacked, circle the lower one a little to the left and the upper one a little to the right so the marks stay readable.</p>
+  <p>Here is what we found, from low to high. The passage starts on F and G, green circle and blue circle, with fingers 2 and 3. Then it shifts to E flat and G: a yellow downward triangle for the E flat and a blue circle for the G, fingers 2 and 4. Then one note changes: the G becomes G flat, so a blue triangle pointing down, and finger 4 slides down a half step while finger 2 stays on E flat. All the bottom notes in that stretch stay E flat, so once it is written in you can assume it unless we draw something different. Then there is a 1-2-4 group where one of the notes is a B flat, pink triangle down. Then two chords: C, D and F sharp (red circle, orange circle, green triangle up), and B flat, D and G (pink triangle down, orange circle, blue circle).</p>
+  <p>Taking that time felt slow. That is the difference between what your ego wants and what your brain needs. When we finally played it, the moves turned out to be tiny: 2 and 3 on F and G, shift to 2 and 4 on E flat and G, drop the 4 to G flat, and then look how easy it is to get back to F and G, because the 3 is already right there. The B flat spoke once you went deep into the keys. You said it helped a lot, and I agree. You have a powerful musical brain, Oliver.</p>
+  <ul>
+    <li>When you make a mistake in the bracket, do not start over. Keep working through it.</li>
+    <li>Play deep into the keys, all the way to the bottom.</li>
+    <li>Right hand only this week for the bracket. Play along with the recording I made, first the right hand alone, then listen to the left hand part in the second half.</li>
+  </ul>
+
+  <h3>The recording and the hidden pattern</h3>
+  <p>I recorded the top of page three for you: first the right hand alone, fingers 2 and 3 on F and G, through the tricky 1-2-4 moment and deep into the downbeat at the bar line. Then I played the left hand so you can hear what it does underneath. For now, just play along with the right hand, even in the second half when I play the melody. Later you can use the second half of the recording to practice the left hand by itself.</p>
+  <p>The left hand is made of little sets of notes, and there is a hidden pattern between them. Patterns Power Pablo, character number 13, knows that patterns are everything. I am not telling you what it is. Find it and bring it next week.</p>
+
+  <h3>The golden ratio: patterns you can draw</h3>
+  <p>We talked about the spiral hidden in the painting in the studio, in a shell, and in the side of your curled hand. It comes from the Fibonacci sequence: 1, 1, 2, 3, 5, 8, 13, and the next one, 21, because each number is the two before it added together. We drew it as squares: a 1 by 1, another 1 by 1, a 2 by 2, a 3 by 3, a 5 by 5, an 8 by 8, and a 13 by 13 that just barely fit. Connect the corners and the spiral appears. The 21 would not fit on the page, so your job is to tape more paper on and see how big you can make it.</p>
+
+  <h3>Your minuet: sprout practice and a micro section</h3>
+  <p>You worked on your minuet at home this week and played it well, with a good way to stop. One note kept making your brain ask a question, so you circled it in its color. Whenever something gets you, that is the first thing to try. Then we did sprout practice: clean three times in a row, and a mistake sends one marble back.</p>
+  <p>There was a little pause in the flow, so we tried something advanced: a micro section. Thumb on G, third finger on B, and just that tiny moment, three times. It is harder to start in the middle like that, but once the loop was clean we expanded back out to the regular bracket and it flowed. Finding the little spots that break the flow and clearing them out is like being a musical plumber. Go on to sections three and four this week, no metronome on this one yet.</p>
+
+  <h3>This week's practice</h3>
+  <ul>
+    <li>Spinning Song pages are in the front sleeve of your binder. Do them first.</li>
+    <li>Red bracket at the top of page three, right hand only: 2 and 3 on F and G, shift to 2 and 4 on E flat and G, drop the 4 to G flat, back to F and G. Play deep into the keys and work through mistakes without restarting.</li>
+    <li>Play along with the recording, right hand first. Later, use the second half to learn the left hand by itself.</li>
+    <li>Find the hidden pattern in the left-hand note sets of Spinning Song.</li>
+    <li>Minuet: go on to sections three and four. Use micro sections on any spot that breaks the flow, and sprout practice when it feels steady.</li>
+    <li>Tape extra paper onto your Fibonacci drawing and make the spiral as big as you can.</li>
+  </ul>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> seed, sprout, bloom, micro section, red bracket, downbeat, dynamics, soft, flat, sharp, triangle, circle, E flat, G flat, B flat, F sharp, finger 2, finger 3, finger 4, deep into the keys, pattern, minuet, laughter yoga<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Oliver";
+var LESSON_DATE = "2026-11-10";
+var LESSON_LABEL = "Tuesday, November 10, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "In seed practice, what happens when you make a mistake?",
+  "o": [
+   "That run does not count, but no marbles come back",
+   "One marble goes back",
+   "All the marbles go back to the start",
+   "You move on to the next section"
+  ],
+  "a": 0,
+  "e": "Seed is the gentle level. A mistake just means that run did not count. You keep what you have planted."
+ },
+ {
+  "q": "In sprout practice, what happens when you make a mistake?",
+  "o": [
+   "One marble goes back",
+   "Nothing changes",
+   "All the marbles go back",
+   "You get an extra marble"
+  ],
+  "a": 0,
+  "e": "Sprout sends exactly one marble back. A bit more pressure, but you do not lose everything."
+ },
+ {
+  "q": "In bloom practice, what happens when you make a mistake?",
+  "o": [
+   "All the marbles go back to the start",
+   "One marble goes back",
+   "Nothing happens to the marbles",
+   "You skip to the next measure"
+  ],
+  "a": 0,
+  "e": "Bloom is the old diamond practice: three clean runs in a row, and one mistake sends every marble back."
+ },
+ {
+  "q": "In color-shape, what shape do you draw for a flat?",
+  "o": [
+   "A triangle pointing down",
+   "A circle",
+   "A triangle pointing up",
+   "A square"
+  ],
+  "a": 0,
+  "e": "A flat lowers the note, so the triangle points down. Sharps point up, white keys get circles."
+ },
+ {
+  "q": "Where do you draw the triangle for a sharp or flat?",
+  "o": [
+   "Above or below the note, not around the note head",
+   "Around the note head like a circle",
+   "At the very start of the line",
+   "On the next note over"
+  ],
+  "a": 0,
+  "e": "Only white-key notes get circled. A triangle sits above or below its note so you can tell it apart at a glance."
+ },
+ {
+  "q": "What is the color-shape for E flat?",
+  "o": [
+   "Yellow triangle pointing down",
+   "Yellow circle",
+   "Yellow triangle pointing up",
+   "Green triangle pointing down"
+  ],
+  "a": 0,
+  "e": "E is yellow, and a flat is a downward triangle."
+ },
+ {
+  "q": "What is the color-shape for F sharp?",
+  "o": [
+   "Green triangle pointing up",
+   "Green triangle pointing down",
+   "Green circle",
+   "Blue triangle pointing up"
+  ],
+  "a": 0,
+  "e": "F is green, and sharp means up, so the triangle points up."
+ },
+ {
+  "q": "Which fingers play the F and G where the red bracket begins?",
+  "o": [
+   "2 and 3",
+   "1 and 2",
+   "2 and 4",
+   "3 and 5"
+  ],
+  "a": 0,
+  "e": "Fingers 2 and 3 on F and G, four times, before the shift."
+ },
+ {
+  "q": "When the right hand shifts to E flat and G, which fingers play them?",
+  "o": [
+   "2 and 4",
+   "2 and 3",
+   "1 and 3",
+   "3 and 5"
+  ],
+  "a": 0,
+  "e": "You shift to 2 and 4 on E flat and G. The 3 stays free, which makes getting back to F and G easy."
+ },
+ {
+  "q": "After E flat and G, one note changes. What happens?",
+  "o": [
+   "Finger 4 slides down a half step to G flat while finger 2 stays on E flat",
+   "Finger 2 slides up to F while finger 4 stays on G",
+   "Both fingers move down a whole step",
+   "Finger 4 jumps up to A"
+  ],
+  "a": 0,
+  "e": "Only the top note moves: the G becomes G flat, so the 4 drops down and the 2 stays put."
+ },
+ {
+  "q": "In the section where the left hand has the melody, how should the two hands balance?",
+  "o": [
+   "Right hand as soft as you can, left hand present and clear",
+   "Both hands as loud as possible",
+   "Left hand as soft as you can, right hand loud",
+   "Both hands exactly the same volume"
+  ],
+  "a": 0,
+  "e": "The left hand is the voice to hear there, so the right hand plays underneath it, very softly."
+ },
+ {
+  "q": "You make a mistake in the middle of the red bracket while practicing at home. What do you do?",
+  "o": [
+   "Keep going and work through it, maybe with a laugh",
+   "Start the whole section over from the beginning",
+   "Stop practicing for the day",
+   "Play faster to get past it"
+  ],
+  "a": 0,
+  "e": "Do not start over. Work through the spot, and laughter yoga keeps you relaxed enough to try it again."
+ },
+ {
+  "q": "What is a micro section?",
+  "o": [
+   "A tiny slice of music you loop by itself before expanding back to the full bracket",
+   "Playing the whole piece very quietly",
+   "The last measure of a song",
+   "A section played with the metronome at a very fast speed"
+  ],
+  "a": 0,
+  "e": "Like a musical plumber, you find the few notes that break the flow, loop just those three times, then expand back out."
+ },
+ {
+  "q": "What does playing \"deep into the keys\" mean?",
+  "o": [
+   "Press all the way to the bottom of the key with a full, committed touch",
+   "Press the keys as fast as you can",
+   "Play only the black keys",
+   "Push the pedal down while you play"
+  ],
+  "a": 0,
+  "e": "When you went deeper on the B flat the note finally spoke. A committed touch all the way down makes the sound clear."
+ },
+ {
+  "q": "From low to high, what are the color-shapes for the chord B flat, D and G?",
+  "o": [
+   "Pink triangle down, orange circle, blue circle",
+   "Pink circle, orange circle, blue circle",
+   "Pink triangle up, orange circle, blue triangle down",
+   "Blue circle, orange circle, pink triangle down"
+  ],
+  "a": 0,
+  "e": "B flat is a pink downward triangle, D is an orange circle, and G is a blue circle."
+ }
+];
+
+var WRITTEN = [
+ "Teach a friend the three levels of the Music Garden: seed, sprout and bloom. Which one would you pick for a brand new tricky spot, and why?",
+ "Writing in all the colors and shapes took a long time before we played. Explain in your own words what I meant by \"what your ego wants versus what your brain needs.\"",
+ "Describe how the right hand moves through the red bracket: which fingers, which notes, and what changes. How does it feel in your hand when the 4 drops to G flat and then comes back to F and G?",
+ "What is a micro section, and why did I call it being a musical plumber? Describe the micro section we used in your minuet.",
+ "Why do we laugh at a small mistake instead of getting upset? How does laughter yoga help your playing?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>

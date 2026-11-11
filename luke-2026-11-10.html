@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Luke - Lesson Challenge - 2026-11-10</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Luke&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Tuesday, November 10, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">Start here. These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Staccato</span><span class="lang">Italian</span>
+      <div>Means &quot;detached.&quot; The little dots above or below the notes in Up on the Housetop. Play those notes short, like raindrops landing on your head and bursting right away. The very first note of the song is staccato.</div></div>
+    <div class="term"><span class="tname">Legato</span><span class="lang">Italian</span>
+      <div>Means &quot;tied together.&quot; Smooth, connected playing where one note flows right into the next. It is the opposite of staccato. When I asked what the dots meant, you said legato, and now you know the dots mean the opposite: short and detached.</div></div>
+    <div class="term"><span class="tname">4/4 time signature</span><span class="lang">English</span>
+      <div>The two 4s at the start of the song. The top 4 means there are four beats in every measure, and the bottom 4 means a quarter note gets one beat. So every measure gets the counts 1 2 3 4.</div></div>
+    <div class="term"><span class="tname">Quarter note</span><span class="lang">English</span>
+      <div>A note worth one beat. One quarter note is the same length as two eighth notes, which is why it covers both a number and its &quot;and&quot; when you write in the counts.</div></div>
+    <div class="term"><span class="tname">Eighth note</span><span class="lang">English</span>
+      <div>Half a beat. Two eighth notes fit inside one beat: the first one lands on the number and the second one lands on the &quot;and.&quot; That is why we write 1 and 2 and 3 and 4 and.</div></div>
+    <div class="term"><span class="tname">Counts and ands</span><span class="lang">English</span>
+      <div>The numbers 1 2 3 4 are the main beats. The &quot;ands&quot; live halfway between the numbers. Every number gets an and, including the 4. Write the numbers first, right under the note where each beat lands, then fill in the ands between them.</div></div>
+    <div class="term"><span class="tname">Silent beat box</span><span class="lang">Rod&#x27;s studio</span>
+      <div>A box drawn around any count where nothing is played in either hand, usually because a note is being held. When a note is held through several counts, the box gets big and covers all of them.</div></div>
+    <div class="term"><span class="tname">Hold (X)</span><span class="lang">Rod&#x27;s studio</span>
+      <div>An X above a count means the note keeps sounding there. You say &quot;hold&quot; out loud when you see it. If you do not say it, the practice repetition does not count.</div></div>
+    <div class="term"><span class="tname">Together</span><span class="lang">Rod&#x27;s studio</span>
+      <div>A big circle around a spot where the right hand and the left hand play at the same moment. On the downbeat of measure 5 you play E in the right hand while the left hand plays G and C, three notes at once. There are three togethers on the second line of page one.</div></div>
+    <div class="term"><span class="tname">Corner</span><span class="lang">Rod&#x27;s studio</span>
+      <div>A little arrow at the end of a line of music that points slightly up or down toward the first note of the next line, with the letter name and finger number written next to it. It tells your brain what is coming around the corner before you get there.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>Beat 1 of a measure, the strongest beat. Our practice sections start and stop on downbeats: measure 3 to the downbeat of measure 5, then the downbeat of 5 to the downbeat of 7.</div></div>
+    <div class="term"><span class="tname">Pattern</span><span class="lang">English</span>
+      <div>Something that repeats. Measure 9 is the same as an earlier measure. People who can see patterns understand music a lot faster than people who do not look for them.</div></div>
+    <div class="term"><span class="tname">Muscle memory</span><span class="lang">English</span>
+      <div>When your fingers can do something without you having to think about it, because you repeated it correctly many times. Great soccer players get it from millions of drills. We get it from small sections, three clean times with the metronome.</div></div>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">English</span>
+      <div>The click that keeps a steady beat. We practiced the first section at 80 and then updated your page to 75 so the beat is slow enough to do everything right.</div></div>
+    <div class="term"><span class="tname">Grand staff</span><span class="lang">English</span>
+      <div>The treble staff (right hand) and the bass staff (left hand) joined together. Your Note Rush practice this week is on the grand staff, starter level.</div></div>
+    <div class="term"><span class="tname">Middle C position</span><span class="lang">English</span>
+      <div>Both thumbs share middle C. It is your home base. When a note confuses you, start from middle C and step your way to it instead of guessing.</div></div>
+    <div class="term"><span class="tname">C</span><span class="lang">Note</span>
+      <div>The note in the left hand&#x27;s chord on the downbeat of measure 5, and the note that confused you most in Note Rush. It is in Up on the Housetop, so it matters.</div>
+      <span class="cs"><b>Color-shape:</b> red circle (natural, white key)</span></div>
+    <div class="term"><span class="tname">D</span><span class="lang">Note</span>
+      <div>D is in dog. The note you found by stepping down from E after some patient searching.</div>
+      <span class="cs"><b>Color-shape:</b> orange circle (natural, white key)</span></div>
+    <div class="term"><span class="tname">E</span><span class="lang">Note</span>
+      <div>E is in elephant. The right-hand note on the downbeat of measure 5, and the note at the top of the corner that is close by the D before it.</div>
+      <span class="cs"><b>Color-shape:</b> yellow circle (natural, white key)</span></div>
+    <div class="term"><span class="tname">G</span><span class="lang">Note</span>
+      <div>The lower note of the left hand&#x27;s chord on the downbeat of measure 5. Played with finger 4 in the left hand at the corner.</div>
+      <span class="cs"><b>Color-shape:</b> blue circle (natural, white key)</span></div>
+    <div class="term"><span class="tname">A</span><span class="lang">Note</span>
+      <div>The left-hand note around the corner at the end of the first line, played with finger 3. You read it as B at first, which is exactly why we drew the corner.</div>
+      <span class="cs"><b>Color-shape:</b> purple circle (natural, white key)</span></div>
+    <div class="term"><span class="tname">B</span><span class="lang">Note</span>
+      <div>The note on the word &quot;old.&quot; Pink and red can look alike, so circle the pink a little darker.</div>
+      <span class="cs"><b>Color-shape:</b> pink circle (natural, white key)</span></div>
+  </div>
+
+  <h3>Up on the Housetop: eyes on the map</h3>
+  <p>The main song begins in measure 3, but the song opens up high, then comes down to around middle C in the same hand position. You played the opening nicely. Then I asked a question: were you looking at the map or down at your hands? Your hands. So I slid a piece of cardboard over them. Now when you look down you see cardboard, and it is not worth looking.</p>
+  <p>Here is the weird thing. By looking up at the music, you give your brain the information it needs to find its way through the song. The moment you look down, you are relying on memory. And memory is not reliable. You know what you ate for lunch yesterday, but you do not know what you ate on December 27, 2021. Your eyes want to protect your fingers from mistakes, like a security blanket, but when they look down, nobody is reading the map. It is a habit, and we are going to slowly reverse it.</p>
+  <div class="note">At home, find your hand position, then look up at the music and stay there. If you miss a note, do not sweep it under the rug. Say the name of the note and the finger number out loud, then try again. That gives your brain the correct answer.</div>
+
+  <h3>Writing it in: togethers, colors and patterns</h3>
+  <p>If you write it, you are showing me you see it. On the downbeat of measure 5 the right hand plays an E while the left hand plays G and C at the same time, three notes at once. You saw it, but you were not sure whether to play it. Now you know: a big circle around both hands means a together. You drew the circles yourself this time, because me doing it for you does not help you. There are three togethers on the second line of page one.</p>
+  <p>We also cleaned up the colors: a clean circle around the note, a little darker, not filled in. If you fill it in you start reading colors instead of notes. The G got a blue circle, the C a red one placed a little higher so you can see it, and the B on the word &quot;old&quot; got a darker pink so it does not get confused with red. Then you spotted something in measure 9: it is the same as an earlier measure. That is the power of patterns. A pattern is something that repeats, and when you can see patterns you understand music a lot faster.</p>
+  <ul>
+    <li>The squiggly line with an arrow in the left hand means hold that note and let go when the right hand plays the next word.</li>
+    <li>You found the two notes on page one that never got colored. It is like Where&#x27;s Waldo, and finding them is part of the process.</li>
+  </ul>
+
+  <h3>Bite-sized sections with the metronome</h3>
+  <p>We set the metronome to 80, slower than last week, and worked one small section at a time: measure 3 to the downbeat of measure 5, &quot;Up on the housetop... out.&quot; Three times with no hiccups. If you make a mistake, it does not count. If you do not say &quot;hold&quot; when you see the X, it does not count. And if you keep playing past the end of the section, it does not count either. Bite-sized Bach knows where to stop.</p>
+  <p>When you missed a note, we named it: you played an A and wanted a G with finger 4. Then you got it three times, solid. Doing it that many times builds muscle memory, the same way Messi or Ronaldo kicked a ball millions of times until they did not have to think anymore. In the big game they are just trusting their bodies. Music is the same, but you have to do it in small sections instead of all at once.</p>
+  <p>Next section: the downbeat of measure 5 to the downbeat of measure 7, from &quot;out&quot; to &quot;down.&quot; Notice the overlap: the first section ends on &quot;out,&quot; and this one starts there. Your page is now updated to the metronome at 75.</p>
+
+  <h3>Staccato, not legato</h3>
+  <p>The little dots above and below the notes are not legato. They are staccato, which means detached. Play those notes short, like raindrops falling on your head and immediately exploding. Whenever you see those dots, check the very first note: in this song it is staccato too.</p>
+
+  <h3>Corners: seeing what is coming</h3>
+  <p>At the end of the first line you read the next left-hand note as a B. It is an A. So we drew a corner: a small arrow at the end of the line, pointing slightly down because the A sits a little lower, with a capital A written at the end of the arrow, a 3 underneath for the finger, and a purple circle around the note. When I was a waiter at a pizzeria we had to yell &quot;Corner!&quot; every time we pushed through the kitchen door with a tray. The one time somebody forgot, pizzas and sodas ended up all over the floor. Our corners work the same way: they tell your brain what is around the bend.</p>
+  <p>The second corner was trickier. The last right-hand note before the corner is a D, and the E after it is close by, so the arrow goes just a little way up, with an E written small so it fits. In the left hand the music splits two ways from B: down to G and up to C, with finger 4 on the G and finger 1 on the C. The finger number for the right-hand E goes above the note. Then we colored them, not too big, and tried it from &quot;out.&quot; It helped.</p>
+
+  <h3>Counting: numbers first, then the ands</h3>
+  <p>Before we add the ands, we have to know where the counts fall. Four-four means four quarter notes per measure. So first write 1 2 3 4, each number right under the note where that beat lands. Beat 2 is on the word &quot;deer.&quot; Where two eighth notes share a beat, the number goes on the first eighth note and the &quot;and&quot; goes on the second. A quarter note gets two eighth notes&#x27; worth of time, the number and its and.</p>
+  <p>Once the numbers are in, add an &quot;and&quot; halfway between each pair of numbers, and do not forget the and after the 4. Every number gets an and. The measures are not all the same width, so you have to shrink or stretch your writing to keep the ands visually in the middle, not crunched up against a number.</p>
+  <p>Then the boxes. Wherever nothing is played in either hand, usually because a note is being held, draw a box around that count. When a note holds through several counts, draw one big box around all of them. You wrote in two measures on your own and got the numbers right. The one thing you missed was the and after the 4.</p>
+  <div class="note">Finish page two of Up on the Housetop at home: write 1 and 2 and 3 and 4 and in every measure, then box the silent beats. Page two also needs its togethers circled.</div>
+
+  <h3>Finding D from middle C</h3>
+  <p>One note kept confusing you. You guessed pink, then B. I did not give you the answer. You went back to middle C position, found the E you know, and stepped down from there. It is a D, orange. It took a while, and I am glad we took the time, because knowing the notes is part of learning to play music. Start from a central spot and work out from there instead of guessing.</p>
+
+  <h3>Note Rush: name it out loud</h3>
+  <p>On the grand staff, starter level, you had trouble with C, D, F, E and G, and you were holding keys down so the app dinged you. Whatever you practiced this week, it was not this one. So here is the rule: grand staff, starter level, two or three times every day. Put both thumbs on middle C. Name the note out loud before you play it, then let go of the key. Saying the name forces you to really know it.</p>
+
+  <h3>This week's practice</h3>
+  <ul>
+    <li>Up on the Housetop, page one: measure 3 to the downbeat of 5, then the downbeat of 5 to the downbeat of 7. Three times each with no hiccups, metronome at 75. Say &quot;hold&quot; on every X and stop exactly at the end of the section.</li>
+    <li>Eyes on the music, hands covered if you can rig something up. When you miss a note, say its name and finger number before trying again.</li>
+    <li>Page two: write in 1 and 2 and 3 and 4 and, box the silent beats, and circle the togethers.</li>
+    <li>Note Rush, grand staff, starter level, two or three times a day. Name every note out loud before you play it, then let go.</li>
+    <li>Keep Up on the Housetop in the front of your binder, and bring your books next week. We will start the C major scale.</li>
+  </ul>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> staccato, legato, downbeat, together, corner, hold, silent beat, box, quarter note, eighth note, and, 4/4, pattern, muscle memory, metronome, grand staff, middle C position, map, memory<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Luke";
+var LESSON_DATE = "2026-11-10";
+var LESSON_LABEL = "Tuesday, November 10, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "What are the little dots above or below the notes in Up on the Housetop called?",
+  "o": [
+   "Staccato",
+   "Legato",
+   "Ties",
+   "Rests"
+  ],
+  "a": 0,
+  "e": "Those dots are staccato marks. The word is Italian for detached."
+ },
+ {
+  "q": "What does staccato tell you to do with a note?",
+  "o": [
+   "Play it short and detached, like a raindrop bursting",
+   "Play it smooth and connected to the next note",
+   "Hold it for two full beats",
+   "Play it louder than the notes around it"
+  ],
+  "a": 0,
+  "e": "Staccato means short and detached. Think of raindrops landing on your head and immediately exploding."
+ },
+ {
+  "q": "What does the top 4 in the 4/4 time signature mean?",
+  "o": [
+   "There are four beats in every measure",
+   "You play four notes and then stop",
+   "You use only four fingers",
+   "The song has four lines of music"
+  ],
+  "a": 0,
+  "e": "Four-four means four quarter-note beats per measure, so every measure gets the counts 1 2 3 4."
+ },
+ {
+  "q": "When you write counts into a measure, what do you do first?",
+  "o": [
+   "Write 1 2 3 4 under the notes where each beat lands, then add the ands",
+   "Write all the ands first, then squeeze in the numbers",
+   "Write a number under every single note",
+   "Draw the boxes first, then the numbers"
+  ],
+  "a": 0,
+  "e": "Numbers first, each one right under the note where that beat falls. Then the ands go halfway between the numbers."
+ },
+ {
+  "q": "Where does the \"and\" go after you have written the numbers?",
+  "o": [
+   "Halfway between each number and the next, and after the 4 too",
+   "Right next to each number, touching it",
+   "Only where there is a note",
+   "Only after the 1"
+  ],
+  "a": 0,
+  "e": "Every number gets an and, including the 4, and it goes in the middle so you can see it is between the beats."
+ },
+ {
+  "q": "How many eighth notes fit inside one quarter note?",
+  "o": [
+   "Two",
+   "One",
+   "Three",
+   "Four"
+  ],
+  "a": 0,
+  "e": "A quarter note is one beat, and two eighth notes share one beat: the number and its and."
+ },
+ {
+  "q": "When two eighth notes share a beat, where does the number go?",
+  "o": [
+   "On the first eighth note, with the and on the second",
+   "On the second eighth note, with the and on the first",
+   "Between the two notes",
+   "On both notes"
+  ],
+  "a": 0,
+  "e": "The beat starts on the first eighth note, so that one gets the number. The second one is the and."
+ },
+ {
+  "q": "What does a box drawn around a count mean?",
+  "o": [
+   "Nothing is played in either hand on that count",
+   "Both hands play at the same time there",
+   "Play that count louder",
+   "Play that count staccato"
+  ],
+  "a": 0,
+  "e": "A box marks a silent beat. Usually a note is being held, so neither hand plays anything new."
+ },
+ {
+  "q": "What does the big circle around a spot in the music mean?",
+  "o": [
+   "The right hand and left hand play at the same moment",
+   "Repeat that measure",
+   "Rest for the whole measure",
+   "Play that spot slower"
+  ],
+  "a": 0,
+  "e": "That is a together. On the downbeat of measure 5 the right hand plays E while the left hand plays G and C."
+ },
+ {
+  "q": "Why do we draw a corner arrow at the end of a line of music?",
+  "o": [
+   "So your brain sees what note is coming on the next line before you get there",
+   "To show where the song ends",
+   "To mark the loudest note on the page",
+   "To remind you to look at your hands"
+  ],
+  "a": 0,
+  "e": "Like a waiter yelling Corner, the arrow warns you about what is around the bend: the next note, its letter and its finger number."
+ },
+ {
+  "q": "You play a wrong note while practicing. What should you do before trying again?",
+  "o": [
+   "Say the correct note name and finger number out loud",
+   "Start the whole song over right away",
+   "Look down at your hands so it will not happen again",
+   "Play the section faster to get past it"
+  ],
+  "a": 0,
+  "e": "Give your brain the correct answer. Say the note and the finger number, then try again."
+ },
+ {
+  "q": "Why do we keep our eyes on the music instead of on our hands?",
+  "o": [
+   "The music is the map that gives your brain the information it needs",
+   "Looking at your hands is against the rules of the game",
+   "The music looks nicer than the keys",
+   "Your hands move too fast to watch"
+  ],
+  "a": 0,
+  "e": "When you look down you are relying on memory, and memory is not reliable. The map on the page is."
+ },
+ {
+  "q": "What is a pattern in music?",
+  "o": [
+   "Something that repeats",
+   "A note you have to hold",
+   "The first note of a song",
+   "A very fast section"
+  ],
+  "a": 0,
+  "e": "A pattern is something that repeats. Measure 9 is the same as an earlier measure, and spotting that makes the song easier."
+ },
+ {
+  "q": "Which color-shape stands for G?",
+  "o": [
+   "Blue circle",
+   "Red circle",
+   "Yellow circle",
+   "Purple circle"
+  ],
+  "a": 0,
+  "e": "G is blue. It is a white key, so it gets a circle."
+ },
+ {
+  "q": "How should you practice Note Rush this week?",
+  "o": [
+   "Grand staff, starter level, naming each note out loud before you play it, then letting go",
+   "Treble staff only, as fast as you can",
+   "Grand staff, holding each key until the app says you are right",
+   "Any level, playing the note first and naming it after"
+  ],
+  "a": 0,
+  "e": "Grand staff, starter level, two or three times a day. Say the name first, play it, and let go so it does not ding you."
+ }
+];
+
+var WRITTEN = [
+ "Explain in your own words why looking up at the music helps your brain more than looking down at your hands. What does a security blanket have to do with it?",
+ "Teach a friend how to write the counts for a measure in 4/4: what goes first, where the ands go, and when you draw a box.",
+ "What is a corner, and why did the waiters at the pizzeria have to yell it? How does that help you at the piano?",
+ "Describe the difference between staccato and legato. How does a staccato note feel in your hand compared to a smooth one?",
+ "Why does playing a small section three times with no hiccups build muscle memory? What do soccer players have to do with it?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>
