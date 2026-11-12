@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Mikayla - Lesson Challenge - 2026-11-11</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Mikayla&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Wednesday, November 11, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">Start here. These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Fruit rhythms</span><span class="lang">English</span>
+      <div>Mr. Rod&#x27;s rhythm words for the bongos. Pear = one sound on the beat. Apple = two sounds. Coconut = three sounds. Watermelon = four fast sounds. For watermelon, both hands take turns so neither one has to work so hard, and it starts with the LEFT hand.</div></div>
+    <div class="term"><span class="tname">Bounce</span><span class="lang">English</span>
+      <div>The way you hit the bongo: touch and come right off, like the drum is hot. Not sticky, and not swinging your hand way up high. Find the in-between.</div></div>
+    <div class="term"><span class="tname">Time signature</span><span class="lang">English</span>
+      <div>The two numbers at the start of the music. Silent Night is in 3/4, which means three beats in every measure. That is why we count in with just 1-2-3, not 4.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>Beat 1 of a measure. Our sections always stop on a downbeat: Silent Night from measure 1 to the downbeat of measure 5 (the word &quot;all&quot;), and A Little Night Music from measure 5 to the downbeat of measure 9.</div></div>
+    <div class="term"><span class="tname">Hold (X)</span><span class="lang">English</span>
+      <div>Two X&#x27;s on your music mean hold, hold: the note keeps sounding and you do not play anything new on those beats.</div></div>
+    <div class="term"><span class="tname">Rest</span><span class="lang">English</span>
+      <div>Silence. When you say &quot;rest,&quot; take your finger off the key so there is no sound. Not way up in the air like the bongos, just off. Finger off = rest.</div></div>
+    <div class="term"><span class="tname">Middle C position</span><span class="lang">English</span>
+      <div>Both hands sitting around middle C. Silent Night starts here, and your hands kept wanting to stay here even when it was time to move.</div></div>
+    <div class="term"><span class="tname">D position</span><span class="lang">English</span>
+      <div>The right hand with the thumb on D. On the word &quot;all&quot; in Silent Night, the right hand moves to D position with the pinky (finger 5) on A and finger 3 on F sharp.</div></div>
+    <div class="term"><span class="tname">F position</span><span class="lang">English</span>
+      <div>The left hand with the pinky on F. In Silent Night the left hand stays in F position the whole time; the thumb plays C without moving at all.</div></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">F sharp</span><span class="lang">English</span>
+      <div>The black key just above F. In D position your finger 3 sits on F sharp.</div>
+      <span class="cs"><b>Color-shape:</b> green upward-pointing triangle (F is green, and a sharp points up).</span></div>
+    <div class="term"><span class="tname">F</span><span class="lang">English</span>
+      <div>On page 28 you circled the F note heads in green. In A Little Night Music, F is just a little lower than G.</div>
+      <span class="cs"><b>Color-shape:</b> green circle (F is green, and a natural note is a circle).</span></div>
+    <div class="term"><span class="tname">C</span><span class="lang">English</span>
+      <div>The note you circled in red, with an arrow reminding you that it moves to the right hand.</div>
+      <span class="cs"><b>Color-shape:</b> red circle (C is red, and a natural note is a circle).</span></div>
+    <div class="term"><span class="tname">G</span><span class="lang">English</span>
+      <div>One of only two notes your left hand plays in A Little Night Music. You play it with finger 3, and you wrote a big clear 3 above it.</div>
+      <span class="cs"><b>Color-shape:</b> blue circle (G is blue, and a natural note is a circle).</span></div>
+    <div class="term"><span class="tname">Note head</span><span class="lang">English</span>
+      <div>The round part of the note. When you color notes, circle the note head itself, not the stem.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time.&quot; How fast the beat goes. Sergeant Metronome was set to quarter note = 85 for both songs today.</div></div>
+    <div class="term"><span class="tname">Seed, Sprout, Bloom</span><span class="lang">English</span>
+      <div>Mr. Rod&#x27;s new practice game. Today we did the Seed: play one section with no mistakes and cross one marker over. Do it three times with no hiccups and all three markers are across. Then you may move on. Read the handout to find out what Sprout and Bloom ask for.</div></div>
+    <div class="term"><span class="tname">Section</span><span class="lang">English</span>
+      <div>A small bite of the song with an exact start and an exact stop. The end of one section is also the beginning of the next.</div></div>
+    <div class="term"><span class="tname">Measure Muncher Marty and Bite-Sized Bach</span><span class="lang">English</span>
+      <div>Red-light character number 12 and his green-light opposite. Marty wants to eat all the measures at once, num num num. Bite-Sized Bach always knows where to stop. We side with Bach.</div></div>
+    <div class="term"><span class="tname">Loopy Lucy and Non-Repeat Pete</span><span class="lang">English</span>
+      <div>Green-light character number 1 and her red-light opposite. Loopy Lucy loops a section three times before moving on (that is why we have three markers). Non-Repeat Pete hates to repeat and tries to trick you into moving on too soon.</div></div>
+    <div class="term"><span class="tname">Grumpy Goblin and Jolly Joy</span><span class="lang">English</span>
+      <div>The Grumpy Goblin shows up when you work on one tiny section for a long time. Jolly Joy is the opposite, and you have to plant her and work for her. That is why it is seed, then sprout, then bloom.</div></div>
+    <div class="term"><span class="tname">Olivia</span><span class="lang">English</span>
+      <div>The name for your musical brain. When you say the wrong note name out loud, Olivia gets the wrong information and your hands get confused. Think before you say, and be nice to Olivia.</div></div>
+    <div class="term"><span class="tname">Duet</span><span class="lang">Italian (duetto)</span>
+      <div>Two people playing together. Next time: a final duet with the quarter note at 85.</div></div>
+  </div>
+
+  <h3>Fruit rhythms on the bongos</h3>
+  <p>We warmed up with the bongos and the fruit words. Pear, pear, pear, pear is one sound on every beat. Apple is two sounds. Coconut is three. Watermelon is four fast sounds, and that is where both hands take turns so neither one works too hard. You watched carefully, waited, thought, and figured out that watermelon starts with the LEFT hand. That is the lesson Mr. Rod loves: when someone asks you a question, wait and think before you answer.</p>
+  <p>The hit has to bounce. Touch the drum and come right off, like it is hot. Not sticky, and not swinging your whole arm up in the air. Find the in-between: wa-ter-mel-on, light and quick.</p>
+
+  <h3>Page 28: color the note heads</h3>
+  <p>You started page 28, coloring each note head with its correct color. The F gets a green circle, right around the round part of the note, not the stem. Finish the rest of that page at home.</p>
+
+  <h3>Silent Night: sing it first</h3>
+  <p>Your music was at home, so Mr. Rod pulled up a copy and you sang Silent Night. You have a beautiful voice, Mikayla. Singing a song you already know trains your body to feel the beat, and then your fingers have to play that same feeling. Mr. Rod played while you sang, then you played.</p>
+  <p>Silent Night is in 3/4: three beats in every measure. That is why we count in with 1-2-3, not 1-2-3-4. Where the long notes are, there are two X&#x27;s: hold, hold. The piano sounded softer today because Mr. Rod wants you to play Christmas songs calm and gentle.</p>
+
+  <h3>Four measures and a downbeat, three times</h3>
+  <p>Your first section is measure 1 to the downbeat of measure 5: &quot;Silent night, holy night, all.&quot; Four measures and a downbeat, and you stop exactly on the word &quot;all.&quot; Mr. Rod was the musical policeman: if you cross past the downbeat of 5, it does not count. Measure Muncher Marty wants to eat every measure. Bite-Sized Bach knows where to stop. We side with Bach.</p>
+  <p>Then the Seed game, with Sergeant Metronome at 85. Play the section with no mistakes and one marker crosses over. Three times, three markers. You did it! At home use three Legos, three pennies, anything small (pencils get in the way).</p>
+
+  <h3>The move on &quot;all&quot;: D position</h3>
+  <p>The tricky spot is the word &quot;all.&quot; The left hand does not have to move at all: it stays in F position, plays finger 4 and finger 2, and the thumb plays C right where it already is. The right hand is the one that moves. It goes to D position: pinky (finger 5) on A, finger 3 on F sharp. Your hands kept wanting to stay in middle C position, so Mr. Rod wrote in the position change and an arrow for you.</p>
+  <p>When Mr. Rod asked the name of the left-hand note, you said F, then G, then F-A-G. That is Non-Repeat Pete rushing you. Think before you say. When you tell Olivia (your musical brain) the wrong note name, your hands get confused. On the word &quot;calm,&quot; let&#x27;s see how calm you can really be: stay in the new hand position and look down to check what you are playing.</p>
+  <p>Mr. Rod is texting a digital copy of everything he wrote today. Copy all of it onto your music at home: the X&#x27;s, the position names, the arrows and the circles. And bring the binder and ALL your books to every lesson. You are in charge of that.</p>
+  <div class="note">Less is more. If you try the whole song at once, you and Olivia go home dizzy and confused. Work one section at a time and it stays clear.</div>
+
+  <h3>A Little Night Music: only two left-hand notes</h3>
+  <p>The new hand position felt confusing, so we looked closer. Your left hand sits over five notes, E, F, G, A and B from low to high, but in the whole song it only ever plays two of them: G and B. The G is played with finger 3, even though it is usually your 4. You wrote a big clear 3 above it so Olivia gets the right information. Sometimes a song feels confusing only because we are attached to doing it the way we did before. Let that go.</p>
+  <p>Your section was measure 5 to the downbeat of measure 9, Seed game at 85, three times with no hiccups. Mr. Rod wrote the letter C right where it needs to be, with an arrow to remind you that this C is in the RIGHT hand, and you circled it red. From the G you go just a little lower to F; you wrote the letter and circled it green. The C on the downbeat got a red circle too. The arrows show your eyes where the hands trade off: left, then right, then down to the left, then up to the right.</p>
+  <p>It took a while and the Grumpy Goblin showed up. Then you got one marker across, then two, and all of a sudden it was fun. Intrinsic motivation comes from progress.</p>
+
+  <h3>Measure 9 to 17: what a rest really means</h3>
+  <p>The next section is longer: measure 9 to measure 17. You said &quot;C, 2, C, 4, rest,&quot; and Mr. Rod asked what you should actually DO on the rest. Take your finger off the key so there is no sound. Not way up in the air like the bongos, just off. You told your brain &quot;finger off = rest&quot; and it worked. You played the whole section three times with the right notes and the rests silent. From measure 17 to the end is easy, so we broke the three-times rule there.</p>
+  <p>Non-Repeat Pete was all over you today because we stayed on one section for a long time. If you want to learn music, you have to be okay with repetition. Loopy Lucy loops three times for a reason. You stayed with it, and you got there.</p>
+
+  <h3>This week's practice</h3>
+  <ul>
+    <li>BRING YOUR BINDER AND ALL YOUR BOOKS, especially Silent Night. Copy everything from Mr. Rod&#x27;s digital copy onto your music at home.</li>
+    <li>Silent Night: measure 1 to the downbeat of 5 (stop on &quot;all&quot;), Seed game, quarter note = 85, three times with no hiccups. Then work the move on &quot;all&quot;: right hand to D position (5 on A, 3 on F sharp), left hand stays in F position.</li>
+    <li>A Little Night Music: measure 5 to the downbeat of 9, three times at 85, then measure 9 to 17. Left hand plays only G (finger 3) and B. Finger off on every rest.</li>
+    <li>Use three Legos or pennies as your markers. One section at a time, like Bite-Sized Bach.</li>
+    <li>Finish coloring the note heads on page 28 with the correct colors.</li>
+    <li>Read the Seed, Sprout, Bloom handout and find out what Sprout and Bloom ask you to do.</li>
+    <li>Bongos: pear, apple, coconut, watermelon. Watermelon starts with the left hand and bounces off the drum.</li>
+  </ul>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> pear, apple, coconut, watermelon, bounce, time signature, 3/4, downbeat, hold, X, rest, middle C position, D position, F position, F sharp, note head, tempo, metronome, seed, sprout, bloom, section, Measure Muncher Marty, Bite-Sized Bach, Loopy Lucy, Non-Repeat Pete, Grumpy Goblin, Jolly Joy, Olivia, duet<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Mikayla";
+var LESSON_DATE = "2026-11-11";
+var LESSON_LABEL = "Wednesday, November 11, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "For \"watermelon\" on the bongos, which hand hits first?",
+  "o": [
+   "The left hand, then the hands take turns",
+   "The right hand, then the hands take turns",
+   "Both hands at the same time",
+   "Only the right hand, four times"
+  ],
+  "a": 0,
+  "e": "You watched Mr. Rod carefully and figured it out: left first. Taking turns means neither hand has to work so hard."
+ },
+ {
+  "q": "How should your hand hit the bongo?",
+  "o": [
+   "Touch and bounce right off, not sticky and not way up high",
+   "Press down and hold it there",
+   "Swing your arm as high as you can",
+   "Slap it as hard as possible"
+  ],
+  "a": 0,
+  "e": "Bounce, like the drum is hot. Find the in-between: not stuck to the drum, not flying up in the air."
+ },
+ {
+  "q": "Silent Night is in 3/4. What does that mean?",
+  "o": [
+   "Three beats in every measure",
+   "Four beats in every measure",
+   "Three notes in the whole song",
+   "Play it three times"
+  ],
+  "a": 0,
+  "e": "The top number says three beats per measure. That is why we count in with just 1-2-3."
+ },
+ {
+  "q": "What is the name for the two numbers at the beginning of the music, like 3/4?",
+  "o": [
+   "Time signature",
+   "Key signature",
+   "Tempo mark",
+   "Measure number"
+  ],
+  "a": 0,
+  "e": "The time signature tells you how many beats are in each measure. Silent Night's time signature is 3/4."
+ },
+ {
+  "q": "Where does your first Silent Night section stop?",
+  "o": [
+   "On the downbeat of measure 5, the word \"all\"",
+   "At the end of the whole first page",
+   "On the word \"calm\"",
+   "Wherever you feel like stopping"
+  ],
+  "a": 0,
+  "e": "Four measures and a downbeat: \"Silent night, holy night, all.\" The musical policeman says anything past that does not count."
+ },
+ {
+  "q": "On the word \"all,\" what happens to your hands?",
+  "o": [
+   "The right hand moves to D position (5 on A, 3 on F sharp); the left hand stays in F position and the thumb does not move",
+   "Both hands move up to a new position",
+   "The left hand moves and the right hand stays",
+   "Both hands stay in middle C position"
+  ],
+  "a": 0,
+  "e": "Only the right hand moves. The left-hand thumb plays C right where it already is. Your hands kept wanting to stay in middle C, so check them on \"all.\""
+ },
+ {
+  "q": "What do two X's on your music mean?",
+  "o": [
+   "Hold, hold: the note keeps sounding and you play nothing new",
+   "Play the note two more times",
+   "Two wrong notes",
+   "Skip two measures"
+  ],
+  "a": 0,
+  "e": "X means hold. The long note keeps ringing for those beats and your fingers stay still."
+ },
+ {
+  "q": "In the Seed game, how do you earn all three markers?",
+  "o": [
+   "Play the section three times with no mistakes, crossing one marker each time",
+   "Play the whole song once",
+   "Play the section as fast as you can",
+   "Play it once and cross all three"
+  ],
+  "a": 0,
+  "e": "One clean time, one marker. Three clean times, three markers. Then, and only then, you may move on to a new section."
+ },
+ {
+  "q": "Which character always knows where to stop?",
+  "o": [
+   "Bite-Sized Bach",
+   "Measure Muncher Marty",
+   "Non-Repeat Pete",
+   "The Grumpy Goblin"
+  ],
+  "a": 0,
+  "e": "Bite-Sized Bach is the green-light character for number 12. Measure Muncher Marty wants to eat all the measures at once. We side with Bach."
+ },
+ {
+  "q": "Who tries to trick you into moving on before you have repeated a section enough?",
+  "o": [
+   "Non-Repeat Pete",
+   "Loopy Lucy",
+   "Bite-Sized Bach",
+   "Jolly Joy"
+  ],
+  "a": 0,
+  "e": "Non-Repeat Pete hates repeating. Loopy Lucy is his green-light opposite: she loops three times, which is why we have three markers."
+ },
+ {
+  "q": "In A Little Night Music, which two notes does your left hand actually play?",
+  "o": [
+   "G and B",
+   "E and F",
+   "A and B",
+   "C and D"
+  ],
+  "a": 0,
+  "e": "Your hand sits over five notes, but the whole song only uses G (with finger 3) and B. Only two notes to worry about!"
+ },
+ {
+  "q": "What do you do with your finger when you say \"rest\"?",
+  "o": [
+   "Take it off the key so there is no sound",
+   "Hold the key down longer",
+   "Lift your whole arm way up in the air",
+   "Play the note again quietly"
+  ],
+  "a": 0,
+  "e": "Finger off = rest. Quiet, just off the key, not up in the air like the bongos."
+ },
+ {
+  "q": "What color do you circle an F, and what color do you circle a C?",
+  "o": [
+   "F is green, C is red",
+   "F is blue, C is red",
+   "F is green, C is orange",
+   "F is red, C is green"
+  ],
+  "a": 0,
+  "e": "F is green and C is red. You used both today: green on the F and page 28, red on the C that moves to the right hand."
+ },
+ {
+  "q": "Why does Mr. Rod want you to think before you say a note name?",
+  "o": [
+   "Saying the wrong name tells Olivia (your musical brain) the wrong information and your hands get confused",
+   "Because talking is not allowed in lessons",
+   "Because note names do not matter",
+   "So the lesson goes faster"
+  ],
+  "a": 0,
+  "e": "When you said F, then G, then F-A-G, Olivia got mixed up. Wait, think, then say the right name. Be nice to Olivia."
+ }
+];
+
+var WRITTEN = [
+ "Tell a friend about Seed, Sprout and Bloom. What did you have to do at the Seed level today, and what do you think Sprout and Bloom will ask for?",
+ "Why does Bite-Sized Bach win over Measure Muncher Marty? What happens to you and Olivia when you try to eat the whole song at once?",
+ "Describe what your hands do on the word \"all\" in Silent Night. Which hand moves, which hand stays, and how does it feel?",
+ "What did it feel like when the Grumpy Goblin showed up, and what changed when you got your first marker across?",
+ "Explain the difference between a hold (X) and a rest. What does each one tell your fingers to do?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>

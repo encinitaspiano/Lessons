@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Forest - Lesson Challenge - 2026-11-11</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Forest&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Wednesday, November 11, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">Start here. These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">Greek origin (metron: measure, nomos: rule)</span>
+      <div>Sergeant Metronome measures time to the millisecond. You and Mr. Rod cannot hear the difference between 110 and 111, but the metronome can. It is the measuring tool in our music laboratory.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time.&quot; The speed of the music, counted in beats per minute (BPM). Your C major scale is 110 hands separate; The Entertainer is at 160 for the quarter note; the Christmas songs are at 115.</div></div>
+    <div class="term"><span class="tname">Scale</span><span class="lang">Italian (scala: ladder)</span>
+      <div>A ladder of notes going up and back down. The C major scale is our fundamental core exercise, like sit-ups for your fingers.</div></div>
+    <div class="term"><span class="tname">HS and HT</span><span class="lang">English</span>
+      <div>HS = hands separate. HT = hands together. You can play the C major scale HS at 110. HT you were at about 65, so we are building a ladder from 65 up to 110.</div></div>
+    <div class="term"><span class="tname">Isolate</span><span class="lang">English</span>
+      <div>Pull out just the tricky part and practice only that. For the scale that was the left hand coming down, so we started from the top and came down, then went down and back up, ending on the high C.</div></div>
+    <div class="term"><span class="tname">Seed, Sprout, Bloom</span><span class="lang">English</span>
+      <div>Mr. Rod&#x27;s new practice game that replaces Diamond Practice. Seed: play the section three times cleanly; pausing is okay and the tempo can be flexible. Sprout: if you miss, only one marker goes back, not all of them. Bloom: three perfect times in a row with the tempo, like the old diamond.</div></div>
+    <div class="term"><span class="tname">Rest</span><span class="lang">English</span>
+      <div>A sign that means silence. In The Entertainer, the rest at the end of the first part is what tells you whether you are heading into A1 or A2.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>Beat 1 of a measure. Our practice sections start and stop exactly on a downbeat, like measure 12 to the downbeat of 17.</div></div>
+    <div class="term"><span class="tname">Pickup</span><span class="lang">English</span>
+      <div>A note or two before the first full measure. We started The Entertainer from the pickup to measure 9.</div></div>
+    <div class="term"><span class="tname">Cut time (half time)</span><span class="lang">English</span>
+      <div>Feeling the beat half as fast. When the metronome clicked at 80, it was really clicking every two quarter notes, so you were actually playing at 160. Mr. Rod tricked you, and you handled it.</div></div>
+    <div class="term"><span class="tname">Form</span><span class="lang">English</span>
+      <div>The map of a song&#x27;s sections. The Entertainer is A1, A2, A1, coda. Knowing the form makes memorizing much easier.</div></div>
+    <div class="term"><span class="tname">Coda</span><span class="lang">Italian</span>
+      <div>Means &quot;tail.&quot; A fancy word for the ending of a piece. The Entertainer finishes with a coda.</div></div>
+    <div class="term"><span class="tname">Soft pedal (muted sound)</span><span class="lang">English</span>
+      <div>The pedal Mr. Rod had down that made the piano sound muted. When it is on, students listen more and rush less, because speed is connected to volume. Your keyboard does not have it, but it has a volume knob.</div></div>
+    <div class="term"><span class="tname">Middle C position</span><span class="lang">English</span>
+      <div>Both hands sitting around middle C. Jingle Bells is in middle C position. Rudolph is middle C position too, but with the second finger on B flat.</div></div>
+    <div class="term"><span class="tname">A</span><span class="lang">English</span>
+      <div>The note on beat 3 of measure 12 in The Entertainer. It got erased over time, so you circled it again.</div>
+      <span class="cs"><b>Color-shape:</b> purple circle (A is purple, and a natural note is a circle).</span></div>
+    <div class="term"><span class="tname">C</span><span class="lang">English</span>
+      <div>The note you hold in A1 and then play again with finger 1. You circled both in red.</div>
+      <span class="cs"><b>Color-shape:</b> red circle (C is red, and a natural note is a circle).</span></div>
+    <div class="term"><span class="sym">&#9837;</span><span class="tname">B flat</span><span class="lang">English</span>
+      <div>The black key below B. In Rudolph your second finger sits on it instead of on B.</div>
+      <span class="cs"><b>Color-shape:</b> pink downward-pointing triangle (B is pink, and a flat points down).</span></div>
+    <div class="term"><span class="tname">Scientific method</span><span class="lang">English</span>
+      <div>Scientists agree something is true only if other scientists can repeat the experiment and get the same result. In music, if you can do it three times the same way, it is really yours.</div></div>
+    <div class="term"><span class="tname">Duet</span><span class="lang">Italian (duetto)</span>
+      <div>Two people playing together. Next week you and Mr. Rod will play all three Christmas songs as duets.</div></div>
+  </div>
+
+  <h3>Sergeant Metronome and the scientific method</h3>
+  <p>You had just played the C major scale and thought you were at 90. You were at 110! Then Mr. Rod asked about the scientific method. Scientists only agree something is true if other scientists can do the same experiment and get the same result. And in a chemistry lab you measure carefully, because if you do not, things can blow up.</p>
+  <p>Music has a measuring device too: the metronome. It measures time to the millisecond. You and Mr. Rod cannot tell 110 from 111, but Sergeant Metronome can. That is why we use it: it tells the truth about our playing.</p>
+
+  <h3>C major scale: say it, close your eyes, then play</h3>
+  <p>Right hand: you said the finger numbers without the metronome, then with your eyes closed, and we found a little hiccup coming down. We fixed it and you played it at 110. Then the left hand. You said the finger numbers going up: 5-4-3-2-1-3-2-1, and coming back down: 1-2-3-1-2-3-4-5. You played it up and down with no mistakes, and the next level was eyes closed.</p>
+  <p>Coming down was the tricky direction. So instead of always starting at the bottom, we isolated the hard part: start from the top and come down, say the finger numbers (1-2-3-1-2-3-4-5), do that two or three times, then go down and back up, ending on the high C. Not because you do not know it, but to get into it a little better and build confidence.</p>
+  <div class="note">You did something great today: when you were not sure, you paused instead of running through the ditch and falling. Jump over the tricky spot slowly. That is exactly the way to do it.</div>
+
+  <h3>You are the head coach of ten fingers</h3>
+  <p>On a soccer team, trouble comes when a player does not listen and does not fix what needs fixing. Now think of the piano as a musical field. You are the head coach of your ten musical fingers (Mr. Rod is the general manager). If one group of five is having a harder time, the coach gives that group extra drills on the tricky part, even if those players complain that the other hand gets to sit on the sideline. That is what isolating the left hand coming down is: extra drills for the group that needs them.</p>
+
+  <h3>Hands together: the ladder from 65 to 110</h3>
+  <p>Here is the humbling part. Hands separate you can play the scale at 110. Hands together, you were at about 65. That is normal: two hands is double the work and it makes you think a lot more. So we build it in steps. HS (hands separate) at 110. HT (hands together) at 65, then 70, 75, 80, 85, 90, 95, 100, 105, 110. Bump it up by five each time you can do it cleanly with Sergeant Metronome. Your goal is HT at 110, like you already did HS.</p>
+
+  <h3>Seed, Sprout, Bloom</h3>
+  <p>Mr. Rod is retiring the name Diamond Practice. The new game has three levels. Seed: play the section three times cleanly to cross your markers over the bridge. At the seed level we are flexible about the tempo and pausing is okay; it is about getting the fingers right. Sprout: if you miss one, only one marker goes back, not all of them. Bloom: like the old diamond, three times in a row with no mistakes, including keeping the tempo. Each level gets a little more demanding. You cleared the seed level on the left-hand scale today.</p>
+
+  <h3>The Entertainer: exact start, exact stop</h3>
+  <p>We pulled The Entertainer out of the sheet protectors (they make it hard to see where you are) and started from the pickup to measure 9. There is a rest in there that you were rushing past; listen for it. Then we found your first subsection: measure 12 to the downbeat of 17, five measures and a downbeat. You drew a darker red line so you can see exactly where it stops.</p>
+  <p>Mr. Rod was a stickler: if you play past the stopping point, that run does not count. Give your brain the exact beginning and the exact end of what you are practicing, with no extra fluff. It feels weird, but there is something powerful about it. You did it three times with the metronome and crossed your markers over.</p>
+  <p>Then the surprise. The metronome said 80, but it was clicking in cut time, every two quarter notes, so you were really playing at 160. Mr. Rod switched the metronome to 160 and you could feel it was the same thing you had just done. Your tempo for this piece is now 160 for the quarter note.</p>
+
+  <h3>The soft pedal: listen more, rush less</h3>
+  <p>The piano sounded muted today because Mr. Rod had the soft pedal down. You said you liked it and would practice half with it and half without. When you lifted it and got loud, you sped past the metronome because you could not hear it. Speed is connected to volume. Playing softer makes you listen more and rush less. Your keyboard does not have that pedal, but it does have a volume knob, so turn yourself down when you practice with the metronome.</p>
+
+  <h3>One road splits into two: A1, A2, A1, coda</h3>
+  <p>The hardest thing in The Entertainer is that the beginning feels the same as measure 9 and beyond. The note on beat 3 of measure 12 is an A (purple), and you recolored it. Here is the split: in A1 you hit that note and go right up to the C. In A2 you hit it, there is a rest, and then you go down to the A. One road leads to two roads, and you have to know which one you are on each time, or you loop back to the first part by mistake.</p>
+  <p>So we named the form. A1 (goes to C), A2 (goes down to A), A1 again (you circled the held C and the next C with finger 1 in red), and then the coda, the ending. Four sections: A1, A2, A1, coda. You said it out loud, wrote today&#x27;s date (11/11), and then played from memory with the music in another room while Mr. Rod whispered which section was next. You even caught the G you forgot in the coda. Your goal for this piece is to play it from memory.</p>
+
+  <h3>Three Christmas songs at 115</h3>
+  <p>You wanted Christmas music, so we dug out Jingle Bells, Rudolph the Red-Nosed Reindeer and We Wish You a Merry Christmas. Jingle Bells is in middle C position (it says so at the top). Rudolph is middle C position too, but with the second finger on B flat. We Wish You a Merry Christmas you played and the metronome followed you. All three are at 115 for the quarter note. You have not played them in almost a year, so go slower where you need to and isolate any tricky spots. Next week we play all three as duets, and then start a new, more challenging Christmas piece. Three songs ready before Thanksgiving: pretty cool.</p>
+
+  <h3>This week's practice</h3>
+  <ul>
+    <li>C major scale hands separate at 110. Then hands together with Sergeant Metronome: start at 65 and bump up by 5 (70, 75, 80...) each time it is clean, heading for 110.</li>
+    <li>Left hand coming down is the tricky part: isolate it from the top (1-2-3-1-2-3-4-5), then down and back up ending on the high C.</li>
+    <li>The Entertainer at 160 for the quarter note. Review the middle bracket section (measure 12 to the downbeat of 17) with exact starts and stops, three clean times.</li>
+    <li>Memorize The Entertainer using the form: A1, A2, A1, coda. Remember A1 goes up to the C; A2 rests and goes down to the A.</li>
+    <li>Jingle Bells, Rudolph (second finger on B flat) and We Wish You a Merry Christmas at 115. Isolate anything tricky. Duets next week!</li>
+    <li>Practice with the volume turned down so you can hear the metronome; speed is connected to volume.</li>
+    <li>Pause and jump over tricky spots slowly instead of running through the ditch.</li>
+  </ul>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> metronome, tempo, BPM, scale, hands separate, hands together, isolate, seed, sprout, bloom, rest, downbeat, pickup, cut time, form, coda, soft pedal, middle C position, B flat, A, C, scientific method, duet<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Forest";
+var LESSON_DATE = "2026-11-11";
+var LESSON_LABEL = "Wednesday, November 11, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "What does the metronome measure?",
+  "o": [
+   "Time, down to the millisecond",
+   "How loud you are playing",
+   "Which notes are wrong",
+   "How many measures you played"
+  ],
+  "a": 0,
+  "e": "It is our measuring device, like a scientist's careful measurements in the lab. You cannot hear 110 versus 111, but Sergeant Metronome can."
+ },
+ {
+  "q": "What do HS and HT stand for?",
+  "o": [
+   "Hands separate and hands together",
+   "High speed and high tempo",
+   "Half step and half time",
+   "Hard section and hard tempo"
+  ],
+  "a": 0,
+  "e": "HS = hands separate, which you can do at 110. HT = hands together, which starts at 65 and climbs."
+ },
+ {
+  "q": "How do you build the C major scale hands together up to 110?",
+  "o": [
+   "Start at 65 and go up by 5 each time it is clean: 70, 75, 80, all the way to 110",
+   "Start at 110 and slow down until it works",
+   "Play it once at 65 and then jump to 110",
+   "Only practice it hands separate until 110 feels easy"
+  ],
+  "a": 0,
+  "e": "A ladder: 65, 70, 75, 80, 85, 90, 95, 100, 105, 110. Each step is earned by playing it cleanly with the metronome."
+ },
+ {
+  "q": "At the Seed level of Seed, Sprout, Bloom, what do you have to do?",
+  "o": [
+   "Play the section three times cleanly; pausing is okay and the tempo can be flexible",
+   "Play it once perfectly at full speed",
+   "Play it three times in a row at full tempo with no mistakes at all",
+   "Play the whole song without stopping"
+  ],
+  "a": 0,
+  "e": "Seed is about getting the fingers right. Three clean times earns your markers across, even if you pause and even if the tempo is loose."
+ },
+ {
+  "q": "At the Sprout level, what happens when you miss?",
+  "o": [
+   "Only one marker goes back, not all of them",
+   "All of your markers go back to the start",
+   "Nothing happens; you keep going",
+   "You have to start a new song"
+  ],
+  "a": 0,
+  "e": "Sprout is friendlier than the old diamond: a miss costs you one marker, not all three."
+ },
+ {
+  "q": "At the Bloom level, what do you have to do?",
+  "o": [
+   "Three times in a row with no mistakes, including keeping the tempo",
+   "Three times with pauses allowed",
+   "One time at any tempo",
+   "Play it with your eyes closed once"
+  ],
+  "a": 0,
+  "e": "Bloom is the old Diamond Practice: three perfect runs in a row, and the tempo counts too."
+ },
+ {
+  "q": "What is the name of Mr. Rod's new three-level practice game?",
+  "o": [
+   "Seed, Sprout, Bloom",
+   "Bronze, Silver, Gold",
+   "Root, Trunk, Leaf",
+   "Diamond, Ruby, Emerald"
+  ],
+  "a": 0,
+  "e": "Seed, then Sprout, then Bloom. It replaces the Diamond Practice name. Each level grows a little more demanding."
+ },
+ {
+  "q": "In The Entertainer you practiced measure 12 to the downbeat of 17. Why does a run not count if you keep playing past the stop?",
+  "o": [
+   "Your brain needs the exact beginning and exact end of the section, with no extra fluff",
+   "Because playing more notes makes you tired",
+   "Because the metronome stops at measure 17",
+   "Because the song ends at measure 17"
+  ],
+  "a": 0,
+  "e": "Mr. Rod was a stickler on purpose. Giving the brain a precise start and a precise stop makes the section stick. Draw the red line darker so you can see it."
+ },
+ {
+  "q": "The metronome said 80, but Mr. Rod said you were really playing at 160. How?",
+  "o": [
+   "The click was in cut time, one click for every two quarter notes, so 80 clicks equals 160 quarter notes",
+   "The metronome was broken",
+   "You were playing twice as many notes as written",
+   "You skipped every other measure"
+  ],
+  "a": 0,
+  "e": "Half time, or cut time: each click covered two beats. Switching the metronome to 160 felt exactly the same, so 160 is your tempo for The Entertainer now."
+ },
+ {
+  "q": "Why does playing with the soft pedal (muted sound) help your practice?",
+  "o": [
+   "You listen more and rush less, because speed is connected to volume",
+   "It makes the piano louder so you can hear your mistakes",
+   "It makes the keys easier to press",
+   "It turns the metronome off"
+  ],
+  "a": 0,
+  "e": "When you got loud, you could not hear the metronome and sped past it. Softer playing makes you listen. On your keyboard, use the volume knob."
+ },
+ {
+  "q": "What is the form of The Entertainer?",
+  "o": [
+   "A1, A2, A1, coda",
+   "A, B, A, B",
+   "A1, A2, A3, A4",
+   "Verse, chorus, verse, chorus"
+  ],
+  "a": 0,
+  "e": "Four sections: A1, A2, A1 again, and the coda at the end. Say it out loud before you play from memory."
+ },
+ {
+  "q": "How do you tell A1 from A2 in The Entertainer?",
+  "o": [
+   "A1 goes right up to the C; A2 has a rest and then goes down to the A",
+   "A1 is loud and A2 is soft",
+   "A1 is in the right hand and A2 is in the left hand",
+   "A2 is twice as fast as A1"
+  ],
+  "a": 0,
+  "e": "One road splits into two. Same start, but A1 climbs to the red C and A2 rests and drops to the purple A. Knowing which road you are on keeps you from looping back."
+ },
+ {
+  "q": "What does the word coda mean?",
+  "o": [
+   "The ending of a piece",
+   "The beginning of a piece",
+   "A repeat sign",
+   "A very fast section"
+  ],
+  "a": 0,
+  "e": "Coda is Italian for tail. It is the fancy word for the ending. The Entertainer finishes with one, and do not forget the G in it!"
+ },
+ {
+  "q": "What are the left-hand finger numbers for the C major scale going up?",
+  "o": [
+   "5-4-3-2-1-3-2-1",
+   "1-2-3-1-2-3-4-5",
+   "5-4-3-2-1-2-3-4",
+   "1-2-3-4-5-4-3-2"
+  ],
+  "a": 0,
+  "e": "Going up the left hand starts on the pinky: 5-4-3-2-1, cross the 3 over, 3-2-1. Coming back down it is 1-2-3-1-2-3-4-5, which is the part we isolated."
+ },
+ {
+  "q": "When you hit a spot you are not sure of in the middle of a piece, what did Mr. Rod say was the great thing you did today?",
+  "o": [
+   "Paused and jumped over the tricky spot slowly instead of running through the ditch",
+   "Played faster to get past it",
+   "Stopped and started the whole piece over",
+   "Skipped that measure completely"
+  ],
+  "a": 0,
+  "e": "Pausing when you are unsure is smart. Running through the hole is how you fall and hurt yourself. Slow down, jump over it, then keep going."
+ }
+];
+
+var WRITTEN = [
+ "Explain Seed, Sprout and Bloom to a friend who has never heard of them. What is different at each level?",
+ "You are the head coach of your ten fingers. Which group needs extra drills right now, and what drills will you give them?",
+ "Why did your scale drop from 110 hands separate to 65 hands together? How does the ladder of 5s help you climb back?",
+ "Describe how the form A1, A2, A1, coda helps you memorize The Entertainer. What is the one note that tells you which road you are on?",
+ "How did the muted sound change the way you played? Why do you think speed and volume are connected?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>
