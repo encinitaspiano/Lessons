@@ -10,7 +10,10 @@ content.json schema (ASCII only):
   "slug": "ziggy",                         # lowercase, letters/hyphens only
   "date": "2026-10-01",
   "date_label": "Thursday, October 1, 2026",
-  "terms": [                               # "Terms to Know" box, shown first
+  "action_items": [                        # "Action Items" box, shown FIRST (above Terms to Know):
+    "Jingle Bells: Start at measure 13 ..." #   4-9 short key points / things to work on, one or two
+  ],                                       #   lines each; text before the first ": " is shown in bold
+  "terms": [                               # "Terms to Know" box, shown right after Action Items
     {"name": "Staccato", "lang": "Italian", "meaning": "Means \\"detached\\". ...",
      "sym": "",                             # optional: "sharp" | "flat" | "natural" | ""
      "colorshape": ""}                      # optional color-shape note
@@ -35,9 +38,26 @@ SYMS = {"sharp": "&#9839;", "flat": "&#9837;", "natural": "&#9675;"}
 e = html.escape
 
 
+STARRED = ("On your practice log, any starred items are ones we didn't get to today... "
+           "so make sure you have those ready for next time. We will do those first next week.")
+
+
+def action_items(c):
+    out = ['<div class="actions">', '    <h3>Action Items</h3>',
+           '    <p class="hint">Key points we covered.</p>', '    <ol>']
+    for a in c["action_items"]:
+        head, sep, rest = a.partition(": ")
+        if sep and len(head) <= 45:
+            out.append(f'      <li><b>{e(head)}:</b> {e(rest)}</li>')
+        else:
+            out.append(f'      <li>{e(a)}</li>')
+    out += ['    </ol>', f'    <p class="starred"><b>&#9733;</b> {e(STARRED)}</p>', '  </div>']
+    return out
+
+
 def level1(c):
-    out = ['<div class="terms">', '    <h3>Terms to Know</h3>',
-           '    <p class="hint">Start here. These are the music words from this lesson. '
+    out = action_items(c) + ['  <div class="terms">', '    <h3>Terms to Know</h3>',
+           '    <p class="hint">These are the music words from this lesson. '
            'Some come from Italian, the language of music, so you will see them in music from all over the world.</p>']
     for t in c["terms"]:
         sym = SYMS.get(t.get("sym", ""), "")
@@ -67,6 +87,8 @@ def level1(c):
 def build(path):
     c = json.loads(pathlib.Path(path).read_text())
     assert re.fullmatch(r"[a-z-]+", c["slug"]), "slug must be lowercase letters/hyphens"
+    assert 4 <= len(c.get("action_items", [])) <= 9, "Action Items needs 4-9 short items"
+    assert all(len(a) <= 260 for a in c["action_items"]), "keep each Action Item to one or two lines"
     assert 10 <= len(c["questions"]) <= 15, "Level 2 needs 10-15 questions"
     for q in c["questions"]:
         assert len(q["o"]) == 4 and 0 <= q["a"] < 4 and len(set(q["o"])) == 4, q["q"]
