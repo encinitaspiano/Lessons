@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Brian - Lesson Challenge - 2026-11-11</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Brian&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Wednesday, November 11, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">Start here. These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Scale</span><span class="lang">from Italian &quot;scala&quot;</span>
+      <div>Means &quot;ladder&quot;. A set of notes climbing step by step from one note to the same note higher up. Scales are the musical core exercise: not what you jam out to at an open mic, but what keeps everything else strong.</div></div>
+    <div class="term"><span class="tname">C major scale</span><span class="lang">English</span>
+      <div>C D E F G A B C. Eight white notes, no black notes. It is the first scale we played and the home base for understanding how the notes relate to each other.</div></div>
+    <div class="term"><span class="tname">Triad</span><span class="lang">English</span>
+      <div>A chord made of three notes. You found the C major triad right away: C, E and G. A lot of the song you played for me is built on triads repeating.</div></div>
+    <div class="term"><span class="tname">Chromatic scale</span><span class="lang">English</span>
+      <div>Every note in order, white and black, one half step at a time. Ours runs from E up to the next E and back down, right hand only.</div></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">Sharp</span><span class="lang">English</span>
+      <div>Raises a note one half step. A sharp is named in relation to the white note just below it: F-sharp is the black note just above F.</div>
+      <span class="cs"><b>Color-shape:</b> a triangle pointing UP, in the color of the white note below it. F-sharp is a green triangle pointing up.</span></div>
+    <div class="term"><span class="sym">&#9837;</span><span class="tname">Flat</span><span class="lang">English</span>
+      <div>Lowers a note one half step. A flat is named in relation to the white note just above it: G-flat is the black note just below G.</div>
+      <span class="cs"><b>Color-shape:</b> a triangle pointing DOWN, in the color of the white note above it. G-flat is a blue triangle pointing down.</span></div>
+    <div class="term"><span class="tname">Enharmonic equivalent</span><span class="lang">English</span>
+      <div>Same pitch, two different names. F-sharp and G-flat are the same key on the piano. Every black note has two names, and even some white notes do: B can also be called C-flat.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time&quot;. The speed of the music, measured in beats per minute. Our tempo for the C major scale was 70 for the quarter note.</div></div>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">English</span>
+      <div>The click that keeps a steady beat. Think of it as a measuring machine: it tells you, like a scientist, whether what you just played was really even.</div></div>
+    <div class="term"><span class="tname">Grand staff</span><span class="lang">English</span>
+      <div>The treble staff and the bass staff joined together. Piano music uses both at once, right hand mostly on top and left hand mostly on the bottom.</div></div>
+    <div class="term"><span class="tname">Treble clef (G clef)</span><span class="lang">English</span>
+      <div>The symbol at the start of the top staff, mostly for the right hand. There is a letter G hidden in its shape, and the curl wraps around the line where the note G lives.</div></div>
+    <div class="term"><span class="tname">Bass clef (F clef)</span><span class="lang">English</span>
+      <div>The symbol at the start of the bottom staff, mostly for the left hand. Its two dots sit on either side of the line where the note F lives. Draw two lines out from the dots and you can see the hidden F.</div></div>
+    <div class="term"><span class="tname">Perfect fifth</span><span class="lang">English</span>
+      <div>The distance between two notes that are five letter names apart, like F up to C, or C up to G. You named both of them on the spot.</div></div>
+    <div class="term"><span class="tname">Middle C position</span><span class="lang">English</span>
+      <div>Both thumbs share middle C. That puts all ten fingers over the notes from F below middle C up to G above it.</div></div>
+    <div class="term"><span class="tname">Elaboration</span><span class="lang">English</span>
+      <div>From the book &quot;Make It Stick: The Science of Successful Learning&quot;. It means connecting something new to something you already know. The more connections you make, the more you can learn.</div></div>
+    <div class="term"><span class="tname">Reticular activating system</span><span class="lang">English</span>
+      <div>The filter in your brain that decides what is worth remembering. When you write something down or circle it with a pencil, you are telling your brain: remember this one over everything else.</div></div>
+  </div>
+
+  <h3>Where you are starting from</h3>
+  <p>Brian, it was great to meet you. You played some of &quot;Where Is My Mind&quot; and it flowed, which told me a lot. Three years on bass and about six months on piano, mostly learning by looking at the sheet music and playing it over and over, with your ear getting a little better each time.</p>
+  <p>You told me you can name every note you are playing, but the why, how the notes work together, is what you are still trying to get your head around. That is a big part of how I teach. Music is a language, and a pretty mysterious one. The relationships are not built on words, they are built on these black and white notes. The piano is the ideal instrument for seeing those relationships, because they are laid out right in front of you. On a bass there is no color difference to show you why a note is called C-sharp one moment and D-flat the next.</p>
+
+  <h3>Why scales, and the power of elaboration</h3>
+  <p>Scales are like crunches. Not the most exciting thing, but we need the core work to stay healthy. And this particular core exercise goes back to Bach (1685 to 1750). He did not write theory books. He just wrote music, and long after he was gone that music became the basis for the rules of Western music theory. In Western music the octave is split into 12 notes, which is the system we are learning on the keyboard.</p>
+  <p>There is a bold statement in &quot;Make It Stick&quot;: there is no known limit to how much you can learn through the power of elaboration. Elaboration is connecting what you already know to something new. That is why we do scales. If you understand how the notes relate, you can make sense of how other musicians made what they made, whatever road you go down, metal, classical or popular songs. You walk away with a lot more tools in your pocket.</p>
+
+  <h3>The C major scale: 3 + 5</h3>
+  <p>Right hand going up: 1-2-3, then the thumb comes under, then 1-2-3-4-5. Coming down: 5-4-3-2-1, then finger 3 crosses over, 3-2-1. You said the finger numbers out loud as you played, and that is exactly how I want you to practice it.</p>
+  <p>I put brackets on your page to show the pattern. You play three notes, then five notes going up, and five notes, then three coming down. It is really 3 + 5.</p>
+  <p>The left hand is the inverse: 5-4-3-2-1, then finger 3 crosses over, 3-2-1 going up. Coming down it is 1-2-3, thumb under, 1-2-3-4-5. So 5 + 3 on the way up. You noticed the left hand tripped you up more than the right. That awareness is the key. Most of us have one hand that lags, and now you know which one needs a little more attention.</p>
+  <div class="note">Patterns are everywhere in music. It is just a question of going a little deeper and noticing them. Once you see 3 + 5, the scale stops being eight separate notes and becomes two small groups.</div>
+
+  <h3>Fibonacci on the keyboard</h3>
+  <p>The Fibonacci sequence is built by adding the last two numbers to get the next one: 1, 1, 2, 3, 5, 8, 13 and so on. Now look at the keyboard. The black notes come in sets of 2 and sets of 3. Together that is 5. From C to C you touch 8 white notes. And 8 + 5 is 13, all the keys from C up to the next C.</p>
+  <p>The golden ratio comes out of that same sequence. You can see the spiral in a seashell, in your ear, and even in the shape of the bass clef. And there it is again in how we finger the scale: 3 plus 5 to play 8 notes.</p>
+
+  <h3>Eyes closed</h3>
+  <p>When I asked you to play the scale with your eyes closed, you slowed down without me saying anything. That is a wise instinct. A nine-year-old student of mine told me why we close our eyes or write things down: it lets you create an image in your mind&#x27;s eye before you play it.</p>
+  <p>That is the real work. You are taking information from outside and building it from the inside out, so your body can connect to the instrument. If you cannot hear it and feel it inside, you will always blame your fingers, and it is not your fingers that are the problem.</p>
+
+  <h3>The metronome</h3>
+  <p>You said you do not use it nearly as often as you should. I will tell you straight: this is what separates the music players from the musicians. It is paying your dues with this thing.</p>
+  <p>At first it feels like you are chasing the click, trying to match something outside of you. But it is really about building a steady beat inside, like a heartbeat. You know from playing bass what it is like when someone cannot hold a constant beat. Building that internal pulse just takes time.</p>
+  <p>We set the quarter note at 70 and you played the left hand while saying the finger numbers. I tapped the beat on your shoulder so you could feel it and not only hear it. Coming back down you said &quot;five&quot; where it should have been &quot;one&quot;, and you caught it yourself. So we circled that finger 1 with the pencil.</p>
+  <div class="note">If the same spot gets you twice, grab a pencil and circle it. If it gets you again, write the number bigger. Anything you write down, your brain remembers better, and the next time it flows a little more.</div>
+
+  <h3>The chromatic scale in color and shape</h3>
+  <p>I have been developing a color and shape system over the last couple of years. The white notes follow the rainbow starting on C: C is red, D is orange, E is yellow, F is green, G is blue, A is purple and B is pink. White notes are circles. Black notes are triangles.</p>
+  <p>Going up, the black notes are sharps, so the triangle points up and takes the color of the white note below it. F-sharp is a green triangle pointing up, because it belongs to F. Coming down, the same black notes are flats, so the triangle points down and takes the color of the white note above it. That same key is now G-flat, a blue triangle pointing down.</p>
+  <p>That is why your page has green on one side and blue on the other for the same key. You already knew the idea: same pitch, different name. The term is enharmonic equivalent. D-sharp going up becomes E-flat coming down. B-flat is a pink triangle pointing down. The one mix-up while coloring was the B&#x27;s. B is pink, not red. Red is C. Those two pencils look alike in my lighting, so double-check them.</p>
+  <p>Right-hand fingering from E up to E: 1-2-3-1-3-1-3-1-2-3-1-3-1, then the same fingers in reverse coming back down. Finger 3 plays every black note. It will feel a little crowded at first, squeezing finger 2 out of the way. Say the finger numbers as you play. Eventually your body just does it and you do not have to think about it. That is what it means to embody a scale.</p>
+  <p>And a nice coincidence for a bass player: our chromatic scale starts on E, the same note as your lowest string in standard tuning.</p>
+
+  <h3>Reading the grand staff with Note Rush</h3>
+  <p>The app I like for music reading is called Note Rush. Choose Piano Classic and then the grand staff. You can also isolate just the treble or just the bass. Since you started on bass, the treble clef may be the one that needs the extra reps.</p>
+  <p>Find middle C position, both thumbs sharing middle C, and play through it: the 1s, 2s, 3s, 4s, 5s and back. Level zero uses three notes: the F in the bass, middle C, and the G in the treble. F up to C is a perfect fifth, and C up to G is another perfect fifth. You named and played them all and got three stars.</p>
+  <p>Those are the same two notes the clefs are built on. The treble clef is the G clef, wrapped around the G line. The bass clef is the F clef, with its two dots around the F line.</p>
+  <p>The starter level fills in all the notes between F, C and G. I texted you the link, so it opens right to that level. The key is to say the name of each note out loud as you play it. Saying it works like writing it down. It helps you remember.</p>
+
+  <h3>Little and often</h3>
+  <p>I gave you a practice handout I have carried around since I first started teaching. The line that matters most: in the earliest stages of learning anything new, the rate of forgetting is very rapid, so little and often is the way to go.</p>
+  <p>Play a little, walk away, come back, play a little more. Sitting for three hours straight feels productive, but it creates a false story. Short sessions do not feel as rewarding in the moment, but long term that is how we actually learn.</p>
+  <p>I was pretty hardcore with you for a first session, two scales. We just scratched the surface, and it is a foundation we will build real music on.</p>
+
+  <h3>This week's practice</h3>
+  <ul>
+    <li>C major scale, hands separate, saying the finger numbers out loud. Right hand up: 1-2-3-1-2-3-4-5. Left hand up: 5-4-3-2-1-3-2-1. Give the left hand a little extra.</li>
+    <li>C major scale with the metronome at 70 for the quarter note. Once you can play it hands together at 70, bump it to 75, then 80. Move up like a scientist, only when the tempo before it is steady.</li>
+    <li>Play the scale once with your eyes closed, slowly, each time you sit down.</li>
+    <li>Keep a pencil on the piano. Circle any finger number or note that trips you up.</li>
+    <li>Chromatic scale worksheet, right hand only, E up to E and back down: 1-2-3-1-3-1-3-1-2-3-1-3-1. Say the finger numbers. Notice the sharps going up and the flats coming down.</li>
+    <li>Note Rush: Piano Classic, grand staff, starter level (use the link I texted you). Say every note name out loud as you play it.</li>
+    <li>Read through the practice handout. Little and often: a few short sessions beat one long one.</li>
+    <li>Next lesson: Wednesday, November 18, at 2:30 PM.</li>
+  </ul>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> scale, C major, triad, chromatic, sharp, flat, enharmonic equivalent, half step, tempo, metronome, quarter note, grand staff, treble clef, G clef, bass clef, F clef, perfect fifth, middle C position, thumb under, elaboration, reticular activating system, Fibonacci<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Brian";
+var LESSON_DATE = "2026-11-11";
+var LESSON_LABEL = "Wednesday, November 11, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "What is the right-hand fingering for the C major scale going up?",
+  "o": [
+   "1-2-3-1-2-3-4-5",
+   "1-2-3-4-5-1-2-3",
+   "1-2-3-4-1-2-3-4",
+   "5-4-3-2-1-3-2-1"
+  ],
+  "a": 0,
+  "e": "Three notes with 1-2-3, the thumb comes under, then five notes with 1-2-3-4-5. It is 3 + 5."
+ },
+ {
+  "q": "What is the left-hand fingering for the C major scale going up?",
+  "o": [
+   "5-4-3-2-1-3-2-1",
+   "1-2-3-1-2-3-4-5",
+   "5-4-3-2-1-4-3-2",
+   "5-4-3-1-2-3-2-1"
+  ],
+  "a": 0,
+  "e": "The left hand is the inverse of the right: five notes with 5-4-3-2-1, finger 3 crosses over, then 3-2-1. It is 5 + 3."
+ },
+ {
+  "q": "In the right hand going up the C major scale, what does the thumb do after finger 3 plays E?",
+  "o": [
+   "It comes under finger 3 to play F",
+   "It stays on C while finger 4 plays F",
+   "It crosses over the top of finger 3",
+   "It lifts off and the hand jumps up"
+  ],
+  "a": 0,
+  "e": "Thumb under. Finger 1 passes beneath finger 3 so the hand can keep going with 1-2-3-4-5 without a break."
+ },
+ {
+  "q": "What is a chromatic scale?",
+  "o": [
+   "Every note in order, white and black, one half step at a time",
+   "Only the white notes from C to C",
+   "Only the black notes",
+   "Three notes played together as a chord"
+  ],
+  "a": 0,
+  "e": "A chromatic scale uses all twelve notes in order. Ours goes from E up to the next E and back down."
+ },
+ {
+  "q": "F-sharp and G-flat are the same key on the piano. What is the term for two names that share one pitch?",
+  "o": [
+   "Enharmonic equivalents",
+   "Perfect fifths",
+   "Triads",
+   "Chromatic scales"
+  ],
+  "a": 0,
+  "e": "Enharmonic equivalent means same pitch, different name. Every black note has two names."
+ },
+ {
+  "q": "Going up the chromatic scale you play D-sharp just before E. Coming back down, what is that same black note called?",
+  "o": [
+   "E-flat",
+   "D-flat",
+   "F-flat",
+   "E-sharp"
+  ],
+  "a": 0,
+  "e": "Coming down, the black note is named from the white note above it. The key just below E is E-flat, the same key as D-sharp."
+ },
+ {
+  "q": "In the color-shape system, how is F-sharp drawn?",
+  "o": [
+   "A green triangle pointing up",
+   "A blue triangle pointing down",
+   "A green circle",
+   "A blue triangle pointing up"
+  ],
+  "a": 0,
+  "e": "F is green. A sharp belongs to the white note below it, so F-sharp keeps F's green, and the triangle points up."
+ },
+ {
+  "q": "In the color-shape system, how is G-flat drawn?",
+  "o": [
+   "A blue triangle pointing down",
+   "A green triangle pointing up",
+   "A blue circle",
+   "A green triangle pointing down"
+  ],
+  "a": 0,
+  "e": "G is blue. A flat belongs to the white note above it, so G-flat takes G's blue, and the triangle points down. Same key as F-sharp, different name, different color."
+ },
+ {
+  "q": "In the right-hand chromatic scale starting on E, what are the finger numbers for the first seven notes (E, F, F-sharp, G, G-sharp, A, A-sharp)?",
+  "o": [
+   "1-2-3-1-3-1-3",
+   "1-2-3-4-5-1-2",
+   "1-2-1-2-1-2-1",
+   "1-3-1-3-1-3-1"
+  ],
+  "a": 0,
+  "e": "E and F are two white notes in a row, so 1-2, then finger 3 takes every black note with the thumb on the white notes: 1-2-3-1-3-1-3."
+ },
+ {
+  "q": "What is another name for the treble clef?",
+  "o": [
+   "The G clef",
+   "The F clef",
+   "The C clef",
+   "The grand staff"
+  ],
+  "a": 0,
+  "e": "The treble clef is the G clef. There is a G hidden in its shape, and it curls around the line where G lives. The bass clef is the F clef."
+ },
+ {
+  "q": "What interval is it from F up to C, and again from C up to G?",
+  "o": [
+   "A perfect fifth",
+   "A triad",
+   "A half step",
+   "An octave"
+  ],
+  "a": 0,
+  "e": "F-G-A-B-C is five letter names, and so is C-D-E-F-G. Both are perfect fifths. Those are the three notes in Note Rush level zero."
+ },
+ {
+  "q": "What does \"middle C position\" mean?",
+  "o": [
+   "Both thumbs share middle C",
+   "Both pinkies play a C",
+   "Only the right hand plays, with the thumb on middle C",
+   "The left thumb is on C and the right thumb is on G"
+  ],
+  "a": 0,
+  "e": "Both thumbs share middle C, so your ten fingers cover F below middle C up to G above it."
+ },
+ {
+  "q": "In \"Make It Stick\", what does elaboration mean?",
+  "o": [
+   "Connecting something new to what you already know",
+   "Repeating one thing many times without stopping",
+   "Practicing for several hours in one sitting",
+   "Playing a piece as fast as you can"
+  ],
+  "a": 0,
+  "e": "Elaboration is connecting new information to what you already know. That is why understanding scales gives you tools for everything else you play."
+ },
+ {
+  "q": "The same finger number keeps tripping you up in a scale. What is the best thing to do?",
+  "o": [
+   "Circle it with a pencil",
+   "Play the whole scale faster",
+   "Skip that note for now",
+   "Turn the metronome off for good"
+  ],
+  "a": 0,
+  "e": "Writing it down or circling it wakes up the reticular activating system. Your brain flags it as important, and it flows better the next time."
+ }
+];
+
+var WRITTEN = [
+ "In your own words, what is an enharmonic equivalent? Give one example, and explain why the triangle points up for one name and down for the other.",
+ "Describe how each hand plays the C major scale going up. Where does the thumb go under or finger 3 cross over, and how does the 3 + 5 pattern fit each hand?",
+ "Why is \"little and often\" a better way to practice than one long session, especially when something is brand new?",
+ "What did you notice when you played the scale with your eyes closed, and then with the metronome at 70? What is the difference between chasing the click and feeling the beat?",
+ "Elaboration means connecting what you already know to something new. Pick one thing you already know from playing bass and connect it to something from this lesson."
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>

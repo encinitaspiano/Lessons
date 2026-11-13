@@ -1,0 +1,115 @@
+{
+  "student": "Brian",
+  "slug": "brian",
+  "date": "2026-11-11",
+  "date_label": "Wednesday, November 11, 2026",
+  "terms": [
+    {"name": "Scale", "lang": "from Italian \"scala\"", "meaning": "Means \"ladder\". A set of notes climbing step by step from one note to the same note higher up. Scales are the musical core exercise: not what you jam out to at an open mic, but what keeps everything else strong."},
+    {"name": "C major scale", "lang": "English", "meaning": "C D E F G A B C. Eight white notes, no black notes. It is the first scale we played and the home base for understanding how the notes relate to each other."},
+    {"name": "Triad", "lang": "English", "meaning": "A chord made of three notes. You found the C major triad right away: C, E and G. A lot of the song you played for me is built on triads repeating."},
+    {"name": "Chromatic scale", "lang": "English", "meaning": "Every note in order, white and black, one half step at a time. Ours runs from E up to the next E and back down, right hand only."},
+    {"name": "Sharp", "lang": "English", "sym": "sharp", "meaning": "Raises a note one half step. A sharp is named in relation to the white note just below it: F-sharp is the black note just above F.", "colorshape": "a triangle pointing UP, in the color of the white note below it. F-sharp is a green triangle pointing up."},
+    {"name": "Flat", "lang": "English", "sym": "flat", "meaning": "Lowers a note one half step. A flat is named in relation to the white note just above it: G-flat is the black note just below G.", "colorshape": "a triangle pointing DOWN, in the color of the white note above it. G-flat is a blue triangle pointing down."},
+    {"name": "Enharmonic equivalent", "lang": "English", "meaning": "Same pitch, two different names. F-sharp and G-flat are the same key on the piano. Every black note has two names, and even some white notes do: B can also be called C-flat."},
+    {"name": "Tempo", "lang": "Italian", "meaning": "Means \"time\". The speed of the music, measured in beats per minute. Our tempo for the C major scale was 70 for the quarter note."},
+    {"name": "Metronome", "lang": "English", "meaning": "The click that keeps a steady beat. Think of it as a measuring machine: it tells you, like a scientist, whether what you just played was really even."},
+    {"name": "Grand staff", "lang": "English", "meaning": "The treble staff and the bass staff joined together. Piano music uses both at once, right hand mostly on top and left hand mostly on the bottom."},
+    {"name": "Treble clef (G clef)", "lang": "English", "meaning": "The symbol at the start of the top staff, mostly for the right hand. There is a letter G hidden in its shape, and the curl wraps around the line where the note G lives."},
+    {"name": "Bass clef (F clef)", "lang": "English", "meaning": "The symbol at the start of the bottom staff, mostly for the left hand. Its two dots sit on either side of the line where the note F lives. Draw two lines out from the dots and you can see the hidden F."},
+    {"name": "Perfect fifth", "lang": "English", "meaning": "The distance between two notes that are five letter names apart, like F up to C, or C up to G. You named both of them on the spot."},
+    {"name": "Middle C position", "lang": "English", "meaning": "Both thumbs share middle C. That puts all ten fingers over the notes from F below middle C up to G above it."},
+    {"name": "Elaboration", "lang": "English", "meaning": "From the book \"Make It Stick: The Science of Successful Learning\". It means connecting something new to something you already know. The more connections you make, the more you can learn."},
+    {"name": "Reticular activating system", "lang": "English", "meaning": "The filter in your brain that decides what is worth remembering. When you write something down or circle it with a pencil, you are telling your brain: remember this one over everything else."}
+  ],
+  "sections": [
+    {"heading": "Where you are starting from",
+     "paragraphs": [
+       "Brian, it was great to meet you. You played some of \"Where Is My Mind\" and it flowed, which told me a lot. Three years on bass and about six months on piano, mostly learning by looking at the sheet music and playing it over and over, with your ear getting a little better each time.",
+       "You told me you can name every note you are playing, but the why, how the notes work together, is what you are still trying to get your head around. That is a big part of how I teach. Music is a language, and a pretty mysterious one. The relationships are not built on words, they are built on these black and white notes. The piano is the ideal instrument for seeing those relationships, because they are laid out right in front of you. On a bass there is no color difference to show you why a note is called C-sharp one moment and D-flat the next."
+     ]},
+    {"heading": "Why scales, and the power of elaboration",
+     "paragraphs": [
+       "Scales are like crunches. Not the most exciting thing, but we need the core work to stay healthy. And this particular core exercise goes back to Bach (1685 to 1750). He did not write theory books. He just wrote music, and long after he was gone that music became the basis for the rules of Western music theory. In Western music the octave is split into 12 notes, which is the system we are learning on the keyboard.",
+       "There is a bold statement in \"Make It Stick\": there is no known limit to how much you can learn through the power of elaboration. Elaboration is connecting what you already know to something new. That is why we do scales. If you understand how the notes relate, you can make sense of how other musicians made what they made, whatever road you go down, metal, classical or popular songs. You walk away with a lot more tools in your pocket."
+     ]},
+    {"heading": "The C major scale: 3 + 5",
+     "paragraphs": [
+       "Right hand going up: 1-2-3, then the thumb comes under, then 1-2-3-4-5. Coming down: 5-4-3-2-1, then finger 3 crosses over, 3-2-1. You said the finger numbers out loud as you played, and that is exactly how I want you to practice it.",
+       "I put brackets on your page to show the pattern. You play three notes, then five notes going up, and five notes, then three coming down. It is really 3 + 5.",
+       "The left hand is the inverse: 5-4-3-2-1, then finger 3 crosses over, 3-2-1 going up. Coming down it is 1-2-3, thumb under, 1-2-3-4-5. So 5 + 3 on the way up. You noticed the left hand tripped you up more than the right. That awareness is the key. Most of us have one hand that lags, and now you know which one needs a little more attention."
+     ],
+     "note": "Patterns are everywhere in music. It is just a question of going a little deeper and noticing them. Once you see 3 + 5, the scale stops being eight separate notes and becomes two small groups."},
+    {"heading": "Fibonacci on the keyboard",
+     "paragraphs": [
+       "The Fibonacci sequence is built by adding the last two numbers to get the next one: 1, 1, 2, 3, 5, 8, 13 and so on. Now look at the keyboard. The black notes come in sets of 2 and sets of 3. Together that is 5. From C to C you touch 8 white notes. And 8 + 5 is 13, all the keys from C up to the next C.",
+       "The golden ratio comes out of that same sequence. You can see the spiral in a seashell, in your ear, and even in the shape of the bass clef. And there it is again in how we finger the scale: 3 plus 5 to play 8 notes."
+     ]},
+    {"heading": "Eyes closed",
+     "paragraphs": [
+       "When I asked you to play the scale with your eyes closed, you slowed down without me saying anything. That is a wise instinct. A nine-year-old student of mine told me why we close our eyes or write things down: it lets you create an image in your mind's eye before you play it.",
+       "That is the real work. You are taking information from outside and building it from the inside out, so your body can connect to the instrument. If you cannot hear it and feel it inside, you will always blame your fingers, and it is not your fingers that are the problem."
+     ]},
+    {"heading": "The metronome",
+     "paragraphs": [
+       "You said you do not use it nearly as often as you should. I will tell you straight: this is what separates the music players from the musicians. It is paying your dues with this thing.",
+       "At first it feels like you are chasing the click, trying to match something outside of you. But it is really about building a steady beat inside, like a heartbeat. You know from playing bass what it is like when someone cannot hold a constant beat. Building that internal pulse just takes time.",
+       "We set the quarter note at 70 and you played the left hand while saying the finger numbers. I tapped the beat on your shoulder so you could feel it and not only hear it. Coming back down you said \"five\" where it should have been \"one\", and you caught it yourself. So we circled that finger 1 with the pencil."
+     ],
+     "note": "If the same spot gets you twice, grab a pencil and circle it. If it gets you again, write the number bigger. Anything you write down, your brain remembers better, and the next time it flows a little more."},
+    {"heading": "The chromatic scale in color and shape",
+     "paragraphs": [
+       "I have been developing a color and shape system over the last couple of years. The white notes follow the rainbow starting on C: C is red, D is orange, E is yellow, F is green, G is blue, A is purple and B is pink. White notes are circles. Black notes are triangles.",
+       "Going up, the black notes are sharps, so the triangle points up and takes the color of the white note below it. F-sharp is a green triangle pointing up, because it belongs to F. Coming down, the same black notes are flats, so the triangle points down and takes the color of the white note above it. That same key is now G-flat, a blue triangle pointing down.",
+       "That is why your page has green on one side and blue on the other for the same key. You already knew the idea: same pitch, different name. The term is enharmonic equivalent. D-sharp going up becomes E-flat coming down. B-flat is a pink triangle pointing down. The one mix-up while coloring was the B's. B is pink, not red. Red is C. Those two pencils look alike in my lighting, so double-check them.",
+       "Right-hand fingering from E up to E: 1-2-3-1-3-1-3-1-2-3-1-3-1, then the same fingers in reverse coming back down. Finger 3 plays every black note. It will feel a little crowded at first, squeezing finger 2 out of the way. Say the finger numbers as you play. Eventually your body just does it and you do not have to think about it. That is what it means to embody a scale.",
+       "And a nice coincidence for a bass player: our chromatic scale starts on E, the same note as your lowest string in standard tuning."
+     ]},
+    {"heading": "Reading the grand staff with Note Rush",
+     "paragraphs": [
+       "The app I like for music reading is called Note Rush. Choose Piano Classic and then the grand staff. You can also isolate just the treble or just the bass. Since you started on bass, the treble clef may be the one that needs the extra reps.",
+       "Find middle C position, both thumbs sharing middle C, and play through it: the 1s, 2s, 3s, 4s, 5s and back. Level zero uses three notes: the F in the bass, middle C, and the G in the treble. F up to C is a perfect fifth, and C up to G is another perfect fifth. You named and played them all and got three stars.",
+       "Those are the same two notes the clefs are built on. The treble clef is the G clef, wrapped around the G line. The bass clef is the F clef, with its two dots around the F line.",
+       "The starter level fills in all the notes between F, C and G. I texted you the link, so it opens right to that level. The key is to say the name of each note out loud as you play it. Saying it works like writing it down. It helps you remember."
+     ]},
+    {"heading": "Little and often",
+     "paragraphs": [
+       "I gave you a practice handout I have carried around since I first started teaching. The line that matters most: in the earliest stages of learning anything new, the rate of forgetting is very rapid, so little and often is the way to go.",
+       "Play a little, walk away, come back, play a little more. Sitting for three hours straight feels productive, but it creates a false story. Short sessions do not feel as rewarding in the moment, but long term that is how we actually learn.",
+       "I was pretty hardcore with you for a first session, two scales. We just scratched the surface, and it is a foundation we will build real music on."
+     ]}
+  ],
+  "practice": [
+    "C major scale, hands separate, saying the finger numbers out loud. Right hand up: 1-2-3-1-2-3-4-5. Left hand up: 5-4-3-2-1-3-2-1. Give the left hand a little extra.",
+    "C major scale with the metronome at 70 for the quarter note. Once you can play it hands together at 70, bump it to 75, then 80. Move up like a scientist, only when the tempo before it is steady.",
+    "Play the scale once with your eyes closed, slowly, each time you sit down.",
+    "Keep a pencil on the piano. Circle any finger number or note that trips you up.",
+    "Chromatic scale worksheet, right hand only, E up to E and back down: 1-2-3-1-3-1-3-1-2-3-1-3-1. Say the finger numbers. Notice the sharps going up and the flats coming down.",
+    "Note Rush: Piano Classic, grand staff, starter level (use the link I texted you). Say every note name out loud as you play it.",
+    "Read through the practice handout. Little and often: a few short sessions beat one long one.",
+    "Next lesson: Wednesday, November 18, at 2:30 PM."
+  ],
+  "questions": [
+    {"q": "What is the right-hand fingering for the C major scale going up?", "o": ["1-2-3-1-2-3-4-5", "1-2-3-4-5-1-2-3", "1-2-3-4-1-2-3-4", "5-4-3-2-1-3-2-1"], "a": 0, "e": "Three notes with 1-2-3, the thumb comes under, then five notes with 1-2-3-4-5. It is 3 + 5."},
+    {"q": "What is the left-hand fingering for the C major scale going up?", "o": ["5-4-3-2-1-3-2-1", "1-2-3-1-2-3-4-5", "5-4-3-2-1-4-3-2", "5-4-3-1-2-3-2-1"], "a": 0, "e": "The left hand is the inverse of the right: five notes with 5-4-3-2-1, finger 3 crosses over, then 3-2-1. It is 5 + 3."},
+    {"q": "In the right hand going up the C major scale, what does the thumb do after finger 3 plays E?", "o": ["It comes under finger 3 to play F", "It stays on C while finger 4 plays F", "It crosses over the top of finger 3", "It lifts off and the hand jumps up"], "a": 0, "e": "Thumb under. Finger 1 passes beneath finger 3 so the hand can keep going with 1-2-3-4-5 without a break."},
+    {"q": "What is a chromatic scale?", "o": ["Every note in order, white and black, one half step at a time", "Only the white notes from C to C", "Only the black notes", "Three notes played together as a chord"], "a": 0, "e": "A chromatic scale uses all twelve notes in order. Ours goes from E up to the next E and back down."},
+    {"q": "F-sharp and G-flat are the same key on the piano. What is the term for two names that share one pitch?", "o": ["Enharmonic equivalents", "Perfect fifths", "Triads", "Chromatic scales"], "a": 0, "e": "Enharmonic equivalent means same pitch, different name. Every black note has two names."},
+    {"q": "Going up the chromatic scale you play D-sharp just before E. Coming back down, what is that same black note called?", "o": ["E-flat", "D-flat", "F-flat", "E-sharp"], "a": 0, "e": "Coming down, the black note is named from the white note above it. The key just below E is E-flat, the same key as D-sharp."},
+    {"q": "In the color-shape system, how is F-sharp drawn?", "o": ["A green triangle pointing up", "A blue triangle pointing down", "A green circle", "A blue triangle pointing up"], "a": 0, "e": "F is green. A sharp belongs to the white note below it, so F-sharp keeps F's green, and the triangle points up."},
+    {"q": "In the color-shape system, how is G-flat drawn?", "o": ["A blue triangle pointing down", "A green triangle pointing up", "A blue circle", "A green triangle pointing down"], "a": 0, "e": "G is blue. A flat belongs to the white note above it, so G-flat takes G's blue, and the triangle points down. Same key as F-sharp, different name, different color."},
+    {"q": "In the right-hand chromatic scale starting on E, what are the finger numbers for the first seven notes (E, F, F-sharp, G, G-sharp, A, A-sharp)?", "o": ["1-2-3-1-3-1-3", "1-2-3-4-5-1-2", "1-2-1-2-1-2-1", "1-3-1-3-1-3-1"], "a": 0, "e": "E and F are two white notes in a row, so 1-2, then finger 3 takes every black note with the thumb on the white notes: 1-2-3-1-3-1-3."},
+    {"q": "What is another name for the treble clef?", "o": ["The G clef", "The F clef", "The C clef", "The grand staff"], "a": 0, "e": "The treble clef is the G clef. There is a G hidden in its shape, and it curls around the line where G lives. The bass clef is the F clef."},
+    {"q": "What interval is it from F up to C, and again from C up to G?", "o": ["A perfect fifth", "A triad", "A half step", "An octave"], "a": 0, "e": "F-G-A-B-C is five letter names, and so is C-D-E-F-G. Both are perfect fifths. Those are the three notes in Note Rush level zero."},
+    {"q": "What does \"middle C position\" mean?", "o": ["Both thumbs share middle C", "Both pinkies play a C", "Only the right hand plays, with the thumb on middle C", "The left thumb is on C and the right thumb is on G"], "a": 0, "e": "Both thumbs share middle C, so your ten fingers cover F below middle C up to G above it."},
+    {"q": "In \"Make It Stick\", what does elaboration mean?", "o": ["Connecting something new to what you already know", "Repeating one thing many times without stopping", "Practicing for several hours in one sitting", "Playing a piece as fast as you can"], "a": 0, "e": "Elaboration is connecting new information to what you already know. That is why understanding scales gives you tools for everything else you play."},
+    {"q": "The same finger number keeps tripping you up in a scale. What is the best thing to do?", "o": ["Circle it with a pencil", "Play the whole scale faster", "Skip that note for now", "Turn the metronome off for good"], "a": 0, "e": "Writing it down or circling it wakes up the reticular activating system. Your brain flags it as important, and it flows better the next time."}
+  ],
+  "written": [
+    "In your own words, what is an enharmonic equivalent? Give one example, and explain why the triangle points up for one name and down for the other.",
+    "Describe how each hand plays the C major scale going up. Where does the thumb go under or finger 3 cross over, and how does the 3 + 5 pattern fit each hand?",
+    "Why is \"little and often\" a better way to practice than one long session, especially when something is brand new?",
+    "What did you notice when you played the scale with your eyes closed, and then with the metronome at 70? What is the difference between chasing the click and feeling the beat?",
+    "Elaboration means connecting what you already know to something new. Pick one thing you already know from playing bass and connect it to something from this lesson."
+  ],
+  "wordbank": "scale, C major, triad, chromatic, sharp, flat, enharmonic equivalent, half step, tempo, metronome, quarter note, grand staff, treble clef, G clef, bass clef, F clef, perfect fifth, middle C position, thumb under, elaboration, reticular activating system, Fibonacci"
+}
