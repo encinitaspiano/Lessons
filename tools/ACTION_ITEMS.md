@@ -1,6 +1,6 @@
 # Action Items box (required on every Lesson Challenge)
 
-Every content JSON needs an `"action_items"` list of 4-9 short strings.
+Every content JSON needs an `"action_items"` list of 4-10 short strings.
 The builder shows them FIRST on the page, above Terms to Know, and adds the
 heading, the line "Key points we covered." and the starred-items note about
 the practice log by itself. Do not write those three things.
@@ -26,6 +26,13 @@ Rules
 - Include things assigned away from the piano (drum along to music, ask a
   parent a musical question). For kids, add one item addressed to the parent
   when the parent was asked for something ("For Dad: ...").
+- NEW PROCESSES OR IDEAS: whenever the lesson introduced a new practice
+  method, system, character or big idea for this student, give it its own
+  item, placed FIRST, labeled "New this week", naming it and pointing to the
+  summary, for example "New this week: Today we learned a new practice method
+  I'm calling Seed, Sprout and Bloom. See below for more on how to bring it
+  into your practice!" The summary must then have a section that explains it.
+  Only for things that were actually new in this lesson.
 - Keep fine detail OUT (how many times a note repeats, step vs skip, a single
   finger number). Turn those into Level 2 quiz questions instead.
 - Music only. No check-off boxes. ASCII only.

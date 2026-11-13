@@ -11,7 +11,7 @@ content.json schema (ASCII only):
   "date": "2026-10-01",
   "date_label": "Thursday, October 1, 2026",
   "action_items": [                        # REQUIRED - rules in tools/ACTION_ITEMS.md. Shown FIRST (above Terms to Know):
-    "Jingle Bells: Start at measure 13 ..." #   4-9 short key points / things to work on, one or two
+    "Jingle Bells: Start at measure 13 ..." #   4-10 short key points / things to work on, one or two
   ],                                       #   lines each; text before the first ": " is shown in bold
   "terms": [                               # "Terms to Know" box, shown right after Action Items
     {"name": "Staccato", "lang": "Italian", "meaning": "Means \\"detached\\". ...",
@@ -85,8 +85,8 @@ def level1(c):
 def build(path):
     c = json.loads(pathlib.Path(path).read_text())
     assert re.fullmatch(r"[a-z-]+", c["slug"]), "slug must be lowercase letters/hyphens"
-    assert 4 <= len(c.get("action_items", [])) <= 9, (
-        'content JSON needs "action_items": 4-9 short key points / things to work on. '
+    assert 4 <= len(c.get("action_items", [])) <= 10, (
+        'content JSON needs "action_items": 4-10 short key points / things to work on. '
         "Read tools/ACTION_ITEMS.md, write them from the full transcript, then rebuild. "
         "Do not edit this script or the template to get around it.")
     assert all(len(a) <= 260 for a in c["action_items"]), "keep each Action Item to one or two lines"
