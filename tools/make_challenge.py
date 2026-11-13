@@ -21,7 +21,7 @@ content.json schema (ASCII only):
   "sections": [                            # detailed lesson summary, in lesson order
     {"heading": "...", "paragraphs": ["..."], "bullets": ["..."], "note": "optional highlighted box"}
   ],
-  "practice": ["..."],                     # This week's practice
+                                           # (no "practice" list any more - Action Items replaced it, Nov 13, 2026)
   "questions": [                           # Level 2, 10-15 questions, 4 options each
     {"q": "...", "o": ["correct", "wrong", "wrong", "wrong"], "a": 0, "e": "why"}
   ],
@@ -78,8 +78,6 @@ def level1(c):
             out.append('  <ul>' + ''.join(f'\n    <li>{e(b)}</li>' for b in s["bullets"]) + '\n  </ul>')
         if s.get("note"):
             out.append(f'  <div class="note">{e(s["note"])}</div>')
-    out.append("\n  <h3>This week's practice</h3>\n  <ul>" +
-               ''.join(f'\n    <li>{e(p)}</li>' for p in c["practice"]) + '\n  </ul>')
     out.append('  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>')
     return "\n".join(out)
 

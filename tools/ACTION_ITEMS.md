@@ -4,6 +4,8 @@ Every content JSON needs an `"action_items"` list of 4-9 short strings.
 The builder shows them FIRST on the page, above Terms to Know, and adds the
 heading, the line "Key points we covered." and the starred-items note about
 the practice log by itself. Do not write those three things.
+The old "This week's practice" list at the bottom of the summary is gone;
+Action Items replaced it, so do not add a practice section to the summary.
 
 What the box is: a little summary of the key points covered in the lesson and
 what to work on before the next one. Like Otter's action items, but corrected
