@@ -10,7 +10,7 @@ content.json schema (ASCII only):
   "slug": "ziggy",                         # lowercase, letters/hyphens only
   "date": "2026-10-01",
   "date_label": "Thursday, October 1, 2026",
-  "action_items": [                        # "Action Items" box, shown FIRST (above Terms to Know):
+  "action_items": [                        # REQUIRED - rules in tools/ACTION_ITEMS.md. Shown FIRST (above Terms to Know):
     "Jingle Bells: Start at measure 13 ..." #   4-9 short key points / things to work on, one or two
   ],                                       #   lines each; text before the first ": " is shown in bold
   "terms": [                               # "Terms to Know" box, shown right after Action Items
@@ -87,7 +87,10 @@ def level1(c):
 def build(path):
     c = json.loads(pathlib.Path(path).read_text())
     assert re.fullmatch(r"[a-z-]+", c["slug"]), "slug must be lowercase letters/hyphens"
-    assert 4 <= len(c.get("action_items", [])) <= 9, "Action Items needs 4-9 short items"
+    assert 4 <= len(c.get("action_items", [])) <= 9, (
+        'content JSON needs "action_items": 4-9 short key points / things to work on. '
+        "Read tools/ACTION_ITEMS.md, write them from the full transcript, then rebuild. "
+        "Do not edit this script or the template to get around it.")
     assert all(len(a) <= 260 for a in c["action_items"]), "keep each Action Item to one or two lines"
     assert 10 <= len(c["questions"]) <= 15, "Level 2 needs 10-15 questions"
     for q in c["questions"]:
