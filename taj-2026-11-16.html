@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Taj - Lesson Challenge - 2026-11-16</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.actions { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.actions h3 { margin-top: 0; }
+.actions ol { margin: 6px 0 10px; padding-left: 24px; }
+.actions li { margin: 0 0 9px; }
+.actions .starred { margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--accent); }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Taj&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Monday, November 16, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="actions">
+    <h3>Action Items</h3>
+    <p class="hint">Key points we covered.</p>
+    <ol>
+      <li><b>New this week:</b> Diamond practice has grown into three levels called Seed, Sprout and Bloom, plus an optional eyes-closed round. See below for how to bring it into your practice!</li>
+      <li><b>Senorita Elisa, top half:</b> Play along with my recording every day (pickup to measure 7, quarter note at 60, counting out loud). Bloom level: count out loud with Sergeant Metronome at 60. Thumb glued to E, left hand stays put, play deeper into the keys.</li>
+      <li><b>Senorita Elisa, bottom half:</b> Write in all the eighth-note counts. Circle the left-hand two-note sets (A and G in purple and blue, then C and B, then B and A). Try the finger-number-plus-counting game, beat 2 of measure 10 to the downbeat of 15, slowly.</li>
+      <li><b>Drums first:</b> Set the bongos on your legs, big drum under the left hand, small drum under the right, and tap each hand&#x27;s rhythm while counting out loud for the tricky spots (pickup to measure 7 through measure 9) before you play them.</li>
+      <li><b>Colors and sharps:</b> Get some colored pencils at home. Circle any note you hesitate on in its color, and write in the sharps even when they are only implied (the F-sharps after the G natural).</li>
+      <li><b>Take Five:</b> Finish those last two bars on the last page.</li>
+      <li><b>New syncopated song:</b> Start with the left hand alone. Count three-and-four-and-one-and-two-and, and notice there is no note on the one or the four. Slow is the only speed for this one.</li>
+      <li><b>For Mom and Dad:</b> Please print the screenshot of the new song I sent; my printer was being grumpy.</li>
+    </ol>
+    <p class="starred"><b>&#9733;</b> On your practice log, any starred items are ones we didn&#x27;t get to today... so make sure you have those ready for next time. We will do those first next week.</p>
+  </div>
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Seed, Sprout and Bloom</span><span class="lang">Mr. Rod&#x27;s studio</span>
+      <div>The three levels that replace diamond practice. Seed: get to know the notes, fingering and a bit of the rhythm. Sprout: full rhythm plus counting out loud, and if you miss one, only one marble comes back. Bloom: everything plus Sergeant Metronome.</div></div>
+    <div class="term"><span class="tname">Pickup</span><span class="lang">English</span>
+      <div>A note or two that come before the first full beat of a measure. We kept starting from the pickup to measure 7, so you learn to begin in the middle instead of on autopilot from the top.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>Beat one of a measure. The two-note sets in the left hand land on the downbeat of measures 10, 11 and 14.</div></div>
+    <div class="term"><span class="tname">Sixteenth notes</span><span class="lang">English</span>
+      <div>Four notes in one beat, counted 2-e-and-a. Measure 9 is tricky because it shifts from eighth notes to sixteenth notes. You can say 2-and-and-a if the e trips you up.</div></div>
+    <div class="term"><span class="tname">Implied sharp (accidental)</span><span class="lang">English</span>
+      <div>Once a sharp is written in a measure, every later note on that line or space in the same measure is sharp too, even though nobody writes it again. If you still don&#x27;t see it, write it in. There is nothing wrong with that.</div></div>
+    <div class="term"><span class="sym">&#9675;</span><span class="tname">Natural</span><span class="lang">English</span>
+      <div>A plain white-key note, like the G natural right before the F-sharps.</div>
+      <span class="cs"><b>Color-shape:</b> a CIRCLE in the letter&#x27;s color. G natural is a blue circle.</span></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">Sharp</span><span class="lang">English</span>
+      <div>Raises a note one half step to the black key just above it.</div>
+      <span class="cs"><b>Color-shape:</b> a triangle pointing UP in the color of the white note below. F-sharp is a green triangle pointing up.</span></div>
+    <div class="term"><span class="tname">E</span><span class="lang">note name</span>
+      <div>The bottom note you hesitated on, and the note your thumb has to stay glued to in the double open E position.</div>
+      <span class="cs"><b>Color-shape:</b> a YELLOW circle.</span></div>
+    <div class="term"><span class="tname">A and G</span><span class="lang">note names</span>
+      <div>The left-hand set on the downbeat of measure 10, and the first of the three sets that build the bottom half.</div>
+      <span class="cs"><b>Color-shape:</b> A is a PURPLE circle, G is a BLUE circle.</span></div>
+    <div class="term"><span class="tname">B</span><span class="lang">note name</span>
+      <div>The note at the end of the line, and the bottom note of the B and A set in measure 14.</div>
+      <span class="cs"><b>Color-shape:</b> a PINK circle.</span></div>
+    <div class="term"><span class="tname">C</span><span class="lang">note name</span>
+      <div>The bottom note of the C and B set on the downbeat of measure 11.</div>
+      <span class="cs"><b>Color-shape:</b> a RED circle.</span></div>
+    <div class="term"><span class="tname">Double open E position</span><span class="lang">Mr. Rod&#x27;s studio</span>
+      <div>E position is the thumb on E with the fingers on the next notes in a row. Open E skips one note between the thumb and index finger. Double open E skips two. The thumb stays home on E while the other fingers reach.</div></div>
+    <div class="term"><span class="tname">Minor seventh</span><span class="lang">English</span>
+      <div>An octave minus one step. A up to the next G is a minor seventh. On the white keys it looks the same distance as the next pair, but the black keys in between make it smaller.</div></div>
+    <div class="term"><span class="tname">Major seventh</span><span class="lang">English</span>
+      <div>One half step bigger than a minor seventh. C up to B is a major seventh. Same white-key distance as A to G, different size. That is why the black-and-white pattern can be deceiving.</div></div>
+    <div class="term"><span class="tname">Major third and minor third</span><span class="lang">English</span>
+      <div>A skip of two letter names. G up to B is a major third (four half steps); A up to C is a minor third (three half steps). Both hands skip up a third from the A-G set to the C-B set.</div></div>
+    <div class="term"><span class="tname">Skip and step</span><span class="lang">English</span>
+      <div>A step moves to the very next letter; a skip jumps over one. The bottom-half sets go: skip up to a third, down a step, down a step, up a step.</div></div>
+    <div class="term"><span class="tname">Staccato</span><span class="lang">Italian</span>
+      <div>Means &quot;detached.&quot; The little dots above or below the right-hand notes in the bottom half: play them short and let go. This is the first time the melody itself goes staccato.</div></div>
+    <div class="term"><span class="tname">Syncopation</span><span class="lang">English, from Greek &quot;synkope&quot; (cutting short)</span>
+      <div>When the notes land between the main beats instead of on them. In the new song the left hand plays on the ands and skips the one and the four. It is a mind puzzle, and it is where the freedom is.</div></div>
+    <div class="term"><span class="tname">Perfect fifth</span><span class="lang">English</span>
+      <div>Five letter names apart, like A-flat up to E-flat in the new song&#x27;s left hand.</div></div>
+    <div class="term"><span class="tname">Major sixth</span><span class="lang">English</span>
+      <div>Six letter names apart. When the new song&#x27;s left hand changes the octave of its fifth, the interval you reach becomes a major sixth. Relating it to the fifth you already know is elaboration.</div></div>
+    <div class="term"><span class="tname">Elaboration</span><span class="lang">English</span>
+      <div>Connecting something new to something you already know. Finding the A and G you played earlier in the song, then circling the new A and G, ties the new part to the old.</div></div>
+    <div class="term"><span class="tname">Reticular activating system</span><span class="lang">English</span>
+      <div>The part of your brain that decides what is worth noticing. Circling a color, writing a note name or a finger number tells it: remember this one.</div></div>
+    <div class="term"><span class="tname">Sergeant Metronome</span><span class="lang">Mr. Rod&#x27;s studio</span>
+      <div>The click. He never speeds up. Bloom practice means counting out loud while he keeps you honest.</div></div>
+    <div class="term"><span class="tname">Speed monkey</span><span class="lang">Mr. Rod&#x27;s studio</span>
+      <div>The part of you that wants to rush, especially when you repeat something. He does not like 60. Your musical soul does.</div></div>
+  </div>
+
+  <h3>New this week: Seed, Sprout and Bloom</h3>
+  <p>Taj, we started by isolating a spot in Senorita Elisa with what I used to call diamond practice. The name came from polishing: a real diamond takes millions of years to grow, and if you did not know what you were looking at you might toss it aside as a dirty piece of glass. The cut and the polish are what give it its value. Now I have connected it to the music garden. Seed: you are just getting to know the notes, the fingering and a little of the rhythm. Sprout: notes, fingering and note values with real rhythmic integrity, counting out loud with a steady beat. In diamond practice, one mistake sent all the marbles back; in Sprout, if you miss one, only one marble comes back. Bloom: all of that plus Sergeant Metronome. And there is an optional scary round at any level: eyes closed.</p>
+  <p>Is counting out loud easy or hard? Hard. That is the point. We are not here to find the easiest route; we are here to integrate and learn.</p>
+
+  <h3>Drums on your legs: isolating the rhythm layer</h3>
+  <p>You set the bongos on your legs, the larger drum under the left hand and the smaller under the right, and tapped what each hand plays while I played and you counted: one-and-two-and-three-and-four-and. You said it helps because you lose the notes for a second and can focus on the rhythm. Exactly. We strip away the other layers so you can feel the constant pulse and how it shows up in each hand.</p>
+  <p>The two rhythmically tricky spots were measures 4 and 5 and measures 8 and 9. We tapped from the pickup to measure 7 through measure 9, then from the pickup to measure 4. Then came the two-step process: tap and count a bracketed section first, then play that exact section while counting out loud. Measure 9 is the one that shifts from eighth notes to sixteenth notes, 2-e-and-a. You find it easier to say 2-and-and-a, and that is fine.</p>
+
+  <h3>Be nice to Dave: colors and implied sharps</h3>
+  <p>When you hesitated on the bottom note, I asked what color it was. Yellow. It is an E. Be more proactive with colors; get colored pencils at home. What are you activating when you circle a color or write a note name or a finger number? The reticular activating system, one of the most powerful tools we have once we know how to use it.</p>
+  <p>Your musical brainchild, Dave, is like a kid in a classroom raising his hand. If you ignore him, how does he feel? Not very nice. So when he asks what a note is, you stop and tell him: that&#x27;s an E, son. Thanks, Papa. Everybody is happy.</p>
+  <p>We also found a G natural followed by F-sharps where the sharp was only written once. Why is it not written again? Because once a sharp appears in a measure, it is implied for the rest of that measure. Some old-school teachers would be shocked that I let you write the sharps in. I disagree with them. We do not speak the language of music fifteen hours a day the way we speak English, so if you still don&#x27;t see it, write it in. Over time it becomes automatic.</p>
+
+  <h3>Sprout rounds on measure 9, then eyes closed</h3>
+  <p>You did measure 9 at the Sprout level three times: notes, fingering, rhythm, counting out loud. Each time you repeat, be aware of the speed monkey. Without the metronome, repetition tends to creep faster and faster, and then we make mistakes and think repetition does not work. It is the unconscious speeding up that sabotages the power of repetition. On one round you did something interesting: you slowed it down on your own. The speed monkey did not like it. Your musical soul did, because at a slower ratio you can keep track of all the moving parts.</p>
+  <p>Then the optional round: eyes closed. There was one note that got shaky. Any weakness that is small with your eyes open gets amplified with your eyes closed, which makes it a great way to find out what you really know. The note with finger 4 is an E, circled yellow; the note you land on is an A, circled purple. After a couple more rounds you were watching your body do it, like the helicopter parents finally flew away and you had to trust yourself. We started from the pickup to measure 7 again to make sure you were really reading rather than running on autopilot from a predictable spot.</p>
+
+  <h3>Double open E position: glue the thumb</h3>
+  <p>Here is the picky part. E position is the thumb on E with the fingers on the notes in a row. Open E skips one note between the thumb and the index finger. Double open E skips two. In this passage you were moving the whole hand up each time, which pulled your thumb off its note. Keep that thumb glued to the E and let the other fingers reach: 1-3-5, then 3-4-5-4-3-1-2, right hand alone, saying the finger numbers, then hands together.</p>
+  <p>Your left hand was also drifting out of position between notes. Minimize the movement; only move when you have to. And you were playing right on the edge of the white keys. Black keys need the edge; white keys do not. Play deeper into the keys. Less distance means fewer chances to fall out of alignment, and it relaxes you at the same time. Then we did the Bloom level, pickup to measure 7, counting out loud with Sergeant Metronome, and you earned the credit. The one miss afterward came from worrying about the thumb, which created tension, which lifted the pinky. Sometimes the tension creates the mistake. Let Go Lisa versus Controlling Carlita: control is part of it, but we usually over-control, especially with our minds.</p>
+  <div class="note">Rhythm: notes on and and a, e silent in that measure. Hand: thumb home on E. Keys: deeper, not on the edge. Mind: effort and surrender in balance.</div>
+
+  <h3>Sixty, not ninety-two</h3>
+  <p>Where was the tempo for all of that? You guessed 60. Right on the money. The last two times you had been at 92 and then 85, so the speed monkey thinks we are going backwards. We are not. If music were about speed, a band at a concert would play every song as fast as possible and send you home in twenty minutes. What is it in us that wants to keep going faster, especially while we are learning? What if we did the opposite?</p>
+  <p>In India, musicians traditionally offer their playing to Saraswati, the goddess of music and the arts. I am not asking you to take up a religion. I am saying that when you play for something bigger than your ego, it becomes easier to slow down and ask how to make the music more beautiful. So on your page I wrote today&#x27;s date and 60. I also recorded about ninety seconds of Senorita Elisa for you, starting on the pickup to measure 7, quarter note at 60, counting out loud, through the second ending. Play along with it every day.</p>
+
+  <h3>The bottom half: patterns, sevenths and staccato</h3>
+  <p>First job at home: write in all the eighth-note counts for the remaining measures at the bottom of the page. Then look at the left hand. The two notes on the downbeat of measure 10 are purple and blue, A and G. Are there any other A-and-G sets on the page? Circle them. Measure 14 has B and A (always name from low to high). Measure 11 has C and B. Those sets of two land on the downbeats, and you also played A and G earlier in the song, so circle those too. That is elaboration: connecting the new to the old.</p>
+  <p>The intervals: A up to G is a minor seventh, an octave minus a step. C up to B is a major seventh. With your eyes closed they feel like the same distance on the white keys, but the black keys in between make one bigger than the other, which is why beginners get fooled into thinking every same-looking skip is the same size. The simpler way to think about it is movement: from A-G, both hands skip up a third (left hand a minor third, right hand a major third) to C-B. Then down a step to B-A. Then down a step to A-G. Then up a step. Five sets that are really three. The right hand in this section has staccato dots, so the melody itself goes short and detached for the first time.</p>
+
+  <h3>The finger-number game (advanced)</h3>
+  <p>Starting on beat 2 of measure 10 I played and said finger numbers whenever there was a single note, and counted the beat whenever there was more than one note. You named exactly what I was doing. Then you tried it, from beat 2 of measure 10 to the downbeat of measure 15, and for a first attempt it was impressive. It forces the speed monkey to slow down so you can track two sets of numbers at once, and making it harder like that builds deeper neural networks.</p>
+  <p>It also revealed a pattern you would not have seen otherwise: in measures 11, 12, 13 and 14, the beats you count out loud are always and-two-and-three. Harder is not the goal by itself; harder is what lets you see the patterns.</p>
+
+  <h3>Take Five and the new syncopated song</h3>
+  <p>You are down to the last two bars of Take Five on the last page. Finish them. Since we have two weeks, I played you a new song, not a Christmas song but related to Christmas, and you liked it. The rhythm is the whole challenge: it is syncopated, with the notes landing between the beats. The left hand plays A-flat up to E-flat, a perfect fifth, and then the octave, and when the octave changes, the reach becomes a major sixth. Relating that sixth to the fifth you already know is elaboration helping you.</p>
+  <p>The way the first beat is written sets people up for confusion, so count it my way: three-and-four-and-one-and-two-and. You are not playing on the one or on the four. Try that in the left hand, slowly, until the puzzle starts to make sense. It will grind your brain, and that kind of grinding is what gives you the freedom you are looking for. I sent you a screenshot; print it at home.</p>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> Seed, Sprout, Bloom, marbles, Sergeant Metronome, speed monkey, pickup, downbeat, eighth notes, sixteenth notes, 2-e-and-a, implied sharp, natural, F-sharp, G natural, E yellow, A purple, G blue, B pink, C red, double open E position, thumb, minor seventh, major seventh, major third, minor third, skip, step, staccato, syncopation, perfect fifth, major sixth, octave, elaboration, reticular activating system, eyes closed, 60<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Taj";
+var LESSON_DATE = "2026-11-16";
+var LESSON_LABEL = "Monday, November 16, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "In Sprout practice, what happens when you miss one?",
+  "o": [
+   "Only one marble comes back",
+   "All of the marbles come back",
+   "Nothing happens",
+   "You skip to the next measure"
+  ],
+  "a": 0,
+  "e": "That is the difference from the old diamond practice, where one miss sent every marble back. Sprout is gentler: one miss, one marble."
+ },
+ {
+  "q": "What does the Bloom level add on top of Sprout?",
+  "o": [
+   "Sergeant Metronome",
+   "Closing your eyes",
+   "Playing hands separately",
+   "Tapping the drums"
+  ],
+  "a": 0,
+  "e": "Bloom is notes, fingering, rhythm and counting out loud with the metronome clicking. Eyes closed is an optional extra at any level."
+ },
+ {
+  "q": "With the bongos on your legs, which drum goes under the left hand?",
+  "o": [
+   "The larger drum",
+   "The smaller drum",
+   "Both hands share the large drum",
+   "The hands switch every measure"
+  ],
+  "a": 0,
+  "e": "Larger drum on the left, smaller on the right. Each drum stands for what that hand plays."
+ },
+ {
+  "q": "Why tap the rhythm on the drums before playing a tricky spot?",
+  "o": [
+   "It strips away the notes so you can focus on the rhythm layer alone",
+   "It makes your fingers stronger",
+   "It helps you memorize the note names",
+   "It lets you play faster afterward"
+  ],
+  "a": 0,
+  "e": "You said it yourself: you lose the notes for a second and can focus on what is actually hard. Then you put the layers back together."
+ },
+ {
+  "q": "Measure 9 shifts from eighth notes to sixteenth notes. How are the sixteenth notes on beat 2 counted?",
+  "o": [
+   "2-e-and-a",
+   "2-and",
+   "2-3-4",
+   "2-and-3-and"
+  ],
+  "a": 0,
+  "e": "Four sixteenth notes fit in one beat: 2-e-and-a. If the e trips you up, 2-and-and-a is fine for now."
+ },
+ {
+  "q": "An F-sharp is written early in a measure. Later in that same measure there is another F with nothing written next to it. How do you play it?",
+  "o": [
+   "Sharp, because the sharp is implied for the rest of the measure",
+   "Natural, because nothing is written",
+   "Flat, because it cancels the sharp",
+   "It depends on which hand plays it"
+  ],
+  "a": 0,
+  "e": "Once a sharp appears in a measure, it lasts through that measure. If you still do not see it, write it in."
+ },
+ {
+  "q": "What is the double open E position?",
+  "o": [
+   "Thumb on E with two notes skipped between the thumb and the index finger",
+   "Thumb on E with the fingers on five notes in a row",
+   "Thumb on E with one note skipped between the thumb and the index finger",
+   "Both thumbs on the same E"
+  ],
+  "a": 0,
+  "e": "E position is five in a row. Open E skips one note between thumb and index. Double open E skips two."
+ },
+ {
+  "q": "Why should the thumb stay glued to the E in that passage?",
+  "o": [
+   "A stable thumb keeps the hand aligned so tension does not knock the other fingers off",
+   "It makes the E sound louder",
+   "It lets you play the passage faster",
+   "It keeps the pedal steady"
+  ],
+  "a": 0,
+  "e": "When the thumb drifts, the whole hand moves and tension creeps in. Today that tension lifted your pinky onto the wrong note."
+ },
+ {
+  "q": "Where on the white keys should you be playing?",
+  "o": [
+   "Deeper into the keys, not on the edge",
+   "Right on the front edge of every key",
+   "As close to the black keys as possible",
+   "It does not matter where"
+  ],
+  "a": 0,
+  "e": "Black keys need the edge; white keys do not. Less travel means less chance of falling out of alignment, and it relaxes you."
+ },
+ {
+  "q": "What interval is A up to the next G?",
+  "o": [
+   "A minor seventh",
+   "A major seventh",
+   "An octave",
+   "A perfect fifth"
+  ],
+  "a": 0,
+  "e": "An octave minus one step. A to G is a minor seventh, the first of the left-hand sets in the bottom half."
+ },
+ {
+  "q": "What interval is C up to the next B?",
+  "o": [
+   "A major seventh",
+   "A minor seventh",
+   "A major sixth",
+   "An octave"
+  ],
+  "a": 0,
+  "e": "It looks the same distance as A to G on the white keys, but with fewer black keys in between it is a half step bigger: a major seventh."
+ },
+ {
+  "q": "What is the Italian name for the little dots above or below the right-hand notes in the bottom half?",
+  "o": [
+   "Staccato",
+   "Legato",
+   "Accent",
+   "Fermata"
+  ],
+  "a": 0,
+  "e": "Staccato means detached: play it short and let go. This is the first time the melody itself goes staccato."
+ },
+ {
+  "q": "What are you activating when you circle a note's color or write in a finger number?",
+  "o": [
+   "The reticular activating system",
+   "The speed monkey",
+   "Sergeant Metronome",
+   "Double open E position"
+  ],
+  "a": 0,
+  "e": "The reticular activating system decides what your brain pays attention to. Writing and circling tell it: this one matters."
+ },
+ {
+  "q": "In the new syncopated song's left hand, counting three-and-four-and-one-and-two-and, which two beats get NO note?",
+  "o": [
+   "The one and the four",
+   "The two and the three",
+   "The one and the two",
+   "The three and the four"
+  ],
+  "a": 0,
+  "e": "The notes land on the ands around them, which is what makes it syncopated and why it feels like a puzzle at first."
+ },
+ {
+  "q": "What is syncopation?",
+  "o": [
+   "Notes landing between the main beats instead of on them",
+   "Playing every beat evenly",
+   "A very slow tempo",
+   "A sign that tells you to repeat"
+  ],
+  "a": 0,
+  "e": "Syncopation puts the notes off the beat, on the ands. The new song is full of it, which is exactly why it is going to grind your brain in a good way."
+ }
+];
+
+var WRITTEN = [
+ "Explain Seed, Sprout and Bloom to a friend. How is it different from the old diamond practice, and what happens to your marbles at each level?",
+ "Why did we drum the rhythm on your legs before playing? Describe what it did for the pickup to measure 7 and for measure 9.",
+ "Describe the double open E position and how it feels in your hand when the thumb stays glued to the E. What happened the time you worried about the thumb?",
+ "Tell me about the left-hand sets in the bottom half (A and G, C and B, B and A). How do your hands move from one set to the next, and why are they all called sevenths even though some are major and some are minor?",
+ "Mr. Rod took you from 92 to 85 to 60. Explain why. What does the speed monkey say about that, and what does your musical self say?",
+ "What did closing your eyes show you about what you really know in that passage? How could you use that at home?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>

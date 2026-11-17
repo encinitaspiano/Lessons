@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Curtis - Lesson Challenge - 2026-11-16</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.actions { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.actions h3 { margin-top: 0; }
+.actions ol { margin: 6px 0 10px; padding-left: 24px; }
+.actions li { margin: 0 0 9px; }
+.actions .starred { margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--accent); }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Curtis&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Monday, November 16, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="actions">
+    <h3>Action Items</h3>
+    <p class="hint">Key points we covered.</p>
+    <ol>
+      <li><b>New this week:</b> Today we started a musical scientific method and a music journal. Observe, predict, test with the metronome, record the data. See below for how to bring it into your practice!</li>
+      <li><b>Bach Partita, second half:</b> Keep the metronome at 62, your sweet spot (you were floating between 57 and 65). The first half stays at 70. Let the ego grumble; we are serving the music.</li>
+      <li>G pedal section, measures 90 to the downbeat of 99: Play it slowly WITHOUT the metronome and hold the pulse yourself, no hurry. Then play the D pedal section, measures 29 to the downbeat of 38, right after it and feel how much is the same.</li>
+      <li>Right hand, measures 95 to the downbeat of 99, metronome at 65: Sing the pitches and say the finger numbers as you play. Pick a singing octave that is comfortable, and stay calm through the jump at the end of 96 into 97.</li>
+      <li><b>Measure 98:</b> Write the finger 3 above the C so the fingering reads 5-2-5-2-3.</li>
+      <li><b>Music journal:</b> Carry a small notebook (or stickies) between both homes. Write one observation per practice and a practice prediction, for example: I predict measures 94 to 105 will be the trickiest this week.</li>
+      <li><b>Desert keyboard:</b> Practice the second half with the strings sound (try the variation button too) and from measure 72 with the bass sound. Different feedback, deeper learning.</li>
+    </ol>
+    <p class="starred"><b>&#9733;</b> On your practice log, any starred items are ones we didn&#x27;t get to today... so make sure you have those ready for next time. We will do those first next week.</p>
+  </div>
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Partita</span><span class="lang">Italian</span>
+      <div>Means &quot;divided&quot; or &quot;parted.&quot; A set of dance movements. Your Bach Partita is just two voices, one line in each hand, which is exactly why it humbles us: nowhere to hide.</div></div>
+    <div class="term"><span class="tname">Pedal (pedal point)</span><span class="lang">English, from Latin &quot;pedalis&quot; (of the foot)</span>
+      <div>One note that stays put in the bass while the harmony moves above it. Measures 90 to 99 sit on a G pedal; measures 29 to 38 sit on a D pedal. The stuck note is one of Bach&#x27;s ways of building tension: how long is this thing going to last?</div></div>
+    <div class="term"><span class="tname">Dominant seventh (G7)</span><span class="lang">English</span>
+      <div>G, B, D and F. The five chord of C major. G7 pulling to C is the most basic five-to-one motion in music, and Bach uses it right over the G pedal before he turns up the heat.</div></div>
+    <div class="term"><span class="tname">Fully diminished seventh</span><span class="lang">English</span>
+      <div>Four notes stacked in minor thirds. Over the G pedal Bach builds an A diminished seventh (A, C, E-flat, G-flat). It is the chord that makes you squirm, and that is the point.</div></div>
+    <div class="term"><span class="tname">Passing tone</span><span class="lang">English</span>
+      <div>A note that walks between two chord tones and does not belong to the chord. The D inside that diminished chord is a passing tone. People stare at it and say, what is that D? It is just passing through.</div></div>
+    <div class="term"><span class="tname">Half-whole scale</span><span class="lang">English</span>
+      <div>A scale that alternates half step, whole step, half step, whole step. I wrote it in your score near measure 94. Jazz pianists learn it today; Bach was writing it 300 years ago.</div></div>
+    <div class="term"><span class="tname">Perfect fifth</span><span class="lang">English</span>
+      <div>Five letter names apart, like G up to D or C up to G. The D pedal section and the G pedal section are the same idea a perfect fifth apart. G major is a fifth higher than C major, which is why the end of the piece lands where it does.</div></div>
+    <div class="term"><span class="tname">Cadence</span><span class="lang">Italian &quot;cadenza&quot;</span>
+      <div>Means &quot;a falling.&quot; The landing at the end of a phrase. Measure 37 falling onto the downbeat of 38, and measure 98 falling onto the downbeat of 99, are both cadences with a playful, almost childlike Mozart quality after all that darkness.</div></div>
+    <div class="term"><span class="tname">Downbeat (DB)</span><span class="lang">English</span>
+      <div>Beat one of a measure. In the music journal I write DB as shorthand: measures 29 to the DB of 38 means you count the downbeat of 38 as the finish line.</div></div>
+    <div class="term"><span class="tname">B7 flat 9</span><span class="lang">English (jazz name)</span>
+      <div>The chord at the very start of the second half. The left hand outlines B7, and the C natural on top makes it a flat nine. Take away the B and the upper notes D-sharp, F-sharp, A and C are a diminished seventh. Same chord, two names.</div></div>
+    <div class="term"><span class="tname">ADSR</span><span class="lang">English (music technology)</span>
+      <div>Attack, Decay, Sustain, Release: the shape of every sound. A piano has a fast attack and cannot grow a note once it is struck. A string sound has a slower attack and endless sustain, which is why it naturally slowed you down.</div></div>
+    <div class="term"><span class="tname">Elaboration</span><span class="lang">English</span>
+      <div>From &quot;Make It Stick.&quot; Connecting new content to something you already know. Linking measures 90 to 99 to measures 29 to 38 is elaboration in action. According to neuroscientists, there is no known limit to how much you can learn through it.</div></div>
+    <div class="term"><span class="tname">Scientific method</span><span class="lang">English</span>
+      <div>Observe, ask a question, research, form a hypothesis, test it, analyze the data, draw a conclusion. Our musical version: notice what is tricky, predict it, test it with the metronome, write down what happened.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time.&quot; The speed of the beat, measured in beats per minute. Second half at 62 with the metronome, first half at 70, right hand in 95 to 99 at 65.</div></div>
+  </div>
+
+  <h3>Serving the music, not the ego</h3>
+  <p>Curtis, you told me the second half of the Partita is playing in your head when you wake up, almost like an orchestra, choral with strings. That is your soul singing, and it is also exactly what &quot;Make It Stick&quot; describes: when we make the learning more difficult in the moment, the real learning happens afterward, in between our sessions. Think of practice as careful data entry. Rush the entry and the system fills with bugs; enter it slowly and matter-of-factly and it becomes automated into your body.</p>
+  <p>You said 70 feels easier for the second half because you are so used to 70 in the first half. My counter: it feels easier because the ego likes it. Bach is a messenger from the music gods who asks us one question over and over: are we serving the ego or serving the music? Based on what I heard, you were floating between 57 and 65, so 62 is your sweet spot for now. The first half stays at 70.</p>
+
+  <h3>New this week: a musical scientific method</h3>
+  <p>The scientific method is a step-by-step way to get reliable knowledge: make an observation, ask a question, do some research, form a hypothesis, test it, analyze the data, draw a conclusion, and share the results so others can repeat them. What if we built a musical version? Our measuring instrument is the little metronome. It measures how efficiently you process the music from your eyes, through your mind, to your fingers, into a steady pulse.</p>
+  <p>Here is how it looks at the piano. Observe: listen and notice. Ask: what part is new, what part is tricky, what variable is getting in the way (fingering, rhythm, hand position, or just a passage that needs to get into the body)? Research: look into the score, what is the harmony doing? Hypothesize: make a practice prediction, such as &quot;I predict measures 94 to 105 will be trickier this week.&quot; Test with the metronome. Analyze: where exactly did the first missed note happen? Today you could point to it: measure 95, you spread open too much, F then D, then B instead of C. That is good data. Being able to document what you missed is half the cure.</p>
+  <div class="note">Keep a small music journal (a notebook you carry between both homes, or stickies in a pinch). Today&#x27;s entry would read: m. 29 to DB 38, D pedal, D7 to G, nine measures and a downbeat. m. 90 to DB 99, G pedal, G7 to C, nine measures and a downbeat, ends in C major.</div>
+
+  <h3>Strings, bass and the shape of a sound</h3>
+  <p>You played the second half with the strings sound on your desert keyboard, no metronome, just at the tempo of where you are. It was fun, and it slowed you down. Why? Every sound has an ADSR: attack, decay, sustain, release. The piano is a percussion instrument with a fast attack; the loudest moment is the very beginning and you cannot make a held note grow. The string sound has a slower attack, so you have to wait for each note to reach its peak, and that wait calms the tempo. Press the variation button on the strings and the attack is delayed even more.</p>
+  <p>Then you tried the bass sound from measure 72, hands together. The right hand came out sounding like a guitar, so it became a duet between a bass and a guitar, and right away you got more playful. Changing the sound changes the feedback your body and awareness receive, and whether you notice it or not, that forces you to adapt. It is a gentle trick on the ego that is tired of hearing the same piece the same way, and it keeps the brain awake. Mess around with the organs, the harpsichord and the electric pianos too.</p>
+  <p>The same principle works at home: a softer sound or a muted piano makes you listen harder and play slower.</p>
+
+  <h3>Measure numbers for the last page</h3>
+  <p>The copy I sent cut off the measure numbers, so we wrote them in together. The bottom of page three runs 81 through 86, so the top of the fourth page is measure 87. The systems on that page begin at 87, 92, 96 and 101, and the last measure of the piece is 112. Having those numbers makes every reference quicker and makes your journal entries exact.</p>
+
+  <h3>The G pedal: how Bach builds tension (measures 90 to 99)</h3>
+  <p>Starting in measure 90 the left hand gets stuck on a G. That is a pedal, and a stuck note creates tension all by itself: how long is this going to last? Above it, Bach starts simple: G7, back to G, G7 again, then C. Just five to one. Then, with the G still holding, he builds an A fully diminished seventh (A, C, E-flat, G-flat) with a D passing through it. You thought the G7 was tense? Now it really hurts.</p>
+  <p>You noticed something beautiful on your own: the lowest notes in the right hand step downward through measures 93 and 94, C to B to A and on down. Right in there I wrote &quot;half-whole scale&quot; in your score. Blend those notes together and you get a scale alternating half steps and whole steps, the very scale jazz pianists study today. Bach wrote it three hundred years ago. Then he circles all around the G, first here, then there, then there, until he finally says, okay, I am out of here, and lands in C major at measure 99.</p>
+
+  <h3>Compare and contrast: the D pedal (measures 29 to 38)</h3>
+  <p>Go to the bottom of page one. Instead of G, the pedal is D, and the same move happens a perfect fifth higher: D7, then the one chord, the same idea morphed into D major. The first-half version ends in G, a fifth above C, and the second-half version ends in C. Both sections are exactly nine measures and a downbeat (be humble and count them: 29 through 37 plus the downbeat of 38; 90 through 98 plus the downbeat of 99).</p>
+  <p>There are tiny differences that change the flavor. The D pedal begins on the higher D in measure 29; the G pedal begins on the lower G in measure 90. In measure 33 the lowest right-hand note is an E, a whole step away from the D, and in the second half that same rub is even more dissonant. The second half also opens outlining E minor, which is why it feels darker to you even though so much is the same material.</p>
+  <p>You played the G pedal section and then the D pedal section back to back with no metronome. This is elaboration: connecting a brand new blob of information to a network your brain already owns. Just as a third language is easier once you know two, measures 90 to 99 get easier once your brain knows they are measures 29 to 38 wearing a different key.</p>
+
+  <h3>Two birds, one beautiful stone (measures 95 to 99)</h3>
+  <p>At 65 with the metronome you played 90 to 99 hands together and the first slip came in measure 95. So we isolated: right hand alone, measures 95 to the downbeat of 99, metronome at 65. Then I added a layer: I sang the pitches and said the finger numbers out loud as I played. The voice carries the melody while the mouth delivers the data point of each finger. That is two birds with one stone, and it integrates the passage much more deeply into your body.</p>
+  <p>Two variables showed up when you tried it. First, you sang in an octave that was out of your range and the strain crept into your hands; choose a comfortable octave, even if you have to jump it down. Second, measure 98: the fingering is 5-2-5-2-3, and the 3 on the C was implied but not written in your copy. You played 5-4-5 there. Write the 3 above the C.</p>
+  <p>The ending of measure 96 into 97 has a jump, and most people rush through it. The challenge is to see the tricky spot coming, mentally and visually, and stay with the metronome without feeling hurried. On your last pass you told me you were thinking, what if I say the wrong number? Then you tried once more with the thinking mind quiet, just trusting your body, and it flowed. That is the experiment worth repeating.</p>
+
+  <h3>Taming the speed monkey without the metronome</h3>
+  <p>You have integrated the metronome so well that the next challenge is to graduate beyond it for short stretches: play the G pedal section slowly with no click, imagining the metronome is there, and see if you can stay in a place of non-hurry. Your first try crept up to about 65 to 70. That is understandable, it is already in your body, but the goal is to be able to hold a slow tempo from the inside. Not eliminating the metronome, just adding this skill alongside it.</p>
+  <p>A reminder on fingering with Bach: he demands the optimized fingering because each choice affects the next passage, like dominoes. But do not treat a right note with a wrong finger as a disaster. There is a dance between optimized fingering and adaptability. Trust yourself, a little every day, and let the music flow through you.</p>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> pedal point, G pedal, D pedal, dominant seventh, G7, fully diminished seventh, passing tone, half-whole scale, perfect fifth, cadence, downbeat, B7 flat 9, ADSR, attack, sustain, release, elaboration, scientific method, hypothesis, metronome, tempo, music journal, ego, Bach, partita, fingering, measure 98<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Curtis";
+var LESSON_DATE = "2026-11-16";
+var LESSON_LABEL = "Monday, November 16, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "Starting in measure 90, the left hand holds onto one note while the harmony changes above it. What is that device called?",
+  "o": [
+   "A pedal (pedal point)",
+   "A cadence",
+   "A passing tone",
+   "A trill"
+  ],
+  "a": 0,
+  "e": "A pedal is a note that stays put while everything above it moves. The stuck note itself builds tension: how long is this going to last?"
+ },
+ {
+  "q": "Which note is the pedal in measures 90 to 99?",
+  "o": [
+   "G",
+   "D",
+   "C",
+   "B"
+  ],
+  "a": 0,
+  "e": "The left hand is stuck on G from measure 90 all the way to the release into C major at measure 99."
+ },
+ {
+  "q": "Which note is the pedal in measures 29 to 38?",
+  "o": [
+   "D",
+   "G",
+   "A",
+   "E"
+  ],
+  "a": 0,
+  "e": "The first-half version sits on a D pedal, with D7 moving to the one chord. It begins on the higher D in measure 29."
+ },
+ {
+  "q": "How is the D pedal section related to the G pedal section?",
+  "o": [
+   "Same idea, a perfect fifth apart",
+   "Same notes, one octave apart",
+   "The second is the first played backwards",
+   "They are unrelated passages"
+  ],
+  "a": 0,
+  "e": "Bach reuses the material and morphs it: D7 to G in the first half, G7 to C in the second half. D is a perfect fifth above G, so it is the same idea a fifth apart."
+ },
+ {
+  "q": "How long is each pedal section (29 to 38 and 90 to 99)?",
+  "o": [
+   "Nine measures and a downbeat",
+   "Eight measures and a downbeat",
+   "Twelve measures exactly",
+   "Four measures and a downbeat"
+  ],
+  "a": 0,
+  "e": "Be humble and count: 29 through 37 is nine measures, plus the downbeat of 38. Same for 90 through 98 plus the downbeat of 99."
+ },
+ {
+  "q": "G7 moving to C over the pedal is what kind of harmonic motion?",
+  "o": [
+   "Five to one (dominant to tonic)",
+   "One to four",
+   "Four to five",
+   "Two to five"
+  ],
+  "a": 0,
+  "e": "G is the five chord of C major. G7 to C is the most basic five-to-one motion, and Bach starts there before adding the diminished chord."
+ },
+ {
+  "q": "Over the G pedal, Bach stacks A, C, E-flat and G-flat. What chord is that?",
+  "o": [
+   "A fully diminished seventh",
+   "A dominant seventh",
+   "An augmented triad",
+   "A major seventh"
+  ],
+  "a": 0,
+  "e": "Four notes stacked in minor thirds make a fully diminished seventh chord. It is the chord that makes you squirm, which is how Bach raises the tension."
+ },
+ {
+  "q": "The D that appears inside that diminished chord is best described as what?",
+  "o": [
+   "A passing tone",
+   "The root of the chord",
+   "The pedal note",
+   "The fifth of the chord"
+  ],
+  "a": 0,
+  "e": "The D is not part of the A diminished seventh. It is just passing through between chord tones. People stare at it and wonder; it is simply a passing tone."
+ },
+ {
+  "q": "What scale did Rod write into your score near measure 94, the one jazz pianists study today?",
+  "o": [
+   "Half-whole scale",
+   "Whole-tone scale",
+   "Chromatic scale",
+   "Pentatonic scale"
+  ],
+  "a": 0,
+  "e": "Blend the notes in that passage and they alternate half step, whole step. That is the half-whole scale, and Bach wrote it 300 years before jazz."
+ },
+ {
+  "q": "What do the letters ADSR stand for?",
+  "o": [
+   "Attack, Decay, Sustain, Release",
+   "Accent, Dynamics, Speed, Rhythm",
+   "Attack, Delay, Sound, Resonance",
+   "Articulation, Duration, Sustain, Rest"
+  ],
+  "a": 0,
+  "e": "Every sound has an attack, a decay, a sustain and a release. Synthesizer pioneers like Bob Moog built instruments around that shape."
+ },
+ {
+  "q": "Why did the strings sound naturally slow you down?",
+  "o": [
+   "Its attack is slower, so you wait for each note to reach its peak",
+   "The string sound is quieter, so you play more carefully",
+   "The keys become heavier in string mode",
+   "The string sound has no sustain"
+  ],
+  "a": 0,
+  "e": "A piano has a fast attack. The string sound takes longer to reach its peak, so your body waits for it, and the tempo calms down. The variation button delays the attack even more."
+ },
+ {
+  "q": "Once a piano note has been struck, how do you make that same note louder?",
+  "o": [
+   "You cannot; the loudest moment is the attack, so you would have to strike it again",
+   "Press the key further down after striking it",
+   "Hold the damper pedal down longer",
+   "Lean into the key the way a violinist leans into the bow"
+  ],
+  "a": 0,
+  "e": "The piano is a percussion instrument. A violinist can grow a note with the bow; a pianist cannot grow a note at all. The only way to get more sound is a new attack."
+ },
+ {
+  "q": "In the musical scientific method, what is the measuring device?",
+  "o": [
+   "The metronome",
+   "The music journal",
+   "The damper pedal",
+   "The score"
+  ],
+  "a": 0,
+  "e": "The metronome measures how efficiently you process the music from eyes to mind to fingers into a steady pulse. The journal records the data; the metronome produces it."
+ },
+ {
+  "q": "What does elaboration mean?",
+  "o": [
+   "Connecting new material to something you already know",
+   "Repeating a passage until it is memorized",
+   "Playing a passage slower each time",
+   "Adding ornaments to a melody"
+  ],
+  "a": 0,
+  "e": "Elaboration is linking new content to a network your brain already owns, like tying measures 90 to 99 to measures 29 to 38. There is no known limit to how much you can learn this way."
+ },
+ {
+  "q": "In measure 98, which finger plays the C that was missing its number?",
+  "o": [
+   "3",
+   "5",
+   "4",
+   "2"
+  ],
+  "a": 0,
+  "e": "The fingering in 98 is 5-2-5-2-3. The 3 on the C was implied but not written, so you played 5-4-5. Write the 3 above the C."
+ }
+];
+
+var WRITTEN = [
+ "Explain in your own words what a pedal point is, and describe how Bach uses the G pedal in measures 90 to 99 to build tension step by step. Then tell me how the D pedal section in measures 29 to 38 relates to it.",
+ "Write a music-journal entry for this week: one observation about the second half, one practice prediction (which measures will be trickiest and why), and how you will test that prediction with the metronome.",
+ "Why does playing with the strings sound slow you down? Use the idea of ADSR in your answer, and describe one other way you could vary the feedback at your desert keyboard or your home piano.",
+ "You said 70 felt easier for the second half. Describe the difference between serving the ego and serving the music when choosing a tempo, and how 62 felt in your body compared to 70.",
+ "Explain why singing the pitches and saying the finger numbers in measures 95 to 99 deepens the learning. What got in the way the first time, and what changed when you quieted the thinking mind?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>
