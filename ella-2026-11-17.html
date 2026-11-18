@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Ella - Lesson Challenge - 2026-11-17</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.actions { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.actions h3 { margin-top: 0; }
+.actions ol { margin: 6px 0 10px; padding-left: 24px; }
+.actions li { margin: 0 0 9px; }
+.actions .starred { margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--accent); }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Ella&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Tuesday, November 17, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="actions">
+    <h3>Action Items</h3>
+    <p class="hint">Key points we covered.</p>
+    <ol>
+      <li>Silent Night, first four measures and a downbeat: You passed the Seed level, so you skip Sprout and go straight to Bloom. Play it three clean times with Sergeant Metronome at quarter note 72.</li>
+      <li><b>Silent Night, the position move:</b> Play &quot;night,&quot; hold, hold, then slide your right hand just one note up to D position so finger 5 lands on A. It is a tiny move. Do not fly up the keyboard.</li>
+      <li><b>Colors and X marks:</b> Keep the left-hand notes circled in their colors (G blue, B pink, C red) and write an X wherever a note holds through a beat. Say &quot;hold&quot; out loud every time you see an X.</li>
+      <li><b>Eyes closed:</b> You played it better with your eyes closed and slow. Once a day, find your hand position, close your eyes, and play the first four measures and a downbeat.</li>
+      <li><b>Know before you play:</b> Pause, name the note, then play it. No random guessing, and no hoping for luck. Be a good guide to Oakley.</li>
+    </ol>
+    <p class="starred"><b>&#9733;</b> On your practice log, any starred items are ones we didn&#x27;t get to today... so make sure you have those ready for next time. We will do those first next week.</p>
+  </div>
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Measure</span><span class="lang">English</span>
+      <div>One box of music between two bar lines. Your section of Silent Night is the first four measures.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>The first beat of a measure, the strongest one. &quot;Four measures and a downbeat&quot; means you play four full measures and then land on the first note of measure 5, and stop there.</div></div>
+    <div class="term"><span class="tname">Hold (the X)</span><span class="lang">Rod&#x27;s notation</span>
+      <div>An X above the music marks a beat where a note keeps sounding instead of a new note being played. When you see the X, you say &quot;hold&quot; out loud.</div></div>
+    <div class="term"><span class="tname">Middle C position</span><span class="lang">English</span>
+      <div>Right-hand thumb on middle C, fingers 2, 3, 4 and 5 on D, E, F and G. Silent Night starts here.</div></div>
+    <div class="term"><span class="tname">D position</span><span class="lang">English</span>
+      <div>Right-hand thumb on D, fingers 2, 3, 4 and 5 on E, F, G and A. You move here, just one note up, so your pinky can reach the A.</div></div>
+    <div class="term"><span class="tname">Finger numbers</span><span class="lang">English</span>
+      <div>Thumb is 1, then 2, 3, 4, and pinky is 5. The A in the right hand is finger 5, and the left-hand C on the downbeat of measure 5 is finger 1.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time.&quot; How fast the beat goes. Your tempo for Silent Night is quarter note at 72.</div></div>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">from Greek</span>
+      <div>Means &quot;measure&quot; plus &quot;rule.&quot; The steady click that keeps the beat. I call him Sergeant Metronome, and he arrives in the Bloom level.</div></div>
+    <div class="term"><span class="tname">G</span><span class="lang">note name</span>
+      <div>The bottom note in your left hand at the start of Silent Night. There are more Gs in the first four measures too.</div>
+      <span class="cs"><b>Color-shape:</b> blue circle (white key, so a circle; G is blue)</span></div>
+    <div class="term"><span class="tname">B</span><span class="lang">note name</span>
+      <div>B as in boy. The note above the G in your left hand.</div>
+      <span class="cs"><b>Color-shape:</b> pink circle (white key, so a circle; B is pink)</span></div>
+    <div class="term"><span class="tname">C</span><span class="lang">note name</span>
+      <div>The left-hand note on the word &quot;all,&quot; played with finger 1 on the downbeat of measure 5. Red is the color that gets used the most, so it is the pencil that is always hiding.</div>
+      <span class="cs"><b>Color-shape:</b> red circle (white key, so a circle; C is red)</span></div>
+    <div class="term"><span class="tname">D</span><span class="lang">note name</span>
+      <div>The very first note you play in the right hand, on &quot;Si-&quot; of Silent.</div>
+      <span class="cs"><b>Color-shape:</b> orange circle (white key, so a circle; D is orange)</span></div>
+    <div class="term"><span class="tname">A</span><span class="lang">note name</span>
+      <div>The high note your pinky reaches after you move to D position.</div>
+      <span class="cs"><b>Color-shape:</b> purple circle (white key, so a circle; A is purple)</span></div>
+    <div class="term"><span class="tname">Seed, Sprout, Bloom</span><span class="lang">Rod&#x27;s practice method</span>
+      <div>Seed: three times with no mistakes, and mistakes do not count against you. Sprout: the middle level, which we skipped today. Bloom: the top level, where Sergeant Metronome joins you. You passed Seed today and went straight to Bloom at 72.</div></div>
+  </div>
+
+  <h3>Writing in the colors</h3>
+  <p>Ella, we started Silent Night by taking the time to write in the colors. In the left hand, the bottom note is a G, and you found the other Gs in the first four measures. The note above the G is a B, as in boy. The left-hand note on the word &quot;all&quot; is a C, and red is the color that gets used the most, which is why the red pencil is always somewhere different.</p>
+  <p>One thing I noticed: you went to the answer really fast, before double-checking your work. Think first. Pause, look, and then say the note name. That little pause is where the learning happens.</p>
+  <p>Your section is 1, 2, 3, 4 measures and a downbeat. Not five measures. Four measures, and then the first note of measure 5.</p>
+
+  <h3>Rhythm first, then the notes</h3>
+  <p>Before playing, we said the rhythm of the first four measures out loud, with &quot;hold&quot; on the long notes. Then you played that same rhythm with the real notes on the piano. The first note in the right hand is a D. One, two, three, hold.</p>
+  <p>Wherever a note holds through a beat, there is an X above the music, and when we see the X we say the word &quot;hold.&quot; I wrote the first X up top when we did the rhythm, and you wrote the other two X&#x27;s in the first four measures the same way.</p>
+
+  <h3>No luck in music</h3>
+  <p>I told you about the day I found a $100 bill on the sidewalk. Nobody around, just sitting there. Was that because I did something, or random luck? Random luck. Now, if I walked out every day expecting another $100 bill on the ground, I would be disappointed and mad at the world. It happened once. That does not mean I can count on it.</p>
+  <p>Notes are the same. You cannot just randomly hope you hit the right key. You have to know what the note is, know what finger plays it, and then play it. That is the opposite of luck. That is being a good guide to Oakley, your musical brainchild.</p>
+
+  <h3>The tiny move to D position</h3>
+  <p>I circled a finger number on your page: finger 5 on the note A. From middle C position your pinky cannot reach A, so you move your whole hand up to D position. Yes, that early in the song! Thumb on D, pinky on A.</p>
+  <p>Here is the thing: it is a very small move. One note. Your brain kept telling you to fly way up the keyboard, and we had to be patient with it. Play &quot;night,&quot; hold, hold, and then slide one note up for &quot;all.&quot; We did it over and over until the move got small and calm. You do not need to complicate it.</p>
+  <p>I also drew a big circle around that spot, because it is the first time in the song that your right hand and your left hand play at the same time. The left hand plays the C with finger 1 right there on the downbeat of measure 5.</p>
+
+  <h3>Seed practice, then straight to Bloom</h3>
+  <p>Then we did Seed practice from the beginning: three times with no mistakes, and mistakes do not count against you. The first time, the left hand got you on the downbeat of measure 5. What note is it? C. What finger? 1. The next time, the first right-hand note: D. Then you played it clean, and clean again, and it kept getting easier. Three times, Seed passed.</p>
+  <p>Normally Sprout comes next, but for you I skipped it and went right to Bloom. I think 72 is a good tempo for you, so I wrote quarter note equals 72 on your page with today&#x27;s date. Sergeant Metronome was just about to join us when we had to stop, so he is waiting for you at home.</p>
+
+  <h3>Eyes closed</h3>
+  <p>Before the metronome, I asked you to find your hand position and play it with your eyes closed. Holy moly! You played it better with your eyes closed and slow than with them open. That is really powerful. It means your hands already know where to go; your eyes were just getting in the way. Keep that in your practice this week.</p>
+  <div class="note">This week: the first four measures and a downbeat, three clean times with Sergeant Metronome at 72, and once a day with your eyes closed.</div>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> measure, downbeat, hold, X, middle C position, D position, finger number, tempo, quarter note, metronome, Sergeant Metronome, left hand, right hand, G, B, C, D, A, blue, pink, red, orange, purple, seed, sprout, bloom, eyes closed, Oakley<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Ella";
+var LESSON_DATE = "2026-11-17";
+var LESSON_LABEL = "Tuesday, November 17, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "What is the bottom note in your left hand at the start of Silent Night?",
+  "o": [
+   "G",
+   "B",
+   "C",
+   "D"
+  ],
+  "a": 0,
+  "e": "The bottom left-hand note is G, and there are more Gs hiding in the first four measures."
+ },
+ {
+  "q": "What is the color-shape for G?",
+  "o": [
+   "Blue circle",
+   "Blue triangle pointing up",
+   "Pink circle",
+   "Green circle"
+  ],
+  "a": 0,
+  "e": "G is blue, and a white key is a circle."
+ },
+ {
+  "q": "What is the note above the G in your left hand?",
+  "o": [
+   "B",
+   "A",
+   "C",
+   "D"
+  ],
+  "a": 0,
+  "e": "B as in boy, and it is pink."
+ },
+ {
+  "q": "What is the color-shape for B?",
+  "o": [
+   "Pink circle",
+   "Purple circle",
+   "Pink triangle pointing down",
+   "Red circle"
+  ],
+  "a": 0,
+  "e": "B is pink, and it is a white key, so it is a circle."
+ },
+ {
+  "q": "What left-hand note do you play on the word \"all,\" and with which finger?",
+  "o": [
+   "C with finger 1",
+   "A with finger 1",
+   "C with finger 5",
+   "G with finger 3"
+  ],
+  "a": 0,
+  "e": "It is a C, finger 1, on the downbeat of measure 5. That is also the spot with the big circle."
+ },
+ {
+  "q": "What is the very first note you play in the right hand?",
+  "o": [
+   "D",
+   "C",
+   "E",
+   "G"
+  ],
+  "a": 0,
+  "e": "The first note is D, orange. Si-lent night starts on D."
+ },
+ {
+  "q": "To reach the A with finger 5, which position does your right hand move to?",
+  "o": [
+   "D position",
+   "G position",
+   "A position",
+   "F position"
+  ],
+  "a": 0,
+  "e": "You move from middle C position up to D position: thumb on D, pinky on A."
+ },
+ {
+  "q": "How far does your hand move to get from middle C position to D position?",
+  "o": [
+   "One note up",
+   "Five notes up",
+   "One octave up",
+   "It does not move at all"
+  ],
+  "a": 0,
+  "e": "Just one note. It is a tiny move, even though your brain wanted to fly way up the keyboard."
+ },
+ {
+  "q": "What do you say out loud when you see an X above the music?",
+  "o": [
+   "Hold",
+   "Rest",
+   "Stop",
+   "Go"
+  ],
+  "a": 0,
+  "e": "The X marks a beat where the note keeps sounding, so you say \"hold.\""
+ },
+ {
+  "q": "What does \"four measures and a downbeat\" mean?",
+  "o": [
+   "Four full measures, then just the first note of measure 5",
+   "Four full measures and nothing more",
+   "Five full measures",
+   "Four beats and then one more beat"
+  ],
+  "a": 0,
+  "e": "You play all four measures and land on the first note of measure 5, then stop."
+ },
+ {
+  "q": "What does the big circle on your page mark?",
+  "o": [
+   "The first time both hands play at the same time",
+   "The loudest note in the song",
+   "A note you should skip",
+   "The end of the song"
+  ],
+  "a": 0,
+  "e": "That is the first spot where your right hand and left hand play together."
+ },
+ {
+  "q": "How many times with no mistakes do you need to pass the Seed level?",
+  "o": [
+   "Three",
+   "One",
+   "Two",
+   "Five"
+  ],
+  "a": 0,
+  "e": "Three clean times. And at Seed, mistakes do not count against you."
+ },
+ {
+  "q": "What tempo is Sergeant Metronome set to for Silent Night this week?",
+  "o": [
+   "Quarter note at 72",
+   "Quarter note at 60",
+   "Quarter note at 85",
+   "Quarter note at 100"
+  ],
+  "a": 0,
+  "e": "Quarter note equals 72. I wrote it on your page with today's date."
+ },
+ {
+  "q": "What does the Bloom level add?",
+  "o": [
+   "Sergeant Metronome",
+   "Playing with your left hand only",
+   "Singing the words",
+   "Playing it faster every time"
+  ],
+  "a": 0,
+  "e": "Bloom brings in Sergeant Metronome. You passed Seed, skipped Sprout, and Bloom at 72 is next."
+ },
+ {
+  "q": "What should you do before you say the name of a note?",
+  "o": [
+   "Pause and double-check your work",
+   "Say the first letter that pops into your head",
+   "Guess and see if it sounds right",
+   "Ask someone else to tell you"
+  ],
+  "a": 0,
+  "e": "Think first. Pause, look, then say it. No random luck."
+ }
+];
+
+var WRITTEN = [
+ "You played Silent Night better with your eyes closed than with them open. How did that feel? Why do you think it worked?",
+ "Pretend Oakley has never heard of D position. Explain how your hand moves from middle C position to D position, how far it moves, and which finger plays the A.",
+ "What does Rod's $100 bill story have to do with playing the right notes? Explain it in your own words.",
+ "Explain what \"four measures and a downbeat\" means, as if you were teaching it to a friend who just started piano.",
+ "Explain Seed, Sprout and Bloom to a friend. What do you have to do at each level, and what is special about Bloom?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>
