@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Louise - Lesson Challenge - 2026-11-18</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.actions { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.actions h3 { margin-top: 0; }
+.actions ol { margin: 6px 0 10px; padding-left: 24px; }
+.actions li { margin: 0 0 9px; }
+.actions .starred { margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--accent); }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Louise&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Wednesday, November 18, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="actions">
+    <h3>Action Items</h3>
+    <p class="hint">Key points we covered.</p>
+    <ol>
+      <li><b>New this week:</b> Seed, Sprout and Bloom replaces the old all-or-nothing diamond practice. Three beads, three levels, a lot less pressure. See the summary for how each level scores.</li>
+      <li><b>Bongos with Iko Iko:</b> play along to the full track (2:06) every day, drums up on the ottoman, larger drum on your left. First few days just flow and breathe; then find a repeating pattern you can hold for the whole two minutes and bring it next lesson.</li>
+      <li><b>Bach Minuet in D minor, measure 7:</b> metronome at 105. Tap the rhythm on the bongos saying every sixteenth (1 e and a, 2 e and a, 3 e and a, 1), then right hand only, then eyes closed, then hands together. Three clean times at each step, resting between tries.</li>
+      <li><b>Bach, measures 5-8:</b> write in 3 e and a so all of measure 7 is counted at the smallest subdivision. Then run measures 5 to 8 at 105: eighths in 5, 6 and 8, sixteenths in 7. Measure 11 has the same right-hand rhythm, so it will come faster.</li>
+      <li><b>Bach, measures 1-8:</b> keep your daily 10-minute 9 o&#x27;clock session. Start at measure 5 with the additive method (one measure plus a downbeat, then two), then from the top at about 105, counting out loud.</li>
+      <li><b>Extra track:</b> Tusk by Fleetwood Mac is a great second song for the bongos once Iko Iko starts to feel easy.</li>
+    </ol>
+    <p class="starred"><b>&#9733;</b> On your practice log, any starred items are ones we didn&#x27;t get to today... so make sure you have those ready for next time. We will do those first next week.</p>
+  </div>
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Minuet</span><span class="lang">French (menuet, &quot;small step&quot;)</span>
+      <div>A graceful dance in three, counted one-two-three in every measure. Your Bach is the Minuet in D minor.</div></div>
+    <div class="term"><span class="tname">Measure (bar)</span><span class="lang">English</span>
+      <div>One box of beats between two bar lines. In the minuet every measure holds three beats.</div></div>
+    <div class="term"><span class="tname">Downbeat</span><span class="lang">English</span>
+      <div>Beat one of a measure, the strongest beat. We kept landing on downbeats: one measure plus a downbeat, then two measures plus a downbeat.</div></div>
+    <div class="term"><span class="tname">Phrase</span><span class="lang">from Greek phrasis (&quot;a way of speaking&quot;)</span>
+      <div>A musical sentence. Measures 1-8 are two four-bar phrases, and the downbeat of measure 5 is where the first one ends and the second one begins.</div></div>
+    <div class="term"><span class="tname">Eighth note</span><span class="lang">English</span>
+      <div>Two to a beat, counted &quot;1 and 2 and 3 and.&quot; Measures 5, 6 and 8 move in eighths.</div></div>
+    <div class="term"><span class="tname">Sixteenth note</span><span class="lang">English</span>
+      <div>Four to a beat, double the speed of eighths, counted &quot;1 e and a.&quot; Measure 7 (and later measure 11) switch to sixteenths.</div></div>
+    <div class="term"><span class="tname">Subdivision</span><span class="lang">English</span>
+      <div>Splitting a beat into smaller equal parts. Saying the smallest subdivision out loud (1 e and a) is how you keep sixteenths honest.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time.&quot; The speed of the beat in beats per minute. 105 is your working tempo for the minuet.</div></div>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">from Greek metron (measure) + nomos (rule)</span>
+      <div>Measures time to the millisecond. In the scientific-method picture of practice, it is the measuring instrument of the experiment.</div></div>
+    <div class="term"><span class="tname">Additive method</span><span class="lang">English</span>
+      <div>Learn one measure plus a downbeat, then add the next measure, then the next. We started it at measure 5.</div></div>
+    <div class="term"><span class="tname">Seed, Sprout and Bloom</span><span class="lang">Rod&#x27;s studio term</span>
+      <div>Three levels of practice using three beads, each level a little more demanding. It replaces the old all-or-nothing diamond practice (see the summary).</div></div>
+    <div class="term"><span class="tname">Bongos</span><span class="lang">Afro-Cuban (Spanish)</span>
+      <div>A pair of small drums. The larger drum sits on your left. The edge of the head rings higher than the middle.</div></div>
+    <div class="term"><span class="tname">Fingering</span><span class="lang">English</span>
+      <div>Which finger plays which key. The 1 on the C in measure 7 is there because C sits inside your hand position: the hand stays relaxed instead of reaching, and reaching is tension.</div></div>
+  </div>
+
+  <h3>Bongos first: rhythm belongs in the body</h3>
+  <p>You have the good bongos now, the heavy ones with real heads. The larger drum goes on your left. Holding them between the knees is not for us, and sitting them on your lap muffled the sound and pinched. Up on the little orange ottoman, with the drum&#x27;s feet on the cushion and the ottoman pulled in close, they rang out and you could sit comfortably. Keep them within reach of the piano so they are easy to grab.</p>
+  <p>Listen for the two voices in each drum: near the edge the sound is higher and brighter, in the middle it is deeper and more muted. Play with the fingertips rather than a flat palm, and start noticing which strokes feel accented and which feel soft.</p>
+  <p>Your track is Iko Iko, two minutes and six seconds of high percussion to ride along with. For the first few days there is no assignment except to play along with the whole track and breathe into it. Play as if no one is watching. Trying not to think makes you think, so give yourself a minute to settle in. Every slip is part of how it gets better; the critic is the only thing that gets in the way.</p>
+  <p>Once it starts to feel natural, go looking for a pattern. Something like left-left-right, left-left-right that you can repeat and carry all the way through the two minutes. There is no fixed right answer; it is your pattern. Bring it to the next lesson. Tusk by Fleetwood Mac, with the USC marching band, is a great second track when you want one.</p>
+  <div class="note">Why drums at all? Rhythm is the thing that paralyzes people, whether it is hands on a drum or feet on a dance floor. It gets cerebral. When the rhythm lives in your body first, it arrives at the keys in a far more intuitive way.</div>
+
+  <h3>Bach Minuet in D minor: the first eight measures</h3>
+  <p>You had worked measures 5 through 8 on your own, so we heard the whole first eight bars, slowing the pace to give yourself grace. Very solid. You called the trouble spots yourself before playing them: measure 7 with its sixteenth notes, and the left-hand fingering that changes the second time around, where the one-five, one-five pattern goes to a three instead of a one.</p>
+  <p>The eight bars split into two four-bar phrases, and the downbeat of measure 5 is the midpoint: it is both the landing of phrase one and the launch of phrase two, so the whole thing cycles around that one note. That is why we built the practice loop from measure 5.</p>
+  <p>Additive method: starting on the downbeat of 5, play one measure plus a downbeat, counting &quot;1 and 2 and 3 and 1.&quot; Then two measures, landing on the downbeat of 7. Each pass asks for notes, fingering and rhythmic integrity, which has two parts: each hand&#x27;s own rhythmic values and a steady pulse underneath. No questions there; you had worked it out well.</p>
+
+  <h3>The scientific method and the metronome</h3>
+  <p>You gave the definition yourself: form a hypothesis, run an experiment to prove or disprove it, analyze the data, and make sure others can replicate it. Treat measure 7 as a musical experiment, and the metronome is the measuring instrument.</p>
+  <p>Here is what the data said: hands together you played the first part at about 105, but when you tapped the rhythm alone you drifted up to 125. That is the disconnect. Percussion alone wants to speed up. So we find the tempo you can actually play, 105, and we do the tapping at that same tempo, so the drum work and the keyboard work measure the same thing.</p>
+
+  <h3>Measure 7: sixteenths, one layer at a time</h3>
+  <p>Measure 7 goes from eighth notes to sixteenths, double the pulse. This is where the bongos (or clapping) come in. Metronome at 105, and we worked through it in steps, each one adding a little more:</p>
+  <ul>
+    <li>On the drums: one measure of eighths into one measure of sixteenths, &quot;1 and 2 and 3 and, 1 e and a 2 e and a 3 e and a, 1.&quot; Then just measure 7 into the downbeat of 8, saying every single sixteenth out loud. Stop on the 1. Do not loop straight back in: give yourself two or three clicks, reset, and start again clean. Restarting too soon put you out of sync and it felt weird.</li>
+    <li>Drums down, right hand only, metronome still at 105, still saying 1 e and a 2 e and a 3 e and a 1. Three clean times, pausing between each.</li>
+    <li>Right hand only with your eyes closed, still counting. A little tentative at first, then there it was. You have to learn to trust it.</li>
+    <li>Metronome off, hands together, verbalizing all the sixteenths. Beat 3 is the hard one: the left hand squeezes from finger 5 into finger 1 on the C right while the right hand is busiest. It looked easy on the page; Bach is humbling that way, a domino effect.</li>
+    <li>Hands together with eyes closed. Very impressive. You went a touch too far once and adapted, then overcorrected the other way, and then it settled.</li>
+  </ul>
+  <div class="note">Why eyes closed? Open eyes keep the mind active. Closing them quiets the mind so you listen and feel instead of look and think. For an intuitive player like you it is not optional: it is where your best playing comes from. Reset and breathe between tries, like a yoga practice, and let Mother Grace do her part once Father Time has given you the data.</div>
+
+  <h3>Write it, and let it travel</h3>
+  <p>You had written &quot;1 e and a&quot; and then gone back to &quot;2 and 3 and.&quot; Squeeze in the rest so all of measure 7 is written at the smallest subdivision, 3 e and a included, even if there is not much room. It is only for that measure.</p>
+  <p>Good news for later: measure 11 has the very same right-hand rhythm, ba-da-da-ba. Once it is in your body in measure 7, measure 11 is just different notes on a rhythm you already own.</p>
+
+  <h3>Seed, Sprout and Bloom (new this week)</h3>
+  <p>The old diamond practice was all or nothing: three in a row or back to the dugout. It worked, but it created too much pressure, and Huffy Puffy the perfectionist showed up. So it has grown into three levels, played with three beads or markers:</p>
+  <ul>
+    <li>Seed: aim for three good repetitions. A good one crosses a bead over. A miss simply does not cross; nothing gets sent back.</li>
+    <li>Sprout: a miss now sends one bead back, not all of them.</li>
+    <li>Bloom: all three in a row, the old diamond standard, but by now you have earned the security to do it.</li>
+    <li>The levels also stack the layers. Seed is notes, fingering and rhythmic note values. Sprout adds counting out loud.</li>
+    <li>Optional at each level, and recommended for you: three times with your eyes closed.</li>
+  </ul>
+  <div class="note">In the lesson you were counting out loud (Sprout material) while we scored it the Seed way, and you came through it. Rod is sending you a copy of the sheet.</div>
+
+  <h3>Your daily ten minutes</h3>
+  <p>Your 9 o&#x27;clock Bach appointment is working: ten minutes is easy to sit down for, and it often turns into more. Keep it. Add the two minutes of Iko Iko on the bongos and you have a complete practice. 105 is a good tempo. Trust yourself, a little every day.</p>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> sixteenth note, eighth note, subdivision, downbeat, phrase, additive method, metronome, tempo, seed, sprout, bloom, hand position, fingering, pulse, measure<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Louise";
+var LESSON_DATE = "2026-11-18";
+var LESSON_LABEL = "Wednesday, November 18, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "Measure 7 of the minuet switches from eighth notes to sixteenth notes. How many sixteenth notes fit in one beat?",
+  "o": [
+   "Four",
+   "Two",
+   "Three",
+   "Eight"
+  ],
+  "a": 0,
+  "e": "Eighths are two to a beat and sixteenths double that: four to a beat. That is why measure 7 feels twice as busy as measure 6."
+ },
+ {
+  "q": "How did Rod have you say one beat of sixteenth notes out loud?",
+  "o": [
+   "1 e and a",
+   "1 and",
+   "1 and a",
+   "1 2 3 4"
+  ],
+  "a": 0,
+  "e": "Every sixteenth gets a syllable: 1 e and a, 2 e and a, 3 e and a, then the downbeat of measure 8. Saying all of them keeps the sixteenths honest."
+ },
+ {
+  "q": "In the scientific-method picture of practice, what job does the metronome do?",
+  "o": [
+   "It is the measuring instrument that checks whether your rhythm really lines up",
+   "It is the hypothesis you are trying to prove",
+   "It is the song you are trying to learn",
+   "It decides which fingering you should use"
+  ],
+  "a": 0,
+  "e": "Observe, hypothesize, test, replicate. The metronome measures time to the millisecond, so it is the instrument that tells you whether what you played matches what you think you played."
+ },
+ {
+  "q": "Why did Rod set the metronome to 105 for measure 7 instead of the 125 you tapped on the drums?",
+  "o": [
+   "105 was the tempo you could actually play hands together; tapping alone had sped up to 125",
+   "Bach wrote 105 at the top of the minuet",
+   "The bongos cannot keep up at 125",
+   "125 was too slow to feel the sixteenths"
+  ],
+  "a": 0,
+  "e": "Hands together you played about 105, but when you tapped the rhythm alone you drifted to 125. Percussion alone tends to speed up, so we match the tapping to the tempo you can really play."
+ },
+ {
+  "q": "You tap measure 7 and land on the downbeat of 8. What did Rod want you to do before starting again?",
+  "o": [
+   "Rest for two or three clicks, then reset and start on a 1",
+   "Loop straight back into 1 e and a with no gap",
+   "Turn the metronome off and start right away",
+   "Move the metronome up one click first"
+  ],
+  "a": 0,
+  "e": "Restarting too soon puts you out of sync with the click and it feels weird. Give yourself a couple of clicks, breathe, and begin again cleanly."
+ },
+ {
+  "q": "Why did Rod have you play measure 7 with your eyes closed?",
+  "o": [
+   "Closing your eyes quiets the mind so you listen and feel instead of look and think",
+   "So you would play louder and with more confidence",
+   "So you could stop counting out loud",
+   "So the left hand could rest while the right hand plays"
+  ],
+  "a": 0,
+  "e": "Open eyes keep the mind busy. With eyes closed you have to trust your ears and your hands, which is exactly where your intuitive playing lives."
+ },
+ {
+  "q": "What is the name of the method where you learn one measure plus a downbeat, then add the next measure?",
+  "o": [
+   "The additive method",
+   "The subtractive method",
+   "The loop method",
+   "Diamond practice"
+  ],
+  "a": 0,
+  "e": "We started on the downbeat of measure 5, played one measure and a downbeat, then two measures to the downbeat of 7. Each pass adds one more measure."
+ },
+ {
+  "q": "Hands together in measure 7, which beat was the hardest and why?",
+  "o": [
+   "Beat 3, because the left-hand thumb has to squeeze in to the C",
+   "Beat 1, because the right hand jumps up an octave",
+   "Beat 2, because the left hand crosses over the right",
+   "Beat 3, because the right hand goes back to half notes"
+  ],
+  "a": 0,
+  "e": "The left hand moves from finger 5 to finger 1 on beat 3, and the thumb has to tuck in to C right while the right hand is in its busiest sixteenths. Simple on the page, humbling in the hands."
+ },
+ {
+  "q": "In the Seed level of Seed, Sprout and Bloom, what happens when you miss a repetition?",
+  "o": [
+   "Nothing goes back; that try just does not cross over",
+   "All three beads go back to the start",
+   "One bead gets sent back",
+   "You skip ahead to Sprout"
+  ],
+  "a": 0,
+  "e": "Seed is the gentlest level: a good try crosses a bead over, a miss simply does not count. You keep going until three have crossed."
+ },
+ {
+  "q": "In the Sprout level, what happens when you miss?",
+  "o": [
+   "One bead gets sent back",
+   "Nothing goes back",
+   "All three beads go back",
+   "The metronome goes down one click"
+  ],
+  "a": 0,
+  "e": "Sprout adds a little accountability: a miss sends one bead back, not all of them."
+ },
+ {
+  "q": "What does the Bloom level ask for?",
+  "o": [
+   "Three clean repetitions in a row",
+   "Three clean repetitions in any order",
+   "One clean repetition and then stop",
+   "Two out of three"
+  ],
+  "a": 0,
+  "e": "Bloom is the old diamond-practice standard: all three in a row. By the time you get there, Seed and Sprout have built the security."
+ },
+ {
+  "q": "Why did Rod replace the old all-or-nothing diamond practice with Seed, Sprout and Bloom?",
+  "o": [
+   "Being sent back to the start after one slip created too much pressure",
+   "It took too long to finish a session",
+   "It only worked when the metronome was on",
+   "It did not use enough repetitions"
+  ],
+  "a": 0,
+  "e": "Three in a row or back to the dugout brings out Huffy Puffy the perfectionist, and pressure gets in the way of flow. The three levels build the same result with more grace."
+ },
+ {
+  "q": "What is the first goal of playing the bongos along with Iko Iko?",
+  "o": [
+   "Just flow with the track and breathe, with no fixed pattern yet",
+   "Tap exact sixteenths at 105 with the metronome",
+   "Copy the bass line note for note",
+   "Count 1 e and a out loud for the whole song"
+  ],
+  "a": 0,
+  "e": "Play as if no one is watching. First get out of your head and let the rhythm live in your body. After a few days, then look for a repeating pattern you can hold for the whole two minutes."
+ },
+ {
+  "q": "Why will working out measure 7 also help with measure 11?",
+  "o": [
+   "Measure 11 has the same right-hand rhythm with different notes",
+   "Measure 11 has the same notes with a different rhythm",
+   "Measure 11 is a repeat sign back to measure 7",
+   "Measure 11 is left hand only"
+  ],
+  "a": 0,
+  "e": "Ba-da-da-ba: the right-hand rhythm in 11 is the one you are integrating in 7. Once the rhythm is in your body, only the notes change."
+ },
+ {
+  "q": "What is special about the downbeat of measure 5 in the first eight measures?",
+  "o": [
+   "It is both the end of the first four-bar phrase and the start of the second",
+   "It is the first sixteenth note of the piece",
+   "It is where the piece ends",
+   "It is the only rest in the minuet"
+  ],
+  "a": 0,
+  "e": "The eight bars split into two four-bar phrases. Measure 5's downbeat is the midpoint: the landing of phrase one and the launch of phrase two, so we built the practice loop from there."
+ }
+];
+
+var WRITTEN = [
+ "Explain Seed, Sprout and Bloom to a friend who only knows the old diamond practice. What changes at each level, and why does the gentler scoring actually help you play better?",
+ "Rod called the metronome the measuring instrument of a musical experiment. In your own words, what was the hypothesis in measure 7, what was the experiment, and what did the data (105 versus 125) tell you?",
+ "Compare how the sixteenths of measure 7 felt on the bongos, in the right hand alone, and hands together. Where did the rhythm hold, and where did it slip?",
+ "What happened in your mind and in your hands when you played with your eyes closed? Why do you think Rod made that part of the deal for you in particular?",
+ "Why did Rod ask you to play Iko Iko with no plan for the first few days before looking for a pattern? What does that have to do with how a child learns a language?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Wayne - Lesson Challenge - 2026-11-18</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.actions { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.actions h3 { margin-top: 0; }
+.actions ol { margin: 6px 0 10px; padding-left: 24px; }
+.actions li { margin: 0 0 9px; }
+.actions .starred { margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--accent); }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Wayne&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Wednesday, November 18, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="actions">
+    <h3>Action Items</h3>
+    <p class="hint">Key points we covered.</p>
+    <ol>
+      <li><b>New this week:</b> Less is more. Think of every layer (notes, fingering, rhythmic values, the pulse, counting out loud, the metronome) as 20 pounds. Lift layers off before you burn out. See the summary for how we did it with 10,000 Reasons.</li>
+      <li><b>10,000 Reasons:</b> begin each session the light way. Play only the left-hand chords and sing the melody from Bless the Lord, three times. Then add the right hand. Count out loud every time, even when it makes it feel harder.</li>
+      <li><b>10,000 Reasons chord sheet:</b> about 10 minutes of each practice hour. Write two or three of the chords (C, G, D, Em, Dsus4, D, later Gsus and D7) in root, first and second inversion on the graph paper and play them. Next day see how they come back, then add one.</li>
+      <li><b>Inversion fingering:</b> right hand 1-3-5 (root), 1-2-5 (first), 1-3-5 (second). Left hand 5-3-1, 5-3-1, 5-2-1. It is the same fingering for every triad, so trust the pattern.</li>
+      <li><b>G major:</b> play the G major scale hands together once in a while and connect it to the chords in 10,000 Reasons. Then fill in the triad matrix for G major the way we did for D major.</li>
+      <li><b>Intervals:</b> own your minor third (2 unplayed keys), major third (3) and perfect fifth (6). Play each one and listen, do not just count. Then stack them: M3 + m3 is a major triad, m3 + M3 is minor, m3 + m3 is diminished.</li>
+      <li><b>Voice leading:</b> from Em move only the thumb up a half step for C major (C/E); from C to G move one voice down a half step, keep one, move one down a whole step. Expect your old habits to fight you for a while.</li>
+    </ol>
+    <p class="starred"><b>&#9733;</b> On your practice log, any starred items are ones we didn&#x27;t get to today... so make sure you have those ready for next time. We will do those first next week.</p>
+  </div>
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Layers</span><span class="lang">English</span>
+      <div>The separate things stacked inside one piece: the notes, the finger numbers, each hand&#x27;s rhythmic values, the steady pulse underneath, and counting out loud. Carrying every layer at once is a heavy load.</div></div>
+    <div class="term"><span class="tname">Pulse (beat)</span><span class="lang">English</span>
+      <div>The constant, unbroken beat under everything else, and the most overlooked layer of all. Counting out loud is how you keep it honest.</div></div>
+    <div class="term"><span class="tname">Rhythmic values</span><span class="lang">English</span>
+      <div>How long each note lasts. Eighth notes are twice as fast as quarter notes. Each hand has its own rhythm, sometimes lined up, sometimes not.</div></div>
+    <div class="term"><span class="tname">Optimized fingering</span><span class="lang">English</span>
+      <div>Choosing finger numbers so your hand moves through a phrase the same way every time, without running out of fingers or losing the flow.</div></div>
+    <div class="term"><span class="tname">Optimized voice leading</span><span class="lang">English</span>
+      <div>Moving from one chord to the next with the least movement possible, keeping the notes two chords share in place. Rod&#x27;s secret to music.</div></div>
+    <div class="term"><span class="tname">Slash chord (C/G, C/E, D/F#)</span><span class="lang">English</span>
+      <div>The letter before the slash is the triad; the letter after it is the bass note. C/G is a C major triad with G in the bass.</div></div>
+    <div class="term"><span class="tname">Triad</span><span class="lang">English</span>
+      <div>A three-note chord built of root, third and fifth. A capital letter alone (G) means major; a lowercase m after it (Em) means minor.</div></div>
+    <div class="term"><span class="tname">Root position, first inversion, second inversion</span><span class="lang">English</span>
+      <div>The same three notes stacked three ways: C E G, E G C, G C E. Right hand 1-3-5, 1-2-5, 1-3-5. Left hand 5-3-1, 5-3-1, 5-2-1.</div></div>
+    <div class="term"><span class="tname">Sus4 (suspended fourth)</span><span class="lang">English</span>
+      <div>The third of the chord is raised to the fourth, which creates suspense that wants to resolve. Dsus4 is D G A: the F sharp has moved up to G.</div></div>
+    <div class="term"><span class="tname">Minor third (m3)</span><span class="lang">English</span>
+      <div>An interval with two unplayed keys between its notes, for example E to G or B to D.</div></div>
+    <div class="term"><span class="tname">Major third (M3)</span><span class="lang">English</span>
+      <div>An interval with three unplayed keys between its notes, for example C to E.</div></div>
+    <div class="term"><span class="tname">Perfect fifth (P5)</span><span class="lang">English</span>
+      <div>An interval with six unplayed keys between its notes, for example C to G. A major third plus a minor third, in either order, adds up to a perfect fifth.</div></div>
+    <div class="term"><span class="tname">Diminished triad</span><span class="lang">English (written dim, or with a small circle)</span>
+      <div>Two minor thirds stacked, so the top note is a tritone from the root: B D F in C major, C sharp E G in D major. The villain of the key.</div></div>
+    <div class="term"><span class="tname">Tritone</span><span class="lang">English (three whole steps)</span>
+      <div>Also called the devil&#x27;s interval, the flat five or the sharp four. The unstable interval hiding inside every diminished triad.</div></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">Sharp</span><span class="lang">English</span>
+      <div>Raises a note one half step. F sharp is the one sharp in G major; F sharp and C sharp are the two sharps in D major.</div>
+      <span class="cs"><b>Color-shape:</b> a triangle pointing UP in the color of the white note below it. F sharp is a green triangle pointing up; C sharp is a red triangle pointing up.</span></div>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">from Greek metron (measure) + nomos (rule)</span>
+      <div>Measures time to the millisecond. It is the measuring instrument of your musical experiment.</div></div>
+  </div>
+
+  <h3>The layers of a piece, and how heavy they are</h3>
+  <p>We started by naming the layers that have to come together in a piece. The notes are the obvious one; we always look at them first. Then optimized fingering, the layer most people skip, which you have come to see the value of. Then the rhythmic values, which are different for each hand: those half notes landing on beat three, a quarter in the left hand against two eighths in the right. Underneath all of it is the pulse, the constant unbroken beat, the most overlooked layer of all. And then counting out loud, and eventually the metronome.</p>
+  <p>Think of each layer as 20 pounds. Notes, 20. Fingering, 40. Rhythm, 60. Counting and the metronome, 80, and now you are grinding. Sitting down and trying to lift all of it at once, hands together from the top, is how we burn out and why the first 15 minutes feel like starting over. The two things we overdo: we play too fast and we play too much. Less is more.</p>
+  <div class="note">The seed, sprout and bloom sheet puts this in order: the seed level is only notes, fingering and rhythm, with some wiggle room written in on purpose. Give yourself some grace.</div>
+
+  <h3>A scientific experiment with the metronome</h3>
+  <p>You defined the scientific method well: observe, hypothesize, try to reproduce it again and again, learn where the failure points are. Apply that to music and you need instruments to measure with. We have three: the piano, your own body (an instrument of love or hate, grace or judgment), and the metronome, which measures time to the millisecond.</p>
+  <p>At 105 you clapped along, then Rod moved the click by one notch and you correctly felt it was 104, slower. The point: we can feel a difference that small, but we cannot produce it on our own. Humans are not built to hold 105 versus 104. That is exactly why the metronome is the measuring device, like a beaker marked in milliliters.</p>
+
+  <h3>10,000 Reasons: lifting the weight off</h3>
+  <p>You said that every day you sit down to this song it feels like learning it fresh, and it takes 15 minutes to come back. So we looked at how you start: hands together, mostly from memory. The first note is B, and your hand was not near it; on the word Lord the left hand plays C/G, a C major triad with G in the bass, and it is written right there on the page. Memory is a trap because we cannot rely on it very strongly. Let the page do the remembering.</p>
+  <p>Then we simplified. You played only the left-hand chords while Rod sang the melody; then you both sang, Bless the Lord, O my soul, worship His holy name, three times through. All the layers of notes, fingering, right-hand rhythm and counting came off, and what was left was the song. The ego hates that; it wants the whole Costco pumpkin pie. But each time you did it, it got easier, not more frustrating, and that is the feeling to chase: a lighter load you can sustain.</p>
+  <p>From there we expanded. C/G moves beautifully into G major. The D chord with F sharp in the bass (D/F#) keeps one of the three notes in place, with the middle finger on the black key. From E minor, move only the thumb up a half step and you are on a C major triad with E still in the bass, C/E. And from C major to G major with minimal movement: one voice down a half step, one voice stays, one voice down a whole step. That is optimized voice leading, the secret to music, and your old habits will fight it at first. That is the nature of the beast.</p>
+  <div class="note">Written on your page, in Rod&#x27;s hand: count out loud every time. Not counting sounds more like the song, which is exactly why the musical ego avoids it. Count anyway.</div>
+
+  <h3>The 10,000 Reasons chord worksheet</h3>
+  <p>You asked for more fundamentals: scales, chords, the mapping of the piano. Here is how we connect them to a song you are actually playing instead of memorizing every chord in every key. On graph paper, starting from measure 5 where the melody begins: C, G, D, Em, (C), (G), Dsus4, D. Later in the song there is also a Gsus and a D7. Seven chords to own, and that is the whole piece.</p>
+  <p>For each chord, write the three notes in root position (R), first inversion (1st) and second inversion (2nd). C major is C E G, then E G C, then G C E. Right hand 1-3-5, 1-2-5, 1-3-5. Left hand 5-3-1, 5-3-1, 5-2-1. Only the first inversion in the right hand uses a 2. G major: G B D, B D G, D G B, same fingering. The notes change, the choreography of the fingers does not; that is part of the hidden architecture of music.</p>
+  <p>Dsus4 is the tricky one: D G A in root position (1-4-5), then G A D (1-2-5), then A D G (1-2-5), stacks of fourths with that Here Comes the Bride sound. The third, F sharp, has been raised a half step to G, and you can hear the suspense when it resolves back down.</p>
+  <p>The song lives in G major, one sharp. Playing the G major scale hands together now and then is a good side project, because every one of these triads comes from that scale.</p>
+  <div class="note">The plan: about 10 minutes of each practice hour. Write out two or three chords with their inversions and play them. The next day, see how quickly the ones you wrote come back, then add one more. Map it on paper first, then it moves into your body.</div>
+
+  <h3>The D major matrix: how triads are built in a key</h3>
+  <p>You had already filled in the D major sheet, and you asked a great question: why is the pattern always major, minor, minor, major, major, minor? Because every major scale is built the same way, whole, whole, half, whole, whole, whole, half, so the triads stacked on each step come out the same every time. D E F sharp G A B C sharp gives D major, E minor, F sharp minor (into the black forest: angle the finger a little higher so the neighbors stay quiet), G major, A major, B minor, and the mystery seventh, C sharp diminished.</p>
+  <p>That pattern is true in all twelve major keys: one major, two minor, three minor, four major, five major, six minor, seven diminished. Next sheet: do the same for G major.</p>
+
+  <h3>The mathematics of a triad</h3>
+  <p>Two intervals need to be crystal clear, because everything that follows stands on them. A minor third has two unplayed keys between its notes: C sharp to E, E to G, D to F, B to D. A major third has three: C to E. And a perfect fifth has six: count them from C to G.</p>
+  <p>Every triad is two thirds stacked. C major is C to E (major third) plus E to G (minor third). E minor is E to G (minor third) plus G to B (major third). Three plus two is five, and two plus three is also five: either order gives you a perfect fifth on the outside. Flip the order and the color flips from major to minor. Make E major and the thirds swap again: E to G sharp major, G sharp to B minor.</p>
+  <p>Now the villain. B diminished in C major is B D F: B to D is a minor third and D to F is another minor third. Two plus two does not reach the perfect fifth. The outside interval is a tritone, the devil&#x27;s interval, also called the flat five or sharp four. It looks like a minor triad but with the fifth flattened, a double dose of tension. Every good story needs a villain, and in a world of duality the seventh chord is ours. You write it with a small circle or dim, as in C sharp dim.</p>
+
+  <h3>The one takeaway</h3>
+  <p>Less is more. Remember the layers: notes, fingering, rhythmic values, then counting out loud, then the metronome. For 10,000 Reasons that meant singing over left-hand chords, and now you have a self-created worksheet of triads and inversions that will start to connect in your body: oh wait, that little exercise is this chord. Stay relaxed, present and playful with it.</p>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> triad, root position, first inversion, second inversion, voice leading, slash chord, sus4, minor third, major third, perfect fifth, diminished, tritone, pulse, layers, metronome, fingering, key<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Wayne";
+var LESSON_DATE = "2026-11-18";
+var LESSON_LABEL = "Wednesday, November 18, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "When a song still feels like you are learning it fresh after 15 minutes of hands-together practice, what did Rod have you do first?",
+  "o": [
+   "Play only the left-hand chords and sing the melody",
+   "Play it faster to push through the fog",
+   "Start hands together from the top again",
+   "Memorize the right hand first, then the left"
+  ],
+  "a": 0,
+  "e": "We lifted layers off. Left-hand chords plus your own voice on the melody gave your ears the song without the full 80-pound load. Less is more."
+ },
+ {
+  "q": "Which layer did Rod call the most overlooked of all?",
+  "o": [
+   "The constant, unbroken pulse underneath everything",
+   "The notes",
+   "The finger numbers",
+   "The pedal"
+  ],
+  "a": 0,
+  "e": "Notes get all the attention. The steady beat under the changes is the layer most of us forget, which is why counting out loud matters so much."
+ },
+ {
+  "q": "On the word Lord in 10,000 Reasons the chord is written C/G. What does that mean?",
+  "o": [
+   "A C major triad with G as the bass note",
+   "A C major chord followed by a G major chord",
+   "A G major triad with C as the bass note",
+   "C and G played together with no third"
+  ],
+  "a": 0,
+  "e": "The letter before the slash is the triad, the letter after it is the bass. Your left hand plays G under a C E G triad."
+ },
+ {
+  "q": "Rod showed that only one note has to change to go from E minor to C major. Which note moves?",
+  "o": [
+   "B moves up a half step to C",
+   "E moves up a whole step to F sharp",
+   "G moves down a half step to F sharp",
+   "All three notes move up"
+  ],
+  "a": 0,
+  "e": "E minor is E G B and C major is C E G. They share E and G, so the only move is B up a half step to C. With E still in the bass you get C/E."
+ },
+ {
+  "q": "What notes make a Dsus4 chord, and why is it called sus4?",
+  "o": [
+   "D G A: the third (F sharp) is raised to the fourth (G), creating suspense that resolves",
+   "D F A: the third is lowered to make it minor",
+   "D F sharp A: the fifth is suspended an octave higher",
+   "D E A: the second replaces the third"
+  ],
+  "a": 0,
+  "e": "Sus means suspended. Grab the third of D major, F sharp, and move it up a half step to G. That G hangs in suspense until it resolves back down."
+ },
+ {
+  "q": "In the right hand, which inversion is the only one that uses finger 2?",
+  "o": [
+   "First inversion (1-2-5)",
+   "Root position (1-3-5)",
+   "Second inversion (1-3-5)",
+   "All three use finger 2"
+  ],
+  "a": 0,
+  "e": "Root and second inversion are 1-3-5. First inversion has the wider gap on top, so it takes 1-2-5. The notes change from chord to chord but this fingering never does."
+ },
+ {
+  "q": "10,000 Reasons has one sharp, F sharp. What key is it in?",
+  "o": [
+   "G major",
+   "D major",
+   "F major",
+   "C major"
+  ],
+  "a": 0,
+  "e": "One sharp means G major, and every triad in the song (C, G, D, Em, Dsus4) lives inside the G major scale."
+ },
+ {
+  "q": "How many unplayed keys sit between the two notes of a minor third, like E to G?",
+  "o": [
+   "Two",
+   "Three",
+   "Four",
+   "Six"
+  ],
+  "a": 0,
+  "e": "E to G skips F and F sharp: two unplayed keys. Two unplayed keys is always a minor third."
+ },
+ {
+  "q": "How many unplayed keys sit inside a perfect fifth, like C to G?",
+  "o": [
+   "Six",
+   "Five",
+   "Four",
+   "Seven"
+  ],
+  "a": 0,
+  "e": "C to G skips C sharp, D, D sharp, E, F and F sharp. A major third (3) plus a minor third (2) gives the fifth, and the math works in either order."
+ },
+ {
+  "q": "What makes a major triad different from a minor triad when you look at the two thirds inside it?",
+  "o": [
+   "Major is a major third on the bottom and a minor third on top; minor is the reverse",
+   "Major has two major thirds; minor has two minor thirds",
+   "Major has a perfect fifth; minor does not",
+   "Major uses the right hand; minor uses the left"
+  ],
+  "a": 0,
+  "e": "C E G: C to E is major, E to G is minor. E G B: E to G is minor, G to B is major. Both add up to a perfect fifth; the order flips the color."
+ },
+ {
+  "q": "Why is the seventh chord of a major key (B D F in C major) called diminished, and why does it sound unstable?",
+  "o": [
+   "It stacks two minor thirds, so the top note is a tritone from the root instead of a perfect fifth",
+   "It stacks two major thirds, so it is too bright",
+   "It is a minor triad with the root lowered",
+   "It has only two notes"
+  ],
+  "a": 0,
+  "e": "B to D is a minor third, D to F is another. Two minor thirds reach a flattened fifth, the tritone, the devil's interval. Double tension: the villain of the key."
+ },
+ {
+  "q": "In every major key, what is the pattern of chord qualities from the one chord to the seven chord?",
+  "o": [
+   "Major, minor, minor, major, major, minor, diminished",
+   "Major, major, minor, minor, major, minor, major",
+   "Minor, major, minor, major, minor, major, diminished",
+   "Major, minor, major, minor, major, minor, major"
+  ],
+  "a": 0,
+  "e": "The whole-whole-half-whole-whole-whole-half scale builds the same set every time: I major, ii minor, iii minor, IV major, V major, vi minor, vii diminished."
+ },
+ {
+  "q": "What is the seven chord in D major?",
+  "o": [
+   "C sharp diminished (C sharp, E, G)",
+   "C sharp minor (C sharp, E, G sharp)",
+   "C major (C, E, G)",
+   "B minor (B, D, F sharp)"
+  ],
+  "a": 0,
+  "e": "D major: D, Em, F sharp m, G, A, Bm, and then the villain, C sharp dim, spelled C sharp E G. Written with a small circle or dim."
+ },
+ {
+  "q": "Rod nudged the metronome from 105 to 104 and you felt it. What was his point?",
+  "o": [
+   "We can feel tiny differences but cannot produce them ourselves, so the metronome is our measuring instrument",
+   "Always practice one click slower than you think",
+   "104 is the correct tempo for 10,000 Reasons",
+   "The metronome should be turned off once you can feel the beat"
+  ],
+  "a": 0,
+  "e": "Humans are not wired to hold 105 versus 104 on our own. That is the job of the measuring device, like a beaker in a chemistry lab."
+ },
+ {
+  "q": "What is optimized voice leading?",
+  "o": [
+   "Moving from one chord to the next with the least possible movement, keeping common tones",
+   "Playing every chord in root position",
+   "Playing the melody in both hands at once",
+   "Always moving the bass note down an octave"
+  ],
+  "a": 0,
+  "e": "Think of three singers. From C major to G major one voice drops a half step, one stays put, one drops a whole step. That is what makes chord changes sound professional."
+ }
+];
+
+var WRITTEN = [
+ "Explain the weight metaphor in your own words. Which layers did you lift off 10,000 Reasons today, and what did it feel like to carry less?",
+ "Why does Rod want you to build chord drills from a song you are playing instead of from a chord book? What do you gain, and what might you lose?",
+ "Teach a friend why a major third plus a minor third makes a perfect fifth, and why flipping the order gives you a minor triad. Use the notes of C major and E minor.",
+ "Describe D major's seven chord, C sharp diminished. Why does Rod call it the villain, and why does a key need one?",
+ "Counting out loud makes the song feel harder and less like music. Why did Rod write 'count out loud every time' on your page anyway?"
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>
