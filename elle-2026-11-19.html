@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>Elle - Lesson Challenge - 2026-11-19</title>
+<style>
+:root {
+  color-scheme: light only;
+  --ink: #111;
+  --head: #234011;
+  --accent: #4E6B2A;
+  --border: #8AA95E;
+  --panel: #EFF4E4;
+  --bad: #8a1c1c;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background: #fff !important; color: #111 !important; }
+}
+* { box-sizing: border-box; }
+html, body { background: #fff; color: var(--ink); margin: 0; }
+body { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-size: 25px; color: var(--head); margin: 0 0 4px; line-height: 1.25; }
+h2 { font-size: 21px; color: var(--head); margin: 0 0 10px; border-bottom: 2px solid var(--border); padding-bottom: 4px; }
+h3 { font-size: 18px; color: var(--head); margin: 16px 0 6px; }
+.sub { color: #333; margin: 0 0 14px; }
+.levels { display: flex; gap: 6px; margin: 12px 0 20px; }
+.lv { flex: 1; border: 2px solid var(--border); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 14px; line-height: 1.3; background: #fff; }
+.lv b { display: block; font-size: 15px; color: var(--head); }
+.lv.on { background: var(--panel); border-color: var(--accent); }
+.lv.done { background: var(--accent); border-color: var(--accent); color: #fff; }
+.lv.done b { color: #fff; }
+section.card { border: 1px solid #222; border-radius: 10px; padding: 16px; margin: 0 0 22px; background: #fff; }
+.note { background: var(--panel); border-left: 4px solid var(--accent); padding: 10px 12px; border-radius: 6px; margin: 10px 0; }
+ul { padding-left: 22px; margin: 6px 0; }
+li { margin: 4px 0; }
+.btn { display: block; width: 100%; font: inherit; font-size: 18px; font-weight: bold; padding: 14px; border-radius: 10px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 12px; }
+.btn.alt { background: #fff; color: var(--head); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.q { border: 2px solid var(--border); border-radius: 10px; padding: 14px; margin: 0 0 16px; }
+.qtext { font-size: 20px; font-weight: bold; margin: 0 0 10px; line-height: 1.35; }
+.qnum { color: var(--head); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; font-size: 17px; padding: 8px 12px 8px 8px; margin: 7px 0; border: 2px solid #999; border-radius: 8px; background: #fff; color: #111; }
+.opt .otext { flex: 1; }
+.letter { flex: none; width: 48px; height: 48px; font: inherit; font-size: 20px; font-weight: bold; border: 3px solid var(--accent); border-radius: 10px; background: var(--panel); color: var(--head); cursor: pointer; padding: 0; }
+.letter[disabled] { cursor: default; opacity: 1; }
+.opt.right .letter { background: var(--accent); color: #fff; }
+.opt.wrong .letter { border-color: var(--bad); background: #fff; color: var(--bad); }
+.opt.right { border: 4px solid var(--accent); background: var(--panel); font-weight: bold; }
+.opt.wrong { border: 4px dashed var(--bad); }
+.opt[disabled] { cursor: default; }
+.opt.sel { border: 3px solid #111; background: #f4f4f4; }
+.check { display: none; font: inherit; font-size: 17px; font-weight: bold; padding: 10px 16px; margin-top: 6px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; }
+.check.show { display: inline-block; }
+.verdict { font-size: 17px; font-weight: bold; margin: 0 0 6px; }
+.q.got { border-color: var(--accent); border-width: 3px; }
+.q.miss { border-color: var(--bad); border-width: 3px; border-style: dashed; }
+.misslist { margin: 6px 0 0; padding-left: 20px; }
+.tag { display: inline-block; font-size: 13px; font-weight: bold; letter-spacing: .5px; margin-right: 6px; }
+.fb { margin-top: 8px; padding: 9px 11px; border-radius: 6px; background: var(--panel); }
+.fb.no { background: #fff; border: 2px dashed var(--bad); }
+.score { font-size: 19px; font-weight: bold; }
+.unlock { text-align: center; border: 4px solid var(--accent); background: var(--panel); border-radius: 12px; padding: 18px 14px; margin: 14px 0; }
+.unlock .big { font-size: 28px; font-weight: bold; color: var(--head); line-height: 1.2; }
+.unlock .stamp { font-size: 15px; color: #333; margin-top: 6px; }
+.locked { text-align: center; color: #333; padding: 18px 10px; border: 2px dashed var(--border); border-radius: 10px; }
+.locked .lock { font-size: 34px; }
+label.wq { display: block; font-size: 19px; font-weight: bold; margin: 18px 0 6px; line-height: 1.35; }
+textarea { width: 100%; min-height: 110px; font: inherit; font-size: 17px; padding: 10px; border: 2px solid var(--border); border-radius: 8px; color: #111; background: #fff; }
+textarea:focus { outline: 3px solid var(--accent); }
+.hint { font-size: 15px; color: #333; }
+.preview { -webkit-user-select: text; user-select: text; white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: 14px; background: #fafafa; border: 1px solid #999; border-radius: 8px; padding: 10px; margin-top: 10px; }
+.hidden { display: none; }
+.actions { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.actions h3 { margin-top: 0; }
+.actions ol { margin: 6px 0 10px; padding-left: 24px; }
+.actions li { margin: 0 0 9px; }
+.actions .starred { margin: 10px 0 0; padding-top: 10px; border-top: 2px solid var(--accent); }
+.terms { border: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin: 12px 0 18px; background: #fff; }
+.terms h3 { margin-top: 0; }
+.term { border-top: 1px solid var(--border); padding: 9px 0; }
+.term:first-of-type { border-top: none; }
+.tname { font-size: 18px; font-weight: bold; }
+.lang { display: inline-block; font-size: 13px; font-weight: bold; border: 1px solid var(--accent); border-radius: 4px; padding: 0 5px; margin-left: 4px; color: var(--head); vertical-align: 2px; }
+.sym { font-size: 22px; display: inline-block; min-width: 30px; text-align: center; }
+.cs { display: block; font-size: 15px; color: #333; margin-top: 2px; }
+.cs b { color: #111; }
+.signoff { font-style: italic; margin-top: 14px; }
+.linkbtn { font: inherit; font-size: 15px; background: none; border: none; color: var(--head); text-decoration: underline; cursor: pointer; padding: 6px; }
+footer { text-align: center; font-size: 14px; color: #333; border-top: 2px solid var(--border); padding-top: 10px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Elle&#x27;s Lesson Challenge</h1>
+<p class="sub">Lesson of Thursday, November 19, 2026</p>
+
+<div class="levels">
+  <div class="lv on" id="lv1"><b>Level 1</b>Read</div>
+  <div class="lv" id="lv2"><b>Level 2</b>Quiz</div>
+  <div class="lv" id="lv3"><b>Level 3</b>Explain</div>
+</div>
+
+<div class="note hidden" id="welcomeBack"><b>Welcome back!</b> Your progress was saved, so you can pick up right where you left off.</div>
+
+<!-- LEVEL 1: SUMMARY -->
+<section class="card" id="level1">
+  <h2>Level 1: Your Lesson Summary</h2>
+  <p>Read this first. (Younger students: if needed, have mom or dad read it along with you.) Everything in Level 2 and Level 3 comes from here.</p>
+
+  <div class="actions">
+    <h3>Action Items</h3>
+    <p class="hint">Key points we covered.</p>
+    <ol>
+      <li><b>New this week:</b> Triad inversions and the relative minor. Every triad has a root position, a first inversion and a second inversion, and every major key has a minor cousin three half steps down. See below!</li>
+      <li><b>Triad inversions (back page):</b> E minor, C major, G major and D minor. Root position with 1-3-5, first inversion with 1-2-5, second inversion with 1-3-5, then back to root position an octave up. Write them out on the back page.</li>
+      <li><b>Ukrainian Bell Carol, page 1:</b> Hands together, slow and SOFT, two measures at a time, three times each, then join them. Eighth note at 78. Count a measure out loud before you start. Goal: the whole first page.</li>
+      <li><b>Ukrainian Bell Carol, measure 39 to the end:</b> Eighth note at 100 now (up from 85). Say the counts, follow your circled crossover fingers, and play it at half your usual volume.</li>
+      <li><b>Ukrainian Bell Carol, pages 2 and 3:</b> Over the two weeks, explore the second page and the top of the third the same way: find the clusters, write the counts, add corners.</li>
+      <li><b>MIDI (the French piece):</b> Play along with my recording at about 100, soft and slow. Test the bottom half of page 1 that you already own, then learn the middle section. Follow the arrows and the E with finger 4.</li>
+      <li><b>Pencil first:</b> Cross off tied notes, write in any missing finger number or count, and circle the crossover fingers. Writing it down is how your brain decides to remember it.</li>
+    </ol>
+    <p class="starred"><b>&#9733;</b> On your practice log, any starred items are ones we didn&#x27;t get to today... so make sure you have those ready for next time. We will do those first next week.</p>
+  </div>
+  <div class="terms">
+    <h3>Terms to Know</h3>
+    <p class="hint">These are the music words from this lesson. Some come from Italian, the language of music, so you will see them in music from all over the world.</p>
+    <div class="term"><span class="tname">Rhythmic cell</span><span class="lang">English</span>
+      <div>A short rhythm pattern that a song is built from. Take the melody away from Silent Night and the whole 24-measure song is only three cells (mango pear plum, plum hold hold, plum hold pear), plus one at the very end.</div></div>
+    <div class="term"><span class="tname">Metronome</span><span class="lang">Greek &quot;metron&quot; (measure) + &quot;nomos&quot; (rule)</span>
+      <div>The click that keeps a steady beat. It teaches you an internal sense of time, the glue that holds a band or a choir together. It also catches the speed monkey: without it you were at 105 to 110 when you thought you were at 100.</div></div>
+    <div class="term"><span class="tname">Tempo</span><span class="lang">Italian</span>
+      <div>Means &quot;time.&quot; The speed of the beat. A written tempo is a sweet spot, not a rule for the whole week. Measure 39 and on moved from 85 up to 100 today; page 1 starts at 78.</div></div>
+    <div class="term"><span class="tname">Reticular activating system</span><span class="lang">English</span>
+      <div>The filter in your brainstem that decides what matters. When you write a finger number in, your brain is told: this is important, remember it. The one left-hand note with no finger number written was the one that got you.</div></div>
+    <div class="term"><span class="tname">Treble clef</span><span class="lang">English</span>
+      <div>The curly clef for the higher notes. On page 1 of the carol BOTH hands read in the treble clef, so the left hand is higher than usual: finger 2 on E and the thumb on F sharp.</div></div>
+    <div class="term"><span class="tname">Cluster</span><span class="lang">English</span>
+      <div>Notes grabbed together as one shape. The whole first page of the left hand is E and F sharp as a cluster, then one note changes at a time. Seeing clusters instead of single notes is how you learn a page in minutes.</div></div>
+    <div class="term"><span class="tname">Triad</span><span class="lang">English</span>
+      <div>A three-note chord. E minor is E, G and B. C major is C, E and G. Every triad can be stacked three ways.</div></div>
+    <div class="term"><span class="tname">Root position</span><span class="lang">English</span>
+      <div>The triad with its name note on the bottom and a perfect fifth from bottom to top. E G B is E minor in root position. Your hand is built for it: play it with 1-3-5.</div></div>
+    <div class="term"><span class="tname">First inversion</span><span class="lang">English</span>
+      <div>Move the bottom note of the triad up an octave. E minor becomes G B E. Play it with 1-2-5, because finger 2 fits the middle note better than 3 does. The right hand&#x27;s G B E at the start of the carol is E minor in first inversion, not G major.</div></div>
+    <div class="term"><span class="tname">Second inversion</span><span class="lang">English</span>
+      <div>Move the bottom note up again. E minor becomes B E G, played with 1-3-5. Move the bottom note up once more and you are back in root position an octave higher. There is no third inversion.</div></div>
+    <div class="term"><span class="tname">Perfect fifth</span><span class="lang">English</span>
+      <div>Five letter names apart, like E up to B or C up to G. If a triad has a perfect fifth from its bottom note to its top note, it is in root position. G up to E is a sixth, which is how you know G B E is NOT G major.</div></div>
+    <div class="term"><span class="tname">Relative minor</span><span class="lang">English</span>
+      <div>The minor scale that uses the exact same notes as a major scale, starting three half steps lower. C major and A minor share all the white keys, same fingering. G major and E minor share the one F sharp. Sunny versus a little cloudy.</div></div>
+    <div class="term"><span class="tname">Key signature</span><span class="lang">English</span>
+      <div>The sharps or flats at the start of each line. The carol has one sharp, F sharp, so every F is an F sharp. That could mean G major or E minor; the piece is in E minor.</div></div>
+    <div class="term"><span class="sym">&#9839;</span><span class="tname">Sharp</span><span class="lang">English</span>
+      <div>Raises a note one half step. F sharp is the black key just above F.</div>
+      <span class="cs"><b>Color-shape:</b> a triangle pointing UP in the color of the white note below it. F sharp is a green triangle pointing up.</span></div>
+    <div class="term"><span class="tname">Tie</span><span class="lang">English</span>
+      <div>A curved line joining two of the same note. You hold through the second one instead of playing it again. Cross off the tied note so your eye does not try to replay it.</div></div>
+    <div class="term"><span class="tname">Corner</span><span class="lang">English (Rod&#x27;s term)</span>
+      <div>A heads-up you write before a tricky spot, like yelling corner before you carry a tray through a door. Today: the letters C and E with their finger numbers in measures 7 and 8, and an arrow down with E and 4 in MIDI.</div></div>
+    <div class="term"><span class="tname">Percussion instrument</span><span class="lang">English</span>
+      <div>An instrument you strike. The piano counts: each key swings a hammer that hits a string. Once you strike a note you cannot make it louder, unlike a bowed violin that can swell. So your volume is decided the instant you press the key.</div></div>
+    <div class="term"><span class="tname">Piano (soft)</span><span class="lang">Italian</span>
+      <div>Means &quot;soft.&quot; The instrument is named after it. Playing softer takes more control than playing loud, and softer tends to mean slower, which is exactly what we want right now.</div></div>
+    <div class="term"><span class="tname">Speed monkey</span><span class="lang">English (one of Rod&#x27;s characters)</span>
+      <div>The part of you that wants to eat everything up and go fast. Loud and fast travel together. Slow and soft are how you counter him.</div></div>
+  </div>
+
+  <h3>A mystery carol made of three rhythms</h3>
+  <p>We started with fruit: mango pear plum, hold. Remember, the X is hold. With the melody taken away, the rhythm of a very famous carol felt mysterious. Then we looked at it like scientists: four measures per line, six lines, 24 measures. How many different rhythms? Only three, four if you count the very last one. Nine measures of mango pear plum, nine of plum hold hold, five of plum hold pear, and one at the end.</p>
+  <p>Then I sang the words and you knew it: Silent Night. When you pull the pitches away, music can feel foreign, but on a rhythmic level it is usually simple. That idea comes back in the carol: find the pattern, and the page gets small.</p>
+
+  <h3>Measure 39 and the one missing finger number</h3>
+  <p>You focused on the Ukrainian Bell Carol this week, and from measure 39 it showed: most of the notes, solid fingering, good rhythmic integrity. We stayed at the Seed level to warm up. There was exactly one left-hand note without a finger number written in, and that is the one that got you. That is the reticular activating system: when you write it, your brainstem files it as important. We wrote in the 2, and the 5 below it, just to play it safe.</p>
+  <p>You were playing at about 100 instead of the 85 I had written, and I let you keep 100. A written tempo is a sweet spot for that day, not for the whole week. If you stay too slow once it has grown, that is just as frustrating as too fast. So 85 became 100.</p>
+  <p>Then the fingering got you at a crossover. In one spot you go from the thumb to a 2, in another from the thumb to a 4, and the 4 was not circled. Such a subtle thing, and most people glaze right past it. We circled every crossover, wrote the missing 1 next to the 4, and wrote 1 and 3 where you land. Right-hand fingers go above the notes, left-hand fingers below, and the numbers in the middle are the counts. That 2 in the middle is beat two, not finger two.</p>
+
+  <h3>Rod the percussionist, then Sergeant Metronome at 100</h3>
+  <p>In a band, the person without a steady beat creates havoc, because the beat is the glue. So I played percussionist while you played: one and two and three and, one. The circles worked; I could see you seeing the crossover before you hit it.</p>
+  <p>After three times we turned on the metronome at 100. Honest question: were you faster or slower without it? Without it you were closer to 105 to 110. That is the speed monkey, subtly nudging the tempo up every repetition until you wonder why you are getting stuck. The metronome pushes the tempo back down so you are not rushing.</p>
+  <div class="note">Even when it feels owned after two good runs, do the third. Three times is where we learn whether it was luck or skill.</div>
+
+  <h3>Playing soft: the piano is a percussion instrument</h3>
+  <p>New skill for the next months: play soft. Not with the pedal, with your touch. You said it is hard because you usually press down really hard, and that is exactly why we need more range. The piano is a percussion instrument: the key is a lever, the hammer swings back and then forward to strike the string. Once you have struck a note you cannot make it louder; a violin with a bow can swell, a piano cannot. So the volume is decided the instant you press.</p>
+  <p>Second try: half the volume of the first. Hard, right? It takes much more awareness and control. And here is the connection: when you play softer, you tend to play slower; when you play louder, you tend to rush. If you tend to play loud, you tend to side with the speed monkey. A room full of people all talking fast and loud feels chaotic. Soft and slow is how you give the music room to breathe.</p>
+
+  <h3>Page 1: both hands in the treble clef, and clusters</h3>
+  <p>The first page is tricky because both hands read in the treble clef. Left hand: finger 2 on E, thumb on F sharp. For most of the page you alternate those two notes, so grab them as a cluster: E and F sharp together. Then the cluster just below E, then one with a C added, then the same cluster again, then one note changes. Each step changes only one note, and at the end you hold the B.</p>
+  <p>Count it one and two and three and, one and two and three and. You wrote in the rest of the counts, and you found the and of two on your own when the engraving was unclear. Good reverse engineering. It is a whole page of mysterious intro, and once you see the clusters it is mostly two notes.</p>
+
+  <h3>Triads and their inversions</h3>
+  <p>Right hand at the top of page 1: thumb, 2 and 5 on G, B and E. Play it as a unit. It is not G major, even though G is on the bottom. Look at the triad on the left: E, G, B is E minor, and we know it is in root position because E up to B is a perfect fifth. Now grab the E and move it up an octave: G, B, E. Same three notes, different stacking. That is E minor in first inversion.</p>
+  <p>Every triad has three positions. Root position: the name note on the bottom, a perfect fifth from bottom to top, played 1-3-5 because your hand is built for it. First inversion: bottom note moved up an octave, played 1-2-5, because 2 fits the middle note better than 3 does (we tried both so you could feel why). Second inversion: move the bottom note up again, B E G, played 1-3-5. Move the bottom up once more and you are back to root position an octave higher. There is no third inversion.</p>
+  <p>We did it in C major too: root, first, second, root. If you use the same fingers every time, after a while every triad feels the same in your hand. That is the power of muscle memory, and it is why fingering matters so much.</p>
+
+  <h3>The relative minor: why this is E minor, not G major</h3>
+  <p>One sharp in the key signature, F sharp, so every F is sharp. That looks like G major, but the carol does not start on G; it starts on E and outlines E minor. Here is the secret: every major scale has a relative minor that uses the exact same notes, three half steps down. Play C major, then A to A on the white keys: A natural minor, same notes, same fingering, more melancholy. G major&#x27;s relative minor is three half steps down from G: E minor. You played the E minor scale, slower the second time so your brain could process it.</p>
+  <p>Sunny versus a little cloudy, with the same collection of notes. Now the right-hand G B E makes sense: it is E minor in first inversion, and you play it for two whole measures. From there we mapped the right-hand clusters across the page: G and the note below, 3 and 4, then 1 and 2-3, then 1-2-5 again, 2 and 5, 1-3-4, thumb on B and finger 4 leading to the 4 on G. We wrote in the sharps that needed writing.</p>
+
+  <h3>Putting page 1 together: slow, soft, two measures at a time</h3>
+  <p>Hands together from the beginning, really slow and very soft. First, the five-second job: cross off the tied notes so your eye does not try to replay them. Left hand finger 2 and thumb, right hand 1-2-5 right above the thumb. Before you play, create the beat: one and two and three and, out loud. Measures 1 and 2, stop on the downbeat, three times. Then, what changes in measures 3 and 4? Nothing in the left hand; only the upper right-hand note. Measures 5 and 6: the G is always there; only the upper note moves.</p>
+  <p>Then the metronome at 78 from the beginning to measure 7. He does not slow down for us, so it felt a little more tenuous, and that is fine. From the first repetition to that run was about four or five minutes. Doing less, slower and softer, lets your brain breathe instead of just trying to survive. That is the power of slowing down.</p>
+  <p>Measures 7 and 8: corner! Write C and E with their finger numbers for the left hand. When I asked you to picture a pink elephant, the point was that we often only have the concept of a note until we write it down; writing confirms whether the picture in our mind is true. Be proactive with the pencil. We wrote eighth note equals 78 at the top of page 1, and updated the bottom of page 3 to 100. That is a 22-click gap, and pages 2 and the top of 3 are still untouched. Over the two weeks, see how close you can bring them together.</p>
+
+  <h3>MIDI: soft, slow, and the recording</h3>
+  <p>You did not get to the MIDI piece this week, so I put you on the spot, softly. Notice what happened to your speed when you played softer: it came down on its own. At the end of the line, the first note of the next line is an E with finger 4, so we wrote a corner: arrow down, E, 4. The E up high got a big arrow pointing up.</p>
+  <p>I recorded the piece at about 100 for you. Use it the scientific way: if you think you own the bottom half of page 1, test it against the recording. Then learn the middle section. The bottom of page 2 felt slow to you, and I saw the disappointed face. If it is so slow it is boring, then it should be easy, right? That is how you counter the speed monkey. Expressivity comes from being able to play loud and soft and everything in between, so this is where the range is built. Fingering notes: 3-1-2-1-4-1-4-1 in the tricky spot, 2-5 (or 1) and ideally 1 to 4 at the end.</p>
+  <p class="signoff">Keep an open mind and an open heart, and always create with much love.</p>
+
+  <button class="btn" id="startL2">I read it! Start Level 2</button>
+</section>
+
+<!-- LEVEL 2: MULTIPLE CHOICE -->
+<section class="card hidden" id="level2">
+  <h2>Level 2: Quiz</h2>
+  <p>Tap the <b>letter box</b> (A, B, C or D) next to your answer. Get them all right to unlock Level 3.</p>
+  <div class="note"><b>If you miss some:</b><br>Miss 1: try 3 questions (the one you missed + 2 you knew).<br>Miss 2: try 6 questions (the 2 you missed + 4 you knew).<br>Miss 3 or more: try the whole quiz again.<br>Get every question in that round right and Level 3 opens.</div>
+  <div class="score" id="progress"></div>
+  <div id="qs"></div>
+  <div id="result"></div>
+</section>
+
+<!-- LEVEL 3: WRITTEN CHALLENGE -->
+<section class="card" id="level3">
+  <h2>Level 3: Explain It</h2>
+  <div class="locked" id="lockedBox">
+    <div class="lock">&#128274;</div>
+    <b>Locked.</b> Get 100% on the Level 2 quiz to open this level.
+  </div>
+  <div class="hidden" id="l3body">
+    <p>No choices this time. Answer in <b>your own words</b>. There are no perfect answers, just show what you understand. Mr. Rod will go over your answers with you at your next lesson.</p>
+    <div class="note"><b>Younger students:</b> tap a box, then tap the <b>microphone</b> on the keyboard and say your answer out loud. A grown-up can also type for you.</div>
+    <div class="note"><b>Music words you can use:</b> triad, root position, first inversion, second inversion, perfect fifth, E minor, C major, relative minor, key signature, F sharp, treble clef, cluster, tie, corner, counts, downbeat, tempo, eighth note, 78, 100, metronome, speed monkey, soft, percussion, hammer, reticular activating system, rhythmic cell, Seed Sprout Bloom<br>If voice typing spells a word wrong, that is okay. Mr. Rod is listening for your ideas.</div>
+    <p class="hint">Your answers save automatically on this device as you type, so you can stop and come back later.</p>
+    <div id="wqs"></div>
+    <p style="margin:18px 0 0"><b>All done? Click the button below and your answers will be sent automatically to Mr. Rod, so we can go over them together at your next lesson!</b></p>
+    <a class="btn" id="sendBtn" href="#" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Click here to send my answers</a>
+    <div id="sendMsg"></div>
+  </div>
+</section>
+
+<p style="text-align:center;margin:0 0 10px"><button class="linkbtn" id="startOver">Start over from the beginning</button></p>
+<footer>Rod Contreras Piano Studio &middot; encinitaspiano.com</footer>
+</div>
+
+<script>
+// ---------------- CONFIG ----------------
+var STUDENT = "Elle";
+var LESSON_DATE = "2026-11-19";
+var LESSON_LABEL = "Thursday, November 19, 2026";
+// Web3Forms access key (public alias for Rod's email; safe in client code).
+var WEB3FORMS_KEY = "c0cd7e3f-d017-4281-b2e9-ece3a27592d6";
+
+var QUESTIONS = [
+ {
+  "q": "A triad is in root position when...",
+  "o": [
+   "Its name note is on the bottom and there is a perfect fifth from bottom to top",
+   "Its highest note is the name of the chord",
+   "It is played with fingers 1-2-5",
+   "It has a sixth from bottom to top"
+  ],
+  "a": 0,
+  "e": "E G B: E on the bottom, E up to B is a perfect fifth. Root position, played 1-3-5."
+ },
+ {
+  "q": "What are the three notes of an E minor triad in root position?",
+  "o": [
+   "E G B",
+   "G B E",
+   "E G sharp B",
+   "E A B"
+  ],
+  "a": 0,
+  "e": "E, G and B, with a minor third from E to G and a perfect fifth from E to B."
+ },
+ {
+  "q": "E minor in first inversion, from the bottom up, is...",
+  "o": [
+   "G B E",
+   "E G B",
+   "B E G",
+   "G B D"
+  ],
+  "a": 0,
+  "e": "Take the E off the bottom and put it on top. That is the right hand's chord at the start of the carol."
+ },
+ {
+  "q": "Which fingering fits a first-inversion triad in the right hand best?",
+  "o": [
+   "1-2-5",
+   "1-3-5",
+   "1-2-4",
+   "2-3-5"
+  ],
+  "a": 0,
+  "e": "Finger 2 reaches the middle note comfortably; with 3 there are too many notes squeezed in. Root and second inversion use 1-3-5."
+ },
+ {
+  "q": "After second inversion, moving the bottom note up an octave again gives you...",
+  "o": [
+   "Root position, an octave higher",
+   "Third inversion",
+   "First inversion",
+   "A seventh chord"
+  ],
+  "a": 0,
+  "e": "There is no third inversion. The circle closes and you are back where you started, one octave up."
+ },
+ {
+  "q": "Where do you find the relative minor of a major scale?",
+  "o": [
+   "Three half steps below the major key note",
+   "A perfect fifth above the major key note",
+   "One whole step above the major key note",
+   "On the fourth note of the major scale"
+  ],
+  "a": 0,
+  "e": "C major down three half steps is A minor; G major down three half steps is E minor. Same notes, cloudier vibe."
+ },
+ {
+  "q": "What is the relative minor of G major?",
+  "o": [
+   "E minor",
+   "A minor",
+   "D minor",
+   "G minor"
+  ],
+  "a": 0,
+  "e": "G down three half steps is E. Both use the single F sharp."
+ },
+ {
+  "q": "The carol has one sharp in its key signature. Which note is sharp?",
+  "o": [
+   "F",
+   "B",
+   "C",
+   "G"
+  ],
+  "a": 0,
+  "e": "Every F on the page is an F sharp, the green triangle pointing up."
+ },
+ {
+  "q": "What is the tempo now for measure 39 to the end of the carol?",
+  "o": [
+   "Eighth note at 100",
+   "Eighth note at 85",
+   "Eighth note at 78",
+   "Eighth note at 110"
+  ],
+  "a": 0,
+  "e": "You had grown past 85, so we updated it to 100. Page 1 is at 78 for now."
+ },
+ {
+  "q": "Why is the piano a percussion instrument?",
+  "o": [
+   "Each key swings a hammer that strikes a string",
+   "Its strings are bowed like a violin",
+   "Its strings are plucked like a guitar",
+   "You blow air through it"
+  ],
+  "a": 0,
+  "e": "The key is a lever and the hammer hits the string. Once struck, a note cannot get louder."
+ },
+ {
+  "q": "When you play softer, what tends to happen to your speed?",
+  "o": [
+   "You tend to play slower",
+   "You tend to play faster",
+   "Your speed does not change",
+   "You skip beats"
+  ],
+  "a": 0,
+  "e": "Volume and speed travel together. Loud pulls toward fast and the speed monkey; soft pulls toward slower and more control."
+ },
+ {
+  "q": "What should you do with the second note of a tie?",
+  "o": [
+   "Cross it off and hold through it without replaying",
+   "Play it again a little louder",
+   "Play it again a little softer",
+   "Skip the first note and play only the second"
+  ],
+  "a": 0,
+  "e": "A tie means hold. Crossing it off keeps your eye from trying to replay it."
+ },
+ {
+  "q": "What should you do right before you play the first note of a section?",
+  "o": [
+   "Count a measure out loud to create the beat",
+   "Play the first chord once to check it",
+   "Turn the metronome off",
+   "Look ahead at the last measure"
+  ],
+  "a": 0,
+  "e": "One and two and three and, out loud. The beat exists before the music starts."
+ },
+ {
+  "q": "In the left hand on page 1, what two notes make up the main cluster?",
+  "o": [
+   "E and F sharp",
+   "G and B",
+   "E and G",
+   "F sharp and A"
+  ],
+  "a": 0,
+  "e": "Finger 2 on E and the thumb on F sharp. Most of the page alternates those two, then one note changes at a time."
+ },
+ {
+  "q": "What does Rod call the brain filter that makes something stick once you write it on the page?",
+  "o": [
+   "The reticular activating system",
+   "The speed monkey",
+   "Muscle memory",
+   "The cluster"
+  ],
+  "a": 0,
+  "e": "Your brainstem's filter. The one note without a written finger number was the one that got you."
+ }
+];
+
+var WRITTEN = [
+ "Teach a friend what a triad inversion is. Use E minor as your example and explain how you know which position you are in.",
+ "Why is the carol in E minor and not G major, even though they share the same key signature? Explain the relative minor in your own words.",
+ "What happened in your hands when you played at half volume? Why does Rod connect playing soft with playing slow?",
+ "Describe how clusters helped you learn page 1 in a few minutes. What was the only thing that changed from measure to measure?",
+ "Why did Rod want you to write in finger numbers, counts and corners yourself instead of just remembering them? Use the pink elephant idea."
+];
+// ----------------------------------------
+
+function el(id) { return document.getElementById(id); }
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+var round = 0, answered = 0, correct = 0, missed = [], missedIdx = [], order = [], optOrder = [], picks = {};
+
+// ---------- AUTO-SAVE: progress is kept in this browser so students can come back later ----------
+var SAVE_KEY = "rcps-challenge:" + STUDENT + ":" + LESSON_DATE;
+var S = {stage: 1, round: 0, order: [], optOrder: [], picks: {}, next: null, stamp: "", l3: false, written: []};
+var restoring = false, restoreNext = null;
+
+function save() {
+  if (restoring) return;
+  S.round = round; S.order = order; S.optOrder = optOrder; S.picks = picks;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (err) {}
+}
+function loadSaved() {
+  try { var raw = localStorage.getItem(SAVE_KEY); return raw ? JSON.parse(raw) : null; } catch (err) { return null; }
+}
+function clearSaved() {
+  try { localStorage.removeItem(SAVE_KEY); } catch (err) {}
+}
+// ---------------------------------------------------------------------------------------------
+
+function showL2() {
+  el("level2").classList.remove("hidden");
+  el("lv1").className = "lv done";
+  el("lv2").className = "lv on";
+  el("startL2").style.display = "none";
+}
+
+el("startL2").onclick = function () {
+  showL2();
+  S.stage = 2;
+  startRound(QUESTIONS.map(function (_, i) { return i; }));
+  el("level2").scrollIntoView({behavior: "smooth"});
+};
+
+function startRound(list, savedOpts) {
+  round++; answered = 0; correct = 0; missed = []; missedIdx = []; picks = {};
+  S.next = null;
+  order = savedOpts ? list.slice() : shuffle(list);
+  optOrder = [];
+  var html = "";
+  order.forEach(function (qi, n) {
+    var Q = QUESTIONS[qi];
+    var perm = savedOpts ? savedOpts[n] : shuffle(Q.o.map(function (_, i) { return i; }));
+    optOrder.push(perm);
+    html += '<div class="q" id="q' + n + '"><p class="qtext"><span class="qnum">' + (n + 1) + '.</span> ' + esc(Q.q) + '</p>';
+    perm.forEach(function (oi, k) {
+      html += '<div class="opt" data-k="' + k + '" data-ok="' + (oi === Q.a ? 1 : 0) + '"><button class="letter" data-n="' + n + '" aria-label="Choose ' + "ABCD"[k] + '">' + "ABCD"[k] + '</button><span class="otext">' + esc(Q.o[oi]) + '</span></div>';
+    });
+    html += '<div class="fbwrap"></div></div>';
+  });
+  el("qs").innerHTML = html;
+  el("result").innerHTML = "";
+  updateProgress();
+  var btns = document.querySelectorAll("#qs .letter");
+  for (var i = 0; i < btns.length; i++) btns[i].onclick = function () { pick.call(this.parentNode, +this.getAttribute("data-n")); };
+  save();
+}
+
+function pick(n) {
+  var box = el("q" + n);
+  var Q = QUESTIONS[order[n]];
+  var ok = this.getAttribute("data-ok") === "1";
+  picks[n] = +this.getAttribute("data-k");
+  var all = box.querySelectorAll(".opt");
+  for (var i = 0; i < all.length; i++) {
+    all[i].querySelector(".letter").disabled = true;
+    if (all[i].getAttribute("data-ok") === "1") {
+      all[i].classList.add("right");
+      var t1 = all[i].querySelector(".otext"); t1.innerHTML = '<span class="tag">CORRECT &gt;</span>' + t1.innerHTML;
+    }
+  }
+  if (!ok) {
+    this.classList.add("wrong");
+    var t2 = this.querySelector(".otext"); t2.innerHTML = '<span class="tag">YOUR ANSWER &gt;</span>' + t2.innerHTML;
+    missed.push(n + 1);
+    box.classList.add("miss");
+    missedIdx.push(order[n]);
+  } else {
+    correct++;
+    box.classList.add("got");
+  }
+  answered++;
+  box.querySelector(".fbwrap").innerHTML =
+    '<div class="fb' + (ok ? '' : ' no') + '"><p class="verdict">' + (ok ? 'You got it!' : 'Missed. The right answer is marked CORRECT.') + '</p>' + esc(Q.e) + '</div>';
+  updateProgress();
+  save();
+  if (answered === order.length) finishRound();
+}
+
+function updateProgress() {
+  el("progress").textContent = "Round " + round + ": " + answered + " of " + order.length + " answered, " + correct + " correct";
+}
+
+function nextList() {
+  var all = QUESTIONS.map(function (_, i) { return i; });
+  if (missedIdx.length >= 3) return {list: all, msg: "You missed " + missedIdx.length + ", so next round is the <b>whole quiz</b> again."};
+  var extra = missedIdx.length === 1 ? 2 : 4;
+  var known = shuffle(all.filter(function (i) { return missedIdx.indexOf(i) < 0; })).slice(0, extra);
+  var n = missedIdx.length + extra;
+  return {list: missedIdx.concat(known), msg: "You missed " + missedIdx.length + ", so next round is <b>" + n + " questions</b>: the " + (missedIdx.length === 1 ? "one" : "two") + " you missed plus " + extra + " you already knew."};
+}
+
+function finishRound() {
+  var total = order.length;
+  if (correct === total) {
+    unlock();
+    return;
+  }
+  var nx = (restoring && restoreNext) ? restoreNext : nextList();
+  S.next = nx;
+  save();
+  el("result").innerHTML =
+    '<div class="note"><p class="score">Score: ' + correct + ' / ' + total + '</p>' +
+    '<p><b>Missed:</b></p><ul class="misslist">' + missed.map(function (m) { return '<li>' + m + '. ' + esc(QUESTIONS[order[m - 1]].q) + '</li>'; }).join("") + '</ul>' +
+    '<p>' + nx.msg + ' Read the reminders above first. The order will be mixed up, so you have to really know it. Get them all right to unlock Level 3.</p></div>' +
+    '<button class="btn" id="retry">Start next round</button>';
+  el("retry").onclick = function () { startRound(nx.list); el("level2").scrollIntoView({behavior: "smooth"}); };
+}
+
+function unlock() {
+  var stamp = S.stamp;
+  if (!stamp) {
+    var now = new Date();
+    stamp = now.toLocaleDateString(undefined, {weekday: "short", month: "short", day: "numeric"}) + " at " +
+            now.toLocaleTimeString(undefined, {hour: "numeric", minute: "2-digit"});
+  }
+  S.stamp = stamp;
+  S.stage = 3;
+  save();
+  el("result").innerHTML =
+    '<div class="unlock"><div class="big">100%!<br>LEVEL 3 UNLOCKED</div>' +
+    '<p style="font-size:19px;margin:10px 0 4px"><b>' + esc(STUDENT) + '</b>, lesson of ' + esc(LESSON_LABEL) + '</p>' +
+    '<div class="stamp">Unlocked ' + esc(stamp) + ' (round ' + round + ')</div>' +
+    '<p style="margin-top:12px"><b>Take a screenshot of this box and text it to Mr. Rod.</b></p></div>' +
+    '<button class="btn" id="goL3">Start Level 3</button>';
+  el("lv2").className = "lv done";
+  el("lv3").className = "lv on";
+  el("goL3").onclick = openL3;
+  if (!restoring) el("result").scrollIntoView({behavior: "smooth"});
+}
+
+function openL3() {
+  el("lockedBox").style.display = "none";
+  el("l3body").classList.remove("hidden");
+  S.l3 = true;
+  if (!S.written) S.written = [];
+  var html = "";
+  WRITTEN.forEach(function (q, i) {
+    html += '<label class="wq" for="w' + i + '">' + (i + 1) + '. ' + esc(q) + '</label>' +
+            '<textarea id="w' + i + '" data-i="' + i + '" placeholder="Type or speak your answer here..."></textarea>';
+  });
+  el("wqs").innerHTML = html;
+  WRITTEN.forEach(function (q, i) {
+    var ta = el("w" + i);
+    ta.value = S.written[i] || "";
+    ta.oninput = function () { S.written[+this.getAttribute("data-i")] = this.value; save(); };
+  });
+  save();
+  if (!restoring) el("level3").scrollIntoView({behavior: "smooth"});
+}
+
+el("startOver").onclick = function () {
+  if (!confirm("This clears your quiz answers and anything you typed in Level 3 on this device. Start over from the beginning?")) return;
+  clearSaved();
+  window.scrollTo(0, 0);
+  location.reload();
+};
+
+(function restoreProgress() {
+  var saved = loadSaved();
+  if (!saved || !(saved.stage >= 2)) return;
+  restoring = true;
+  try {
+    S = saved;
+    S.written = S.written || [];
+    restoreNext = saved.next || null;
+    showL2();
+    var ok = saved.order && saved.order.length && saved.optOrder && saved.optOrder.length === saved.order.length &&
+      saved.order.every(function (qi, n) {
+        return QUESTIONS[qi] && saved.optOrder[n].length === QUESTIONS[qi].o.length;
+      });
+    if (ok) {
+      round = (saved.round || 1) - 1;
+      startRound(saved.order, saved.optOrder);
+      Object.keys(saved.picks || {}).map(Number).sort(function (a, b) { return a - b; }).forEach(function (n) {
+        var box = el("q" + n); if (!box) return;
+        var opt = box.querySelectorAll(".opt")[saved.picks[n]];
+        if (opt && !opt.querySelector(".letter").disabled) pick.call(opt, n);
+      });
+    } else {
+      round = 0;
+      startRound(QUESTIONS.map(function (_, i) { return i; }));
+    }
+    if (saved.l3 && S.stage === 3) openL3();
+    el("welcomeBack").classList.remove("hidden");
+  } catch (err) {
+    restoring = false;
+    clearSaved();
+    location.reload();
+    return;
+  }
+  restoring = false;
+  save();
+})();
+
+// ---------- SEND LEVEL 3 ANSWERS (v2) ----------
+// On GitHub Pages: sends directly to Web3Forms and only says "Sent!" once Web3Forms confirms.
+// Inside a Claude link (artifact): opens the studio's send page on GitHub Pages, which does the
+// same confirmed send. A "Copy my answers" backup is always shown.
+var SEND_PAGE = "https://encinitaspiano.github.io/Lessons/send.html";
+var blankWarned = false;
+
+function buildAnswerText() {
+  var answers = WRITTEN.map(function (q, i) { var t = el("w" + i); return t ? t.value.trim() : ""; });
+  var text = "Student: " + STUDENT + "\nLesson: " + LESSON_LABEL + "\n\n";
+  WRITTEN.forEach(function (q, i) {
+    text += (i + 1) + ". " + q + "\n" + (answers[i] || "(no answer)") + "\n\n";
+  });
+  return {answers: answers, text: text};
+}
+
+function b64url(str) {
+  var b = btoa(unescape(encodeURIComponent(str)));
+  return b.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function copyBackup(text, intro) {
+  el("sendMsg").innerHTML += '<p class="hint" style="margin-top:14px">' + intro + '</p>' +
+    '<button class="btn alt" id="copyBtn" type="button">Copy my answers</button>' +
+    '<div class="preview" id="answerPreview">' + esc(text) + '</div>';
+  el("copyBtn").onclick = function () {
+    var btn = this;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(el("answerPreview"));
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      btn.textContent = "Selected - now tap Copy";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Copied! Now paste it in a text to Mr. Rod"; }, selectIt);
+    } catch (err) { selectIt(); }
+  };
+}
+
+el("sendBtn").onclick = function (ev) {
+  var built = buildAnswerText();
+  var blanks = [];
+  built.answers.forEach(function (a, i) { if (!a) blanks.push(i + 1); });
+  if (blanks.length && !blankWarned) {
+    ev.preventDefault();
+    blankWarned = true;
+    el("sendMsg").innerHTML = '<div class="fb no">Question' + (blanks.length > 1 ? "s " : " ") + blanks.join(", ") +
+      ' ' + (blanks.length > 1 ? "are" : "is") + ' still empty. Fill ' + (blanks.length > 1 ? "them" : "it") +
+      ' in, or tap the send button again to send anyway.</div>';
+    return;
+  }
+  var text = built.text;
+  var payload = {
+    s: STUDENT, d: LESSON_DATE, l: LESSON_LABEL, m: text
+  };
+
+  if (!WEB3FORMS_KEY) {
+    ev.preventDefault();
+    el("sendMsg").innerHTML = '<div class="note"><b>SAMPLE MODE:</b> in the real version, this is emailed to Mr. Rod. Here is exactly what he would receive:</div>' +
+      '<div class="preview">' + esc(text) + '</div>';
+    return;
+  }
+
+  var onGithub = /github\.io$/.test(location.hostname);
+  if (onGithub) {
+    ev.preventDefault();
+    var btn = this;
+    btn.style.pointerEvents = "none"; btn.style.opacity = ".5"; btn.textContent = "Sending...";
+    el("sendMsg").innerHTML = "";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "Accept": "application/json"},
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: "Level 3 answers - " + STUDENT + " - " + LESSON_DATE,
+        from_name: STUDENT + " (Lesson Challenge)",
+        student: STUDENT, lesson: LESSON_LABEL, message: text
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j || !j.success) throw new Error((j && j.message) || "not accepted");
+      btn.textContent = "Sent!";
+      el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Sent!</div><p>Mr. Rod has your answers, ' + esc(STUDENT) +
+        '. We will go over them together at your next lesson. Great work, and trust yourself!</p></div>';
+    }).catch(function () {
+      btn.style.pointerEvents = ""; btn.style.opacity = ""; btn.textContent = "Try sending again";
+      el("sendMsg").innerHTML = '<div class="fb no">Hmm, that did not go through. Check your internet and try again.</div>';
+      copyBackup(text, "<b>Still not working?</b> Copy your answers and text them to Mr. Rod.");
+    });
+    return;
+  }
+
+  // Inside a Claude link: let this tap open the send page in a new tab (no pop-up needed).
+  this.href = SEND_PAGE + "#" + b64url(JSON.stringify(payload));
+  el("sendMsg").innerHTML = '<div class="unlock"><div class="big">Almost done!</div><p>A new page just opened to send your answers. ' +
+    'When it says <b>Sent!</b>, you are all done. Great work, ' + esc(STUDENT) + '!</p></div>';
+  copyBackup(text, "<b>No new page, or it did not say Sent?</b> Copy your answers and text them to Mr. Rod.");
+};
+</script>
+</body>
+</html>
